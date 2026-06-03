@@ -5,7 +5,9 @@ on:
     types: [opened, edited, reopened, synchronize, labeled, unlabeled, assigned, unassigned, review_requested, review_request_removed, ready_for_review]
   pull_request_review:
     types: [submitted, dismissed]
-
+concurrency:
+  group: validate-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 permissions:
   contents: read
   pull-requests: read
@@ -64,7 +66,13 @@ jobs:
               return matches;
             }
 
-            if (!linkedIssuePattern.test(body)) {
+            const linkedIssueMatch = body.match(linkedIssuePattern);
+
+            core.info("Raw PR body:");
+            core.info(JSON.stringify(body));
+            core.info(`Linked issue match: ${linkedIssueMatch ? linkedIssueMatch[0] : "none"}`);
+            
+            if (!linkedIssueMatch) {
               errors.push("PR body must link an issue using a closing keyword, such as `Closes #12`.");
             }
 
