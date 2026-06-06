@@ -23,9 +23,9 @@ Use this section for operations planning and communication only. This tracks exp
 | --- | --- | --- | --- | --- | --- |
 | Noaman S. | ✓ | ✗ | ✗ | ✗ | Noaman will be working on App Role for remainder of this project.|
 | Rosmy A. | ✓ | ✗ | ✗ | ✗ | Rosmy will be working on App Role for remainder of this project. |
-| Caitlin O. | ✗ | ✓ | ✗ | ✗ | Caitlin will be working on App Role for remainder of this project. |
-| Xaidyn L. | ✗ | ✗ | ✗ | ✓ | Xaidyn will be working on App Role for remainder of this project. |
-| Tristen D. | ✗ | ✗ | ✓ | ✗ | Tristen will be working on App Role for remainder of this project. |
+| Caitlin O. | ✗ | ✓ | ✗ | ✗ | Caitlin will be working on Rabbit MQ Role for remainder of this project. |
+| Xaidyn L. | ✗ | ✗ | ✗ | ✓ | Xaidyn will be working on API Role for remainder of this project. |
+| Tristen D. | ✗ | ✗ | ✓ | ✗ | Tristen will be working on DB Role for remainder of this project. |
 
 ## Rotation History
 
@@ -33,9 +33,9 @@ Use this section for operations planning and communication only. This tracks exp
 | --- | --- | --- | --- | --- |
 | All Milestones  | Noaman S. | APP  | APP | In order to provide efficncy **Noaman** will be in charge of the VM Ownership of APP |
 | All Milestones | Rosmy A. |  | APP  | APP | In order to provide efficncy **Rosmy** will be in charge of the VM Ownership of APP |
-| All Milestones | Caitlin O. | RABIIT MQ | RABIIT MQ | In order to provide efficncy **Caitlin** will be in charge of the VM Ownership of APP |
-| All Milestones |  Xaidyn L.  | API WORKER | API WORKER | In order to provide efficncy **Xaidyn** will be in charge of the VM Ownership of APP |
-| All Milestones | Tristen D. | DB | DB | In order to provide efficncy **Tristen** will be in charge of the VM Ownership of APP |
+| All Milestones | Caitlin O. | RABBIT MQ | RABIIT MQ | In order to provide efficncy **Caitlin** will be in charge of the VM Ownership of Rabbit MQ |
+| All Milestones |  Xaidyn L.  | API WORKER | API WORKER | In order to provide efficncy **Xaidyn** will be in charge of the VM Ownership of API Worker |
+| All Milestones | Tristen D. | DB | DB | In order to provide efficncy **Tristen** will be in charge of the VM Ownership of DB |
 
 ## Role Definitions
 
