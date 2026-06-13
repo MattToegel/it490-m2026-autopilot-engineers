@@ -5,5 +5,8 @@
     "require": {
         "php": ">=8.4",
         "php-amqplib/php-amqplib": "^3.7"
+    },
+    "scripts": {
+        "setup": "bash setup.sh"
     }
 }
