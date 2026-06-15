@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e # UCID: rma9 - stops the script immediately if any command fails
+set -e
 
 # UCID: rma9
 
