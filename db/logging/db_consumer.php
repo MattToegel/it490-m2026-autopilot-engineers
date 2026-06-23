@@ -2,12 +2,12 @@
 
 // log_consumer.php
 // tad46: Consumes from db.logs queue, writes to MySQL, sends bad messages to deadletter
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 // Load credentials from .env
-$env = parse_ini_file(__DIR__ . '/.env');
+$env = parse_ini_file(__DIR__ . '/../.env');
 
 // Connect to MySQL on this same VM
 $db = new mysqli
