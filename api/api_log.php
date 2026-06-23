@@ -36,12 +36,12 @@ function publishLog(): bool {
 
         $channel = $connection->channel();
 
-/*xml: This is a static log that will test for both a valid
-and invalid log message that will get sent through RabbitMQ into
+/*xml: This is a static log that will test for both a valid 
+and invalid log message that will get sent through RabbitMQ into 
 the database consumer*/
         $log = [
 //xml: level of log
-
+            
 //xml: Log message that will be sent
             'message' => 'this is to test log for API worker',
 //xml: The source  of where the message will be sent from
@@ -50,12 +50,12 @@ the database consumer*/
             'created_at' => date('Y-m-d H:i:s'),
         ];
 
-//xml: This converts the array that is in php an transforms it into JSON
+//xml: This converts the array that is in php an transforms it into JSON 
         $rabbitMessage = new AMQPMessage(json_encode($log), [
             'content' => 'application/json',
             'delivery' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
         ]);
-/*xml: This publishes the message off the the server using routing keys
+/*xml: This publishes the message off the the server using routing keys 
 to help find which queue will recieve the messages*/
         $channel->basic_publish($rabbitMessage, 'app.requests', 'log.insert');
 
@@ -65,11 +65,10 @@ to help find which queue will recieve the messages*/
 
         return true;
 
-//xml: This exception and message is thrown if any error happens
+//xml: This exception and message is thrown if any error happens 
     } catch (Exception $e) {
         echo "Log publish failed: " . $e->getMessage() . "\n";
         return false;
     }
 }
-
 

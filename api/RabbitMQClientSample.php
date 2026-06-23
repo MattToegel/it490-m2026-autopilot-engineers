@@ -21,5 +21,3 @@ try {
     fwrite(STDERR, "Client error: " . $error->getMessage() . PHP_EOL);
     exit(1);
 }
-
-

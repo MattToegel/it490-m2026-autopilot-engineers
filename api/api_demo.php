@@ -15,5 +15,3 @@ if ($sent) {
 } else {
     echo "Log did not send.\n";
 }
-
-

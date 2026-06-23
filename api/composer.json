@@ -10,7 +10,7 @@
 
      "scripts": {
 
-        "setup": "bash setup.sh"
+	"setup": "bash setup.sh"
 
    }
 }

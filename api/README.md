@@ -58,4 +58,3 @@ ROUTING_KEY=sample.request
 ```
 
 With those values enabled, the library declares the exchange, binds `QUEUE` to it with `ROUTING_KEY`, and publishes requests through the named exchange. This is useful later when a project has separate DB, API, logging, or worker queues.
-

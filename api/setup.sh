@@ -44,7 +44,7 @@ fi
 cd "$HOME/IT490-2026"
 composer install
 
-#xml: handles requests, responds, headers, and errors within api communication
+#xml: handles requests, responds, headers, and errors within api communication 
 composer require guzzlehttp/guzzle
 
 
