@@ -102,7 +102,7 @@ The DB users table showed the registered user with a `password_hash` value begin
 
 This proves the password was stored as a hash and not plaintext.
 
-## **Result Summary**
+## **Final Results Summary**
 
 Passed:
 
