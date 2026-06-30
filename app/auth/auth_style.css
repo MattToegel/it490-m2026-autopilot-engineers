@@ -1,0 +1,74 @@
+/*css for auth pages styling*/
+
+
+
+/* rma9: sets the basic page font, spacing, and line height for all auth pages */
+body {
+    font-family: Arial, sans-serif;
+    margin: 24px;
+    line-height: 1.4;
+}
+
+/* rma9: adds space under page headings like Register, Log In, and Dashboard */
+h1 {
+    margin-bottom: 24px;
+}
+
+/* rma9: keeps forms from stretching too wide across the page */
+form {
+    max-width: 420px;
+}
+
+/* rma9: lines up each label and input box in two columns */
+label {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/* rma9: makes input boxes readable and keeps their size consistent */
+input {
+    padding: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* rma9: gives buttons simple spacing and readable size */
+button {
+    margin-top: 4px;
+    padding: 6px 14px;
+    font-size: 16px;
+}
+
+/* rma9: styles error messages in red with space below */
+.error {
+    color: red;
+    margin-bottom: 18px;
+}
+
+/* rma9: styles success messages in green with space below */
+.success {
+    color: green;
+    margin-bottom: 18px;
+}
+
+/* rma9: adds space above login/register links */
+.auth-link {
+    margin-top: 24px;
+}
+
+/* rma9: adds spacing between dashboard/page sections */
+.page-section {
+    margin-bottom: 20px;
+}
+
+/* rma9: adds spacing above action links or buttons */
+.actions {
+    margin-top: 20px;
+}
+
+/* rma9: adds a little space between links */
+a {
+    margin-right: 8px;
+}
