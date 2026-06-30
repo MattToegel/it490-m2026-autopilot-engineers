@@ -1,0 +1,56 @@
+=== All Databases ===
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| it490_logs         |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+
+=== All MySQL Users ===
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| admin            | %         |
+|                  | localhost |
+| admin            | localhost |
+| debian-sys-maint | localhost |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+
+=== Tables in it490_logs ===
++----------------------+
+| Tables_in_it490_logs |
++----------------------+
+| logs                 |
+| users                |
++----------------------+
+
+=== Structure of logs table ===
++-------------+-------------+------+-----+-------------------+-------------------+
+| Field       | Type        | Null | Key | Default           | Extra             |
++-------------+-------------+------+-----+-------------------+-------------------+
+| id          | int         | NO   | PRI | NULL              | auto_increment    |
+| source      | varchar(50) | NO   |     | NULL              |                   |
+| level       | varchar(20) | NO   |     | NULL              |                   |
+| message     | text        | NO   |     | NULL              |                   |
+| created_at  | datetime    | NO   |     | NULL              |                   |
+| received_at | timestamp   | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++-------------+-------------+------+-----+-------------------+-------------------+
+=== Structure of users table ===
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| Field         | Type         | Null | Key | Default           | Extra                                         |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
+| user_id       | int          | NO   | PRI | NULL              | auto_increment                                |
+| username      | varchar(50)  | NO   | UNI | NULL              |                                               |
+| email         | varchar(255) | NO   | UNI | NULL              |                                               |
+| password_hash | varchar(255) | NO   |     | NULL              |                                               |
+| role          | varchar(20)  | NO   |     | user              |                                               |
+| created_at    | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at    | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++---------------+--------------+------+-----+-------------------+-----------------------------------------------+
