@@ -3,7 +3,7 @@
         'name' => 'matt-toegel/it490-2026-rabbitmq-sample',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7a11433230e21c28603212e9730a2a86bd927790',
+        'reference' => '60364efda53058e15b083e508196cf0d7c67ddb5',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'matt-toegel/it490-2026-rabbitmq-sample' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7a11433230e21c28603212e9730a2a86bd927790',
+            'reference' => '60364efda53058e15b083e508196cf0d7c67ddb5',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

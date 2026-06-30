@@ -2,25 +2,26 @@
 // auth_consumer.php
 
 /* 
+tad46:
 DB VM consumer that handles user registration and login requests
 Listens on db.auth queue, calls the right handler based on routing key,
 and replies back to the App VM through the response queue 
 */
 
-// Load Composer autoloader
+// tad46: Load Composer autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Load the test Logger class from the logging folder
+// tad46: Load the test Logger class from the logging folder
 require_once __DIR__ . '/../logging/testlogger.php';
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-// Load credentials from .env at the db/ root
+// tad46: Load credentials from .env at the db/ root
 $env = parse_ini_file(__DIR__ . '/../.env');
 
-// Open a connection to MySQL on this same VM
-// Using localhost since MySQL runs on the DB VM itself
+// tad46: Open a connection to MySQL on this same VM
+// tad46: Using localhost since MySQL runs on the DB VM itself
 $db = new mysqli
 (
     'localhost',
@@ -55,48 +56,53 @@ try
 
 $channel = $connection->channel();
 
-// Create a logger instance that identifies messages as coming from db-auth
+// tad46: Create a logger instance that identifies messages as coming from db-auth
 $logger = new Logger('db-auth');
 
-// Queue this consumer listens on
-$queue = '';
+// tad46: Queue this consumer listens on
+$queue = 'db.auth';
 
 echo "DB VM auth consumer listening on '$queue'...\n";
 
-// Registration handler
+// tad46: Registration handler
 function handleRegister($db, $logger, $data) 
 {
-    // Check that required fields are present
-    if (empty($data['email']) || empty($data['password'])) 
+    if (empty($data['username']) || empty($data['email']) || empty($data['password'])) 
     {
         $logger->warning("Registration attempt missing fields");
         return ['status' => 'error', 'message' => 'missing fields'];
     }
 
-    // Hash the password using bcrypt (PHP auto-generates a salt)
     $hash = password_hash($data['password'], PASSWORD_BCRYPT);
+    $role = 'user';
 
-    // Prepared statement prevents SQL injection
     $stmt = $db->prepare
     (
-        "INSERT INTO users (email, password_hash) VALUES (?, ?)"
+        "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)"
     );
-    $stmt->bind_param('ss', $data['email'], $hash);
+    $stmt->bind_param('ssss', $data['username'], $data['email'], $hash, $role);
 
-    if ($stmt->execute()) 
+    try 
     {
-        $logger->info("New user registered: {$data['email']}");
-        return ['status' => 'success', 'user_id' => $stmt->insert_id];
-    } 
-    else 
+        $stmt->execute();
+        $userId = $stmt->insert_id;
+        $logger->info("New user registered: {$data['email']} (user_id=$userId)");
+        return [
+            'status'   => 'success',
+            'user_id'  => $userId,
+            'username' => $data['username'],
+            'role'     => $role,
+        ];
+        
+    } catch (mysqli_sql_exception $e) 
     {
-        // Most likely cause: duplicate email
-        $logger->warning("Registration failed (likely duplicate email): {$data['email']}");
-        return ['status' => 'error', 'message' => 'email already taken'];
+        // Duplicate email or username (UNIQUE constraint violation)
+        $logger->warning("Registration failed (duplicate email or username): {$data['email']}");
+        return ['status' => 'error', 'message' => 'email or username already taken'];
     }
 }
 
-// Login handler
+// tad46: Login handler
 function handleLogin($db, $logger, $data) 
 {
     if (empty($data['email']) || empty($data['password'])) 
@@ -105,83 +111,108 @@ function handleLogin($db, $logger, $data)
         return ['status' => 'error', 'message' => 'missing fields'];
     }
 
-    // Look up the user by email
+    // tad46: Pull user_id, username, role, and stored hash
     $stmt = $db->prepare
     (
-        "SELECT id, password_hash FROM users WHERE email = ?"
+        "SELECT user_id, username, password_hash, role FROM users WHERE email = ?"
     );
-
     $stmt->bind_param('s', $data['email']);
-
     $stmt->execute();
-
     $result = $stmt->get_result()->fetch_assoc();
 
-    if (!$result)
+    // tad46: Use generic message to prevent email leaks
+    if (!$result) 
     {
         $logger->warning("Login attempt for unknown email: {$data['email']}");
         return ['status' => 'error', 'message' => 'invalid credentials'];
     }
 
-    // Verify the submitted password against the stored hash
     if (!password_verify($data['password'], $result['password_hash'])) 
     {
         $logger->warning("Failed login (bad password) for: {$data['email']}");
         return ['status' => 'error', 'message' => 'invalid credentials'];
     }
 
-    $logger->info("Successful login: {$data['email']}");
-    return ['status' => 'success', 'user_id' => $result['id']];
+    $logger->info("Successful login: {$data['email']} (user_id={$result['user_id']})");
+    return 
+    [
+        'status'   => 'success',
+        'user_id'  => $result['user_id'],
+        'username' => $result['username'],
+        'role'     => $result['role'],
+    ];
 }
 
-// Main callback
+// tad46: Main callback
 $callback = function ($msg) use ($db, $channel, $logger) 
 {
-    $data = json_decode($msg->body, true);
-    $routingKey = $msg->getRoutingKey();
+    try 
+    {
+        $data = json_decode($msg->body, true);
+        $routingKey = $msg->getRoutingKey();
 
-    echo "Received [$routingKey]: " . $msg->body . "\n";
+        // tad46: Print a sanitized version of the message (hide password)
+        $logData = $data;
+        if (isset($logData['password'])) 
+        {
+            $logData['password'] = '***';
+        }
+        echo "Received [$routingKey]: " . json_encode($logData) . "\n";
 
-    // Dispatch to the correct handler
-    if ($routingKey === 'user.register') 
+        // tad46: Dispatch to the correct handler (still uses the original $data with the real password)
+        if ($routingKey === 'user.register') 
+        {
+            $response = handleRegister($db, $logger, $data);
+        } 
+        else if ($routingKey === 'user.login') 
+        {
+            $response = handleLogin($db, $logger, $data);
+        } 
+        else 
+        {
+            $logger->warning("Unknown auth routing key received: $routingKey");
+            $response = ['status' => 'error', 'message' => 'unknown action'];
+        }
+
+        // tad46: Build the response with the same correlation_id from the request
+        $replyMsg = new AMQPMessage(json_encode($response), 
+        [
+            'correlation_id' => $msg->get('correlation_id'),
+        ]);
+
+        // tad46: Publish the reply to the App VM's reply_to queue
+        $channel->basic_publish($replyMsg, '', $msg->get('reply_to'));
+
+        // tad46: Ack the original request so RabbitMQ removes it from db.auth
+        $msg->ack();
+
+        echo "Replied: " . json_encode($response) . "\n\n";
+
+    } catch (Exception $e) 
     {
-        $response = handleRegister($db, $logger, $data);
-    } 
-    else if ($routingKey === 'user.login') 
-    {
-        $response = handleLogin($db, $logger, $data);
-    } 
-    else 
-    {
-        $logger->warning("Unknown auth routing key received: $routingKey");
-        $response = ['status' => 'error', 'message' => 'unknown action'];
+        $logger->error("Auth consumer error: " . $e->getMessage());
+
+        // tad46: Still reply so the App VM doesn't time out forever
+        $errorResponse = ['status' => 'error', 'message' => 'internal error'];
+        $replyMsg = new AMQPMessage(json_encode($errorResponse), 
+        [
+            'correlation_id' => $msg->get('correlation_id'),
+        ]);
+        $channel->basic_publish($replyMsg, '', $msg->get('reply_to'));
+        $msg->ack();
     }
-
-    // Build the response with the same correlation_id from the request
-    $replyMsg = new AMQPMessage(json_encode($response), 
-    [
-        'correlation_id' => $msg->get('correlation_id'),
-    ]);
-
-    // Publish the reply to the App VM's reply_to queue
-    $channel->basic_publish($replyMsg, '', $msg->get('reply_to'));
-
-    // Ack the original request so RabbitMQ removes it from db.auth
-    $msg->ack();
-
-    echo "Replied: " . json_encode($response) . "\n\n";
 };
 
-// Register the callback with the queue
+// tad46: Register the callback with the queue
 $channel->basic_consume($queue, '', false, false, false, false, $callback);
 
-// Listen forever
+// tad46: Listen forever on the queue
 while ($channel->is_consuming()) 
 {
     $channel->wait();
 }
 
-// Cleanup
+// tad46: Cleanup and close connections
 $channel->close();
 
 $connection->close();

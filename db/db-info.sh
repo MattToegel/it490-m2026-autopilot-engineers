@@ -18,6 +18,9 @@ OUTFILE="db-info.txt"
   
   echo "=== Structure of logs table ==="
   sudo mysql --table it490_logs -e "DESCRIBE logs;" 2>/dev/null || echo "logs table does not exist yet"
+
+  echo "=== Structure of users table ==="
+  sudo mysql --table it490_logs -e "DESCRIBE users;" 2>/dev/null || echo "users table does not exist yet"
 } > "$OUTFILE"
 
 echo "Database info written to $OUTFILE"

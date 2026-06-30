@@ -1,0 +1,6 @@
+# Local config files with credentials
+*.env
+.env
+*testRabbitMQ.ini
+db/testRabbitMQ.ini
+*.log

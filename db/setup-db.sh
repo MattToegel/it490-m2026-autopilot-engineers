@@ -35,22 +35,6 @@ composer install
 # tad46 Load credentials from the local .env file
 source "$REPO_DIR/db/.env"
 
-# tad46 Copy the RabbitMQ config template from shared
-if [ ! -f "$REPO_DIR/db/testRabbitMQ.ini" ]; then
-    cp "$REPO_DIR/shared/testRabbitMQ.ini.example" "$REPO_DIR/db/testRabbitMQ.ini"
-    echo "Copied testRabbitMQ.ini template from shared/"
-fi
-
-# tad46 Update the testRabbitMQ.ini with values from .env
-INI_FILE="$REPO_DIR/db/testRabbitMQ.ini"
-sed -i "s|^BROKER_HOST=.*|BROKER_HOST=$RABBITMQ_HOST|" "$INI_FILE"
-sed -i "s|^BROKER_PORT=.*|BROKER_PORT=$RABBITMQ_PORT|" "$INI_FILE"
-sed -i "s|^USER=.*|USER=$RABBITMQ_USER|" "$INI_FILE"
-sed -i "s|^PASSWORD=.*|PASSWORD=$RABBITMQ_PASSWORD|" "$INI_FILE"
-sed -i "s|^VHOST=.*|VHOST=$RABBITMQ_VHOST|" "$INI_FILE"
-sed -i "s|^QUEUE=.*|QUEUE=$RABBITMQ_QUEUE|" "$INI_FILE"
-echo "Updated $INI_FILE with values from .env"
-
 # tad46 Create the database and a local MySQL user for the consumer
 sudo mysql -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;"
 sudo mysql -e "CREATE USER IF NOT EXISTS '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';"
