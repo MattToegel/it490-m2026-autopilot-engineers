@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         rel="stylesheet"
     >
 
-<link rel="stylesheet" href="auth_style.css">
+<link rel="stylesheet" href="../public/auth_styles.css">
 <body>
     <!-- rma9: full registration application frame -->
     <div class="app-frame">
