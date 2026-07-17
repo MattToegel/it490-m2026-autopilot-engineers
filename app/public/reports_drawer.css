@@ -1,0 +1,280 @@
+/* nms37: Floating action button + slide-in drawer for report posting */
+/* nms37: Uses the same token system as auth_styles.css */
+
+/* ---------------- FAB ---------------- */
+
+.report-fab
+{
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 30;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 18px;
+
+    border: none;
+    border-radius: 999px;
+
+    background: var(--accent-red);
+    color: var(--white);
+
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.report-fab:hover,
+.report-fab:focus-visible
+{
+    background: #b30000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+}
+
+.report-fab img
+{
+    width: 22px;
+    height: 22px;
+    filter: brightness(0) invert(1);
+}
+
+/* ---------------- SCRIM ---------------- */
+
+.report-scrim
+{
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+
+    background: rgba(0, 0, 0, 0.42);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.25s ease;
+}
+
+.report-scrim.is-open
+{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------------- DRAWER ---------------- */
+
+.report-drawer
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 50;
+
+    width: min(420px, 100%);
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 26px 26px 20px;
+
+    background: var(--white);
+    box-shadow: -14px 0 34px rgba(0, 0, 0, 0.22);
+
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+
+    overflow-y: auto;
+}
+
+.report-drawer.is-open
+{
+    transform: translateX(0);
+}
+
+.report-drawer-head
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.report-drawer-title
+{
+    margin: 0;
+
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.report-drawer-close
+{
+    padding: 4px 8px;
+
+    border: none;
+    background: transparent;
+
+    color: var(--gray);
+    font-size: 1.8rem;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.report-drawer-close:hover,
+.report-drawer-close:focus-visible
+{
+    color: var(--accent-red);
+}
+
+.report-drawer-subtitle
+{
+    margin: 0 0 8px;
+
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.report-drawer-form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* nms37: form controls inside the drawer */
+.report-drawer-form .form-group
+{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.report-drawer-form label
+{
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    color: var(--text-dark);
+}
+
+.report-drawer-form select,
+.report-drawer-form textarea
+{
+    width: 100%;
+
+    padding: 8px 12px;
+
+    border: 1px solid #555555;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.96);
+
+    color: var(--text-dark);
+    font: inherit;
+    font-size: 1rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.report-drawer-form textarea
+{
+    min-height: 130px;
+    resize: vertical;
+}
+
+.report-drawer-form select:focus,
+.report-drawer-form textarea:focus
+{
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(7, 7, 119, 0.16);
+}
+
+.report-drawer-actions
+{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.report-drawer-submit
+{
+    min-width: 150px;
+    padding: 9px 16px;
+
+    border: none;
+    border-radius: 11px;
+
+    background: var(--primary-blue);
+    color: var(--white);
+
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.report-drawer-submit:hover,
+.report-drawer-submit:focus-visible
+{
+    background: #050566;
+    transform: translateY(-1px);
+}
+
+.report-drawer-cancel
+{
+    color: var(--accent-red);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.report-drawer-cancel:hover
+{
+    text-decoration: underline;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 700px)
+{
+    .report-fab .report-fab-label
+    {
+        display: none;
+    }
+
+    .report-fab
+    {
+        padding: 14px;
+    }
+
+    .report-drawer
+    {
+        width: 100%;
+    }
+}
