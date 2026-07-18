@@ -1,7 +1,7 @@
 <?php
 // report_create.php - Create a new Newark airport report (US-03 AC2)
-// nms37: Converted to the team system: report_client.php transport, team session vars,
-// nms37: team schema fields (comment_text/terminal/airport_code), shared auth_styles.css.
+// ns87: Converted to the team system: report_client.php transport, team session vars,
+// ns87: team schema fields (comment_text/terminal/airport_code), shared auth_styles.css.
 
 session_start();
 
