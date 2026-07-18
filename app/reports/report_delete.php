@@ -1,31 +1,30 @@
 <?php
-// report_delete.php — Delete your own report (AC4)
-// IT490 MVP | ns87 | US-03
+// report_delete.php - Delete your own Newark airport report (US-03 AC4) ns-87 Noaman
+// nms37: Converted to the team system: report_client.php transport, team session vars.
+// nms37: Ownership is enforced in reports_consumer.php (returns 'forbidden' on mismatch).
+
 session_start();
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header('Location: login.php');
-    exit;
-}
 
-require_once __DIR__ . '/mq_helper.php';
+require_once __DIR__ . '/../auth/auth_protect.php';
+require_once __DIR__ . '/report_client.php';
 
-$reportId = (int)($_GET['id'] ?? 0);
+$currentUserId = (int)($_SESSION['user_id'] ?? 0);
+
+// nms37: accept report_id from the POST form (community list / dashboard) or a GET id fallback
+$reportId = (int)($_POST['report_id'] ?? $_GET['id'] ?? 0);
 
 if ($reportId > 0) {
-    $response = mq_send_and_receive([
-        'action'    => 'report.delete',
-        'user_id'   => $_SESSION['user_id'],
+    $response = sendReportRequest('report.delete', [
+        'user_id'   => $currentUserId,
         'report_id' => $reportId,
-    ], QUEUE_REPORT_REQUEST, QUEUE_REPORT_RESPONSE);
+    ]);
 
-    if ($response && $response['status'] === 'success') {
-        header('Location: reports.php?deleted=1');
-        exit;
-    } elseif ($response && $response['status'] === 'forbidden') {
-        header('Location: reports.php');
+    if ($response && ($response['status'] ?? '') === 'success') {
+        header('Location: /reports/reports.php?deleted=1');
         exit;
     }
 }
 
-header('Location: reports.php');
+// nms37: forbidden, not found, or service down - fall back to the list
+header('Location: /reports/reports.php');
 exit;
