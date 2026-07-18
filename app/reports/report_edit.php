@@ -1,7 +1,7 @@
 <?php
 // report_edit.php - Edit your own Newark airport report (US-03 AC3) ns87-Noaman
-// nms37: Converted to the team system: report_client.php transport, team session vars,
-// nms37: team schema fields. Ownership is checked here AND again in reports_consumer.php.
+// ns87: Converted to the team system: report_client.php transport, team session vars,
+// ns87: team schema fields. Ownership is checked here AND again in reports_consumer.php.
 
 session_start();
 
