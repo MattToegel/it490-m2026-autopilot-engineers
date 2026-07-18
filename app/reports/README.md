@@ -24,3 +24,4 @@ rule holds even if the app layer is bypassed. Verified by the test_forbidden scr
 This module currently uses its own MQ helper and consumer (action-based dispatch).
 Planned follow-up: merge into the team's auth_client.php / auth_consumer.php
 routing-key pattern and wire the existing reports_drawer.js UI (coordinating with tad46).
+
