@@ -1,7 +1,7 @@
 <?php
 // reports.php - Community view of recent Newark airport reports (US-03 AC1)
-// nms37: Converted to the team system: report_client.php transport, team session vars,
-// nms37: team schema fields (report_id/comment_text/terminal), shared auth_styles.css.
+// ns87: Converted to the team system: report_client.php transport, team session vars,
+// ns87: team schema fields (report_id/comment_text/terminal), shared auth_styles.css.
 
 session_start();
 
