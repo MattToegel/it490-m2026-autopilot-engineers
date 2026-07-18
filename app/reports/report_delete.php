@@ -1,7 +1,7 @@
 <?php
 // report_delete.php - Delete your own Newark airport report (US-03 AC4) ns-87 Noaman
-// nms37: Converted to the team system: report_client.php transport, team session vars.
-// nms37: Ownership is enforced in reports_consumer.php (returns 'forbidden' on mismatch).
+// ns87: Converted to the team system: report_client.php transport, team session vars.
+// ns87: Ownership is enforced in reports_consumer.php (returns 'forbidden' on mismatch).
 
 session_start();
 
