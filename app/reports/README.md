@@ -1,27 +1,35 @@
-# US-03 — Newark Airport Reporting System (Noaman Shahid)
+# US-03 — Newark Airport Reporting System (Noaman Shahid, ns87)
 
-Report CRUD (view / create / edit / delete) with database-enforced ownership.
-Flow: App -> RabbitMQ (cluster rabbit@ns87-mq) -> DB worker -> RabbitMQ -> App.
+Report CRUD (view / create / edit / delete) for Newark (EWR) airport reports,
+integrated into the team system: shared RabbitMQ transport, shared session,
+the team database schema, and the shared stylesheet.
 
-## Files
-- app/reports/reports.php         - list recent reports (AC1)
-- app/reports/report_create.php   - create a report with a category (AC2)
-- app/reports/report_edit.php     - edit own report only (AC3)
-- app/reports/report_delete.php   - delete own report only (AC4)
-- app/reports/mq_helper.php       - RabbitMQ send/receive helper
-- app/reports/config.php          - queue names + MQ settings
-- db/reports/db-worker.php        - DB consumer: report.get_all/create/update/delete/get_one
-- db/reports/reports_schema.sql   - reports table definition
-- app/reports/tests/test_forbidden.php        - proves DB refuses a non-owner EDIT (AC3)
-- app/reports/tests/test_forbidden_delete.php - proves DB refuses a non-owner DELETE (AC4)
+## Files (App side)
+- `app/reports/report_client.php` — `sendReportRequest()`: sends `report.*` requests
+  over the shared `app.requests` topic exchange with a reply_to queue + correlation_id
+  (mirrors `auth_client.php`).
+- `app/reports/reports.php` — community list of recent reports (AC1).
+- `app/reports/report_create.php` — create a report with a category (AC2).
+- `app/reports/report_edit.php` — edit own report only (AC3).
+- `app/reports/report_delete.php` — delete own report only (AC4).
+
+## How it connects to the rest of the system
+- **Transport:** `sendReportRequest('report.list' | 'report.create' | 'report.update' |
+  'report.delete' | 'report.get_one', $payload)` — same RPC pattern the auth pages use.
+- **Session:** each page requires `app/auth/auth_protect.php` and reads `$_SESSION['user_id']`.
+- **Fields:** `category`, `comment_text`, `terminal`, `airport_code` (EWR), `report_id`.
+- **Styling:** shared `/public/auth_styles.css` (no per-page inline styles).
 
 ## Ownership (AC3 / AC4)
-Enforced in the database: report.update and report.delete compare the report's
-user_id to the requester's user_id and return "forbidden" on mismatch, so the
-rule holds even if the app layer is bypassed. Verified by the test_forbidden scripts.
+Edit and delete are restricted to the report's owner. The App checks ownership before
+showing the edit form, and the DB consumer (`reports_consumer.php`) checks it again on
+`report.update` / `report.delete`, returning `forbidden` on a `user_id` mismatch — so the
+rule holds even if the App layer is bypassed.
 
-## Integration note (follow-up)
-This module currently uses its own MQ helper and consumer (action-based dispatch).
-Planned follow-up: merge into the team's auth_client.php / auth_consumer.php
-routing-key pattern and wire the existing reports_drawer.js UI (coordinating with tad46).
+## DB side
+Report persistence and the reports table live on the DB VM in `reports_consumer.php`
+(owned by the DB VM member). This module is the App-side half that talks to it.
 
+## Status
+App pages converted to the team transport / session / schema / styling, ready for
+integration testing against `reports_consumer.php`.
