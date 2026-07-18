@@ -1,8 +1,8 @@
 <?php
 // report_client.php ns87-noaman
-// nms37: Sends US-03 report requests to the DB VM through RabbitMQ and waits for a response.
-// nms37: Mirrors auth_client.php exactly — correlation_id + reply_to RPC over the
-// nms37: app.requests topic exchange, dispatched by routing key (report.create, report.list, etc.).
+// ns87: Sends US-03 report requests to the DB VM through RabbitMQ and waits for a response.
+// ns87: Mirrors auth_client.php exactly — correlation_id + reply_to RPC over the
+// ns87: app.requests topic exchange, dispatched by routing key (report.create, report.list, etc.).
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
