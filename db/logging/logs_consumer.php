@@ -1,6 +1,6 @@
 <?php
 
-// log_consumer.php
+// logs_consumer.php
 // tad46: Consumes from db.logs queue, writes to MySQL, sends bad messages to deadletter
 require_once __DIR__ . '/../vendor/autoload.php';
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -50,7 +50,7 @@ $deadLetterEx = 'deadletter';
 
 // Local mirrored log file (per the assignment requirement)
 $logFile = __DIR__ . '/db_listener.log';
-echo "DB VM consumer listening on '$queue'...\n";
+echo "DB VM logs consumer listening on '$queue'...\n";
 
 // Callback for every message received
 $callback = function ($msg) use ($db, $channel, $deadLetterEx, $logFile) 
@@ -153,9 +153,25 @@ $callback = function ($msg) use ($db, $channel, $deadLetterEx, $logFile)
 $channel->basic_consume($queue, '', false, false, false, false, $callback);
 
 // Keep listening for messages forever
-while ($channel->is_consuming()) 
+while ($channel->is_consuming())
 {
-    $channel->wait();
+    try
+    {
+        $channel->wait();
+    }
+    catch (\PhpAmqpLib\Exception\AMQPBasicCancelException $e)
+    {
+        echo "Consumer cancelled by broker (queue probably recreated). Exiting.\n";
+        
+        // Also write to the local mirrored log so the exit is captured
+        $logLine = sprintf(
+            "[%s] [db-logs] [WARNING] Consumer cancelled by broker. Exiting cleanly.\n",
+            date('Y-m-d H:i:s')
+        );
+        file_put_contents($logFile, $logLine, FILE_APPEND);
+        
+        break;
+    }
 }
 
 $channel->close();
