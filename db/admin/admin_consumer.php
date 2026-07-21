@@ -1,12 +1,12 @@
 <?php
-//cao39 US-04 Admin CM Consumer. 
+//cao39 US-04 Admin CM Consumer.
 //cao39 DB VM Responsible for admin requests
 //cao39 admin consumer will handle the user admin list, searches, role updates, report deletions, content reports, and alerts
 // tad46: EDIT - added admin_activity_logs table writes for each admin action (US-04 audit trail)
 // tad46: The Logger class publishes to the db.logs pipeline (logs table), which is separate
 // tad46: from admin_activity_logs. This edit records admin actions in BOTH places.
 
-//cao39 Load the Composer autoloader 
+//cao39 Load the Composer autoloader
 require_once __DIR__ . '/../vendor/autoload.php';
 
 //cao39 Load the Logger class and publish log events
@@ -24,7 +24,7 @@ $db = new mysqli( "localhost", $env['MYSQL_USER'], $env['MYSQL_PASSWORD'], $env[
 if ($db->connect_error)
 {
     die("The MySQL connection has failed: " . $db->connect_error);
-} 
+}
 
 //cao39 Connect the admin consumer to RabbitMQ
 try
@@ -124,7 +124,7 @@ function listUsers($db, $logger, $data)
         "Administrator viewed all of the users and their roles"
     );
 
-    // tad46: NEW - record the view action in admin_activity_logs
+    // tad46: - record the view action in admin_activity_logs
     logAdminActivity(
         $db,
         $logger,
@@ -141,7 +141,209 @@ function listUsers($db, $logger, $data)
         "users" => $users
     ];
 
-} 
+}
+
+
+//cao39 form can accept either a numeric User ID or a username.
+//cao39 Case-insensitive exact match. Returns an error status if no user found.
+function lookupUserByUsername($db, $data, $logger)
+{
+    if (empty($data['username']))
+    {
+        $logger->warning(
+            "Administrator attempted a username lookup without providing username"
+        );
+
+        return
+        [
+            "status"  => "error",
+            "message" => "Missing username"
+        ];
+    }
+
+    $stmt = $db->prepare
+    (
+        "SELECT user_id, username
+         FROM users
+         WHERE LOWER(username) = LOWER(?)"
+    );
+
+    $stmt->bind_param
+    (
+        "s",
+        $data['username']
+    );
+
+    try
+    {
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0)
+        {
+            $logger->warning(
+                "Administrator looked up username='{$data['username']}', but no matching user was found."
+            );
+
+            return
+            [
+                "status"  => "error",
+                "message" => "No user found with that username"
+            ];
+        }
+
+        $row = $result->fetch_assoc();
+
+        $logger->info(
+            "Administrator looked up username='{$data['username']}' -> user_id={$row['user_id']}"
+        );
+
+        return
+        [
+            "status"  => "success",
+            "user_id" => (int)$row['user_id'],
+            "username"=> $row['username']
+        ];
+    }
+    catch (mysqli_sql_exception $e)
+    {
+        $logger->error(
+            "Failed to look up username='{$data['username']}': " .
+            $e->getMessage()
+        );
+
+        return
+        [
+            "status"  => "error",
+            "message" => "Unable to look up username"
+        ];
+    }
+}
+
+//cao39 US-04 AC2 - Loads reports for moderation
+// NEW - returns all airport_reports rows for the admin_reports.php
+// moderation table. Mirrors listUsers()'s structure.
+function listReports($db, $data, $logger)
+{
+    $result = $db->query(
+        "SELECT report_id, user_id, airport_code, terminal,
+                category, comment_text, report_status, created_at
+         FROM airport_reports
+         ORDER BY created_at DESC"
+    );
+
+    $reports = [];
+
+    while ($row = $result->fetch_assoc())
+    {
+        $reports[] = $row;
+    }
+
+    $logger->info(
+        "Administrator viewed all airport reports"
+    );
+
+    logAdminActivity(
+        $db,
+        $logger,
+        $data['admin_user_id'] ?? null,
+        'list_reports',
+        null,
+        null,
+        'Viewed all airport reports'
+    );
+
+    return
+    [
+        "status"  => "success",
+        "reports" => $reports
+    ];
+}
+
+//cao39 US-04 AC2 - Flags a report with a warning/notice
+//cao39 admin gets to mark a report as flagged and records the reason in
+
+function createNotice($db, $data, $logger)
+{
+    if (empty($data['report_id']) || empty($data['reason']))
+    {
+        $logger->warning(
+            "Administrator attempted to flag a report with missing report_id or reason"
+        );
+
+        return
+        [
+            "status"  => "error",
+            "message" => "Missing report_id or reason"
+        ];
+    }
+
+    $stmt = $db->prepare
+    (
+        "UPDATE airport_reports
+         SET report_status = 'flagged'
+         WHERE report_id = ?"
+    );
+
+    $stmt->bind_param
+    (
+        "i",
+        $data['report_id']
+    );
+
+    try
+    {
+        $stmt->execute();
+
+        if ($stmt->affected_rows === 0)
+        {
+            $logger->warning(
+                "Administrator attempted to flag report_id={$data['report_id']}, but no matching report was found."
+            );
+
+            return
+            [
+                "status"  => "error",
+                "message" => "Report not found"
+            ];
+        }
+
+        $logger->info(
+            "Administrator flagged report_id={$data['report_id']} with reason: {$data['reason']}"
+        );
+
+        logAdminActivity(
+            $db,
+            $logger,
+            $data['admin_user_id'] ?? null,
+            'create_notice',
+            null,
+            (int)$data['report_id'],
+            $data['reason']
+        );
+
+        return
+        [
+            "status"  => "success",
+            "message" => "Warning has been created"
+        ];
+    }
+    catch (mysqli_sql_exception $e)
+    {
+        $logger->error(
+            "Failed to flag report_id={$data['report_id']}: " .
+            $e->getMessage()
+        );
+
+        return
+        [
+            "status"  => "error",
+            "message" => "Unable to create warning"
+        ];
+    }
+}
+
 //cao39 US-04 AC2 - Admin removes the offensive reports
 function deleteReport($db, $data, $logger)
 {
@@ -175,7 +377,7 @@ function deleteReport($db, $data, $logger)
     {
         $stmt->execute();
 
-        
+
         //cao39 - Reviews to see if a report was deleted
         if ($stmt->affected_rows === 0)
         {
@@ -189,21 +391,21 @@ function deleteReport($db, $data, $logger)
                 "message" => "Report not found"
             ];
         }
-        
+
         //cao39 - Logging successful delete report action
         $logger->info(
             "Administrator deleted report_id={$data['report_id']}"
         );
 
-        // tad46: NEW - record the deletion in admin_activity_logs with the affected report id
-        logAdminActivity(
+        // tad46: record the deletion in logs with the affected report id
+         logAdminActivity(
             $db,
             $logger,
             $data['admin_user_id'] ?? null,
             'delete_report',
             null,
-            (int)$data['report_id'],
-            $data['notes'] ?? 'Removed report for community guideline violation'
+            null,
+            "Deleted report_id={$data['report_id']}: " . ($data['notes'] ?? 'Removed report for community guideline violation')
         );
 
         return
@@ -262,22 +464,21 @@ function updateRole($db, $data, $logger)
     {
         $stmt->execute();
 
-        
+
         //cao39 - Reviews to see if a user role was actually updated
         if ($stmt->affected_rows === 0)
         {
             $logger->warning(
                 "Administrator attempted to update role for user_id={$data['user_id']}, but no changes were made."
             );
-
-            return
+return
             [
                 "status"  => "error",
                 "message" => "User not found or role already assigned"
             ];
         }
 
-        
+
         //cao39 - Log a successful role update action
         $logger->info(
             "Administrator updated role for user_id={$data['user_id']} to {$data['role']}"
@@ -351,11 +552,34 @@ $callback = function($msg) use ($db, $channel, $logger)
 
             break;
 
+	
+	    case "content.adm.report":
+
+            $response=listReports($db,$data,$logger);
+
+            break;
+
+
+	    case "create.adm.notice":
+
+            $response=createNotice($db,$data,$logger);
+
+            break;
 
 
         case "report.adm.delete":
 
             $response=deleteReport($db,$data,$logger);
+
+            break;
+
+
+
+        
+        //cao39 -  role update form (admin_roles.php).
+        case "role.adm.lookup":
+
+            $response=lookupUserByUsername($db,$data,$logger);
 
             break;
 
@@ -375,7 +599,7 @@ $callback = function($msg) use ($db, $channel, $logger)
 
     }
 
-//cao39 sending back the responses to the APP VM 
+//cao39 sending back the responses to the APP VM
     $props = $msg->get_properties();
 
 
