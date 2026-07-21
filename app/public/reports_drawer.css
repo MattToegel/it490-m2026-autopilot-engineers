@@ -1,5 +1,5 @@
-/* nms37: Floating action button + slide-in drawer for report posting */
-/* nms37: Uses the same token system as auth_styles.css */
+/* tad46: Floating action button + slide-in drawer for report posting */
+/* tad46: Uses the same token system as auth_styles.css */
 
 /* ---------------- FAB ---------------- */
 
@@ -10,70 +10,42 @@
     bottom: 22px;
     z-index: 30;
 
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-
-    padding: 12px 18px;
-
+    /* no background, no border */
+    background: transparent;
     border: none;
-    border-radius: 999px;
+    padding: 0;
 
-    background: var(--accent-red);
-    color: var(--white);
-
-    font: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.4px;
+    /* size the button to the image */
+    width: 60px;
+    height: 60px;
 
     cursor: pointer;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+    /* subtle glow shadow so it still looks tappable */
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.35));
+
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.report-fab:hover,
-.report-fab:focus-visible
+.report-fab:hover
 {
-    background: #b30000;
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+    filter: drop-shadow(0 10px 26px rgba(255, 208, 32, 0.5));
 }
 
 .report-fab img
 {
-    width: 22px;
-    height: 22px;
-    filter: brightness(0) invert(1);
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* NO filter - show the image raw */
 }
 
-/* ---------------- SCRIM ---------------- */
-
-.report-scrim
+/* hide the text label since the FAB is icon-only now */
+.report-fab-label
 {
-    position: fixed;
-    inset: 0;
-    z-index: 40;
-
-    background: rgba(0, 0, 0, 0.42);
-
-    opacity: 0;
-    pointer-events: none;
-
-    transition: opacity 0.25s ease;
+    display: none;
 }
-
-.report-scrim.is-open
-{
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* ---------------- DRAWER ---------------- */
 
 .report-drawer
 {
@@ -90,7 +62,7 @@
     gap: 8px;
     padding: 26px 26px 20px;
 
-    background: var(--white);
+    background-color: #ffffff;   /* solid white, no variable */
     box-shadow: -14px 0 34px rgba(0, 0, 0, 0.22);
 
     transform: translateX(100%);
@@ -157,7 +129,7 @@
     gap: 12px;
 }
 
-/* nms37: form controls inside the drawer */
+/* tad46: form controls inside the drawer */
 .report-drawer-form .form-group
 {
     margin: 0;

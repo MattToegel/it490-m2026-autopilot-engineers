@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 'password' => $password,
             ]
         );
-
+        
         if ($response && ($response['status'] ?? '') === 'success')
         {
             // tad46: create the authenticated user session

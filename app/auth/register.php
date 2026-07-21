@@ -340,6 +340,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         </footer>
     </div>
 
-    <script src="auth_script.js"></script>
+    <script src="../public/auth_script.js"></script>
 </body>
 </html>

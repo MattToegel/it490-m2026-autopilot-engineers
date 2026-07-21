@@ -1008,3 +1008,213 @@ a
     color: #d62828 !important;
     font-weight: 600;
 }
+
+
+.bell-link
+{
+    position: relative;
+    text-decoration: none;
+}
+ 
+.bell-badge
+{
+    position: absolute;
+    top: -2px;
+    right: -4px;
+ 
+    display: inline-flex;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    align-items: center;
+    justify-content: center;
+ 
+    border-radius: 999px;
+    background: var(--otr-red);
+    color: #fff;
+ 
+    font-size: 0.66rem;
+    font-weight: 700;
+    line-height: 1;
+}
+ 
+/* --- notifications panel --- */
+ 
+.notifications-count
+{
+    color: var(--otr-red);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+ 
+.notifications-empty
+{
+    display: flex;
+    min-height: 180px;
+    padding: 30px 24px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+ 
+.notifications-empty img
+{
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+    opacity: 0.55;
+}
+ 
+.notifications-empty h3
+{
+    margin: 0 0 6px;
+}
+ 
+.notifications-empty p
+{
+    max-width: 380px;
+    margin: 0;
+    color: var(--otr-muted);
+    line-height: 1.5;
+}
+ 
+.notifications-list
+{
+    margin: 0;
+    padding: 6px 22px 20px;
+    list-style: none;
+}
+ 
+.notification-item
+{
+    position: relative;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--otr-border);
+}
+ 
+.notification-item:last-child
+{
+    border-bottom: 0;
+}
+ 
+/* tad46: read alerts stay visible but visually recede */
+.notification-item--read
+{
+    opacity: 0.55;
+}
+ 
+.notification-item__top
+{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+ 
+.notification-chip
+{
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+ 
+.alert-chip-delay
+{
+    background: #fff1d8;
+    color: #855d11;
+}
+ 
+.alert-chip-gate
+{
+    background: #e7f5ff;
+    color: #175b83;
+}
+ 
+.alert-chip-cancel
+{
+    background: #ffe5e5;
+    color: #a32020;
+}
+ 
+.alert-chip-status
+{
+    background: #ececff;
+    color: var(--otr-blue);
+}
+ 
+.alert-chip-muted
+{
+    background: #eeeeF2;
+    color: #555560;
+}
+ 
+.notification-flight
+{
+    color: var(--otr-red);
+    font-weight: 700;
+}
+ 
+.notification-time
+{
+    margin-left: auto;
+    color: var(--otr-muted);
+    font-size: 0.8rem;
+}
+ 
+.notification-message
+{
+    margin: 12px 0;
+    line-height: 1.55;
+}
+ 
+.notification-dismiss-form
+{
+    margin: 0;
+}
+ 
+.notification-dismiss
+{
+    padding: 7px 10px;
+ 
+    border: 1px solid var(--otr-border);
+    border-radius: 7px;
+    background: var(--otr-soft);
+    color: var(--otr-blue);
+    font-weight: 600;
+    cursor: pointer;
+}
+ 
+.notification-dismiss:hover
+{
+    background: #e6e7f2;
+}
+ 
+.notification-read-tag
+{
+    display: inline-block;
+    padding: 5px 10px;
+ 
+    border-radius: 999px;
+    background: #eeeeF2;
+    color: #555560;
+ 
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+ 
+@media (max-width: 650px)
+{
+    .notification-time
+    {
+        width: 100%;
+        margin-left: 0;
+    }
+}

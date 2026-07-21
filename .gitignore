@@ -1,5 +1,6 @@
-# Environment files
-app/.env
+*.gitignore
+*.env
+ConsumerManager/
+*vendor/
+*.log
 
-# Composer dependencies
-app/vendor/
