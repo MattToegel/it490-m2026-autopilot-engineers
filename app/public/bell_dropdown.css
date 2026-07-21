@@ -1,0 +1,185 @@
+/* tad46: Notification bell + dropdown styles */
+/* tad46: Reuses the token system from auth_styles.css */
+
+.bell-wrapper
+{
+    position: relative;
+    display: inline-block;
+}
+
+/* tad46: hidden checkbox toggles the dropdown open/closed */
+.bell-toggle-input
+{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.bell-icon
+{
+    position: relative;
+    cursor: pointer;
+}
+
+.bell-badge
+{
+    position: absolute;
+    top: -4px;
+    right: -4px;
+
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+    background: #ff2020;
+    color: #ffffff;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.bell-dropdown
+{
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 60;
+
+    width: 340px;
+    max-height: 450px;
+    overflow-y: auto;
+
+    background: #ffffff;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.bell-toggle-input:checked ~ .bell-dropdown
+{
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.bell-dropdown-head
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 16px;
+    border-bottom: 1px solid #eeeeee;
+
+    color: #070777;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.bell-dropdown-count
+{
+    font-size: 0.72rem;
+    color: #ff2020;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.bell-empty
+{
+    margin: 0;
+    padding: 22px 16px;
+
+    text-align: center;
+    color: #9b9b9b;
+    font-size: 0.88rem;
+}
+
+.bell-alert-list
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bell-alert-item
+{
+    padding: 12px 16px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.bell-alert-item:last-child
+{
+    border-bottom: none;
+}
+
+.bell-alert-top
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.bell-alert-flight
+{
+    color: #070777;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.bell-alert-when
+{
+    color: #9b9b9b;
+    font-size: 0.72rem;
+    letter-spacing: 0.4px;
+}
+
+.bell-alert-msg
+{
+    margin: 0 0 8px;
+    color: #333333;
+    font-size: 0.84rem;
+    line-height: 1.4;
+}
+
+.bell-alert-dismiss-form
+{
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.bell-alert-dismiss
+{
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    color: #ff2020;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+
+    cursor: pointer;
+}
+
+.bell-alert-dismiss:hover
+{
+    text-decoration: underline;
+}

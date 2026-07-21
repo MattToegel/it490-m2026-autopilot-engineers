@@ -16,33 +16,41 @@
     box-sizing: border-box;
 }
 
-html {
+/* rma9: allow the document to use the full browser width and height.
+   This removes the black space around the page. */
+html,
+body {
+    width: 100%;
     min-height: 100%;
+    margin: 0;
 }
 
+/* rma9: make the page fill the browser instead of
+   centering a smaller frame. */
 body {
-    margin: 0;
     min-height: 100vh;
-    padding: 16px;
+    padding: 0;
 
-    display: grid;
-    place-items: center;
+    display: block;
 
-    background: var(--black);
+    background: var(--white);
     color: var(--text-dark);
 
     font-family: "Noto Sans Georgian", Arial, sans-serif;
 }
-
-/* rma9: outer application container matching the design frame */
+/* rma9: let the application stretch across the full
+   browser window instead of using a centered frame. */
 .app-frame {
-    width: min(1310px, 100%);
+    width: 100%;
+    min-height: 100vh;
+
     overflow: hidden;
-
-    border-radius: 8px 8px 0 0;
+    border-radius: 0;
     background: var(--white);
-}
 
+    display: flex;
+    flex-direction: column;
+}
 /* ---------------- HEADER ---------------- */
 
 .site-header {
@@ -375,6 +383,65 @@ body {
 
     font-size: 2rem;
     font-weight: 700;
+}
+
+/* ---------------- LOGIN PAGE ---------------- */
+
+/* rma9: adjusts the shared authentication card for the login form. */
+.login-card {
+    padding-top: 24px;
+    padding-bottom: 22px;
+}
+
+/* rma9: arranges the remember-me control and forgot-password link. */
+.login-options {
+    margin: 2px 0 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 0.82rem;
+}
+
+/* rma9: aligns the remember-me checkbox with its label text. */
+.remember-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    cursor: pointer;
+}
+
+/* rma9: styles the future password-recovery link. */
+.forgot-link {
+    color: var(--primary-blue);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* rma9: gives the login button spacing consistent with the design. */
+.login-button {
+    margin-top: 2px;
+}
+
+/* rma9: styles the confirmation shown after successful registration. */
+.auth-success {
+    margin: 8px 0;
+    padding: 8px 10px;
+
+    border: 1px solid #9bd6ad;
+    border-radius: 7px;
+
+    background: #e8f8ed;
+    color: #17652d;
+
+    text-align: left;
+    font-size: 0.83rem;
 }
 
 /* ---------------- RESPONSIVE ---------------- */
