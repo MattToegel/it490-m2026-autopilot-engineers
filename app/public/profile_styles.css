@@ -107,6 +107,71 @@ textarea {
     gap: 22px;
 }
 
+/* rma9: user menu container anchors the account
+   dropdown beneath the user icon. */
+.user-menu {
+    position: relative;
+}
+
+/* rma9: keep the account dropdown hidden until
+   JavaScript opens it. */
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+
+    min-width: 220px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+    overflow: hidden;
+    z-index: 1000;
+}
+
+/* rma9: display the dropdown after the user
+   clicks the profile icon. */
+.user-dropdown.show {
+    display: block;
+}
+
+/* rma9: username shown at the top of the
+   account dropdown. */
+.user-dropdown-header {
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    border-bottom: 1px solid #ececec;
+}
+
+/* rma9: make the logout option stand out. */
+.user-dropdown a.logout-link {
+    color: #c62828;
+    font-weight: 700;
+}
+
+/* rma9: account dropdown navigation links. */
+.user-dropdown a {
+    display: block;
+    padding: 14px 16px;
+    color: #222222;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* rma9: highlight a menu item while hovering. */
+.user-dropdown a:hover {
+    background: #f5f5f5;
+}
+
+/* rma9: divider separating account links from
+   the logout action. */
+.user-dropdown-divider {
+    border-top: 1px solid #ececec;
+}
+
 /* rma9: notification and profile icon links */
 .nav-icon-button {
     border: none;

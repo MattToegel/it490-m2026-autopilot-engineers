@@ -308,16 +308,14 @@ $role = $_SESSION['role'] ?? '';
                         <div class="form-group">
 
                             <label for="username">
-                                Current Username
+                                Username
                             </label>
 
                             <input
                                 id="username"
                                 type="text"
-                                name="username"
                                 value="<?= htmlspecialchars($username) ?>"
-                                autocomplete="username"
-                                required
+                                readonly
                             >
 
                         </div>
@@ -325,7 +323,7 @@ $role = $_SESSION['role'] ?? '';
                         <div class="form-group">
 
                             <label for="email">
-                                New Email
+                                Email Address
                             </label>
 
                             <input
