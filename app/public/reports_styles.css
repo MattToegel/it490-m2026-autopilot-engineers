@@ -1,0 +1,216 @@
+/* nms37: OnTheRadar reports-page styles */
+/* nms37: reuses tokens from auth_styles.css and shape from dashboard_styles.css */
+
+.reports-main
+{
+    padding: 28px;
+    background: var(--white);
+}
+
+.reports-container
+{
+    max-width: 900px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.reports-heading
+{
+    margin: 0;
+
+    color: var(--text-dark);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+}
+
+.reports-subhead
+{
+    margin: 0;
+
+    color: var(--gray);
+    font-size: 0.95rem;
+    letter-spacing: 0.4px;
+}
+
+.reports-notice
+{
+    padding: 10px 14px;
+
+    border: 1px solid #b3ddb3;
+    border-radius: 8px;
+    background: #e6f5e6;
+
+    color: #1a5f1a;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ---------------- FORM CARD (create / edit) ---------------- */
+
+.reports-form-card,
+.reports-list-card
+{
+    padding: 22px 24px;
+
+    border: 1.5px solid var(--primary-blue);
+    border-radius: 12px;
+    background: var(--white);
+}
+
+.reports-form-heading
+{
+    margin: 0 0 14px;
+
+    color: var(--primary-blue);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.reports-form-row
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.form-group select,
+.form-group textarea
+{
+    width: 100%;
+
+    padding: 8px 12px;
+
+    border: 1px solid #555555;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.96);
+
+    color: var(--text-dark);
+    font: inherit;
+    font-size: 1rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group textarea
+{
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group select:focus,
+.form-group textarea:focus
+{
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(7, 7, 119, 0.16);
+}
+
+.reports-form-actions
+{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin-top: 12px;
+}
+
+.report-submit-button
+{
+    min-width: 160px;
+    padding: 8px 18px;
+
+    border: none;
+    border-radius: 11px;
+
+    background: var(--primary-blue);
+    color: var(--white);
+
+    font: inherit;
+    font-size: 0.96rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.13);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.report-submit-button:hover,
+.report-submit-button:focus-visible
+{
+    background: #050566;
+    transform: translateY(-2px);
+}
+
+.report-cancel-link
+{
+    color: var(--accent-red);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.report-cancel-link:hover
+{
+    text-decoration: underline;
+}
+
+/* ---------------- REPORTS LIST ---------------- */
+
+.reports-empty
+{
+    margin: 12px 0 0;
+
+    color: var(--gray);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* nms37: report-list, report-item, chip colors etc. come from dashboard_styles.css */
+/* nms37: additions below only cover what's new on the reports page */
+
+.report-author
+{
+    color: var(--text-dark);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.report-delete-form
+{
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+/* nms37: category chip - Food color not defined in the dashboard file */
+.report-chip-food
+{
+    background: rgba(26, 127, 46, 0.14);
+    color: #1a7f2e;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 700px)
+{
+    .reports-main
+    {
+        padding: 14px;
+    }
+
+    .reports-form-row
+    {
+        grid-template-columns: 1fr;
+    }
+}
