@@ -1,8 +1,8 @@
 # IT490-2026
-
+     
 Revamp workspace for IT490 Systems Integration starter code, examples, and topic planning.
 
-## RabbitMQ Sample
+## RabbitMQ Sampl
 
 This repo includes a simplified version of the old IT490 RabbitMQ PHP sample:
 
