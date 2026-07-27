@@ -1,0 +1,11 @@
+{
+  "release_id": "rel-2026-07-27-01",
+  "role": "app",
+  "created_by": "Noaman Shahid (ns87), Person B",
+  "created_in": "development",
+  "description": "App-role configuration bulk release: RabbitMQ .env template + Apache virtual host. No secrets included.",
+  "files": [
+    { "src": "files/app.env.template", "dest": "/var/www/html/.env.template" },
+    { "src": "files/apache-otr.conf",  "dest": "/etc/apache2/sites-available/otr.conf" }
+  ]
+}
