@@ -1,0 +1,44 @@
+{
+  "_comment": "promotion inventory. rma9 completed the app lane configuration.",
+  "allowed_promotions": [
+    {
+      "from": "development",
+      "to": "qa"
+    },
+    {
+      "from": "qa",
+      "to": "production"
+    }
+  ],
+  "lanes": {
+    "development": {
+      "app": {
+        "host": "appdev",
+        "port": 22,
+        "user": "rma9",
+        "source_path": "/home/rma9/it490-m2026-autopilot-engineers/app",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      }
+    },
+    "qa": {
+      "app": {
+        "host": "appqa",
+        "port": 22,
+        "user": "rma9",
+        "source_path": "/var/www/app",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      }
+    },
+    "production": {
+      "app": {
+        "host": "appprod",
+        "port": 22,
+        "user": "rma9",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      }
+    }
+  }
+}
