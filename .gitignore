@@ -4,3 +4,4 @@ ConsumerManager/
 *vendor/
 *.log
 
+*.swp
