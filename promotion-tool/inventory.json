@@ -1,0 +1,27 @@
+{
+  "_comment": "IT490 ns87 Autopilot Engineers - promotion inventory. NO SECRETS in this file. Fill TODO hosts when the QA/prod VMs exist.",
+  "allowed_promotions": [
+    { "from": "development", "to": "qa" },
+    { "from": "qa", "to": "production" }
+  ],
+  "lanes": {
+    "development": {
+      "app": { "host": "ns87-app", "port": 22, "user": "ubuntu", "path": "/var/www/html", "service": "apache2", "ssh_key": "~/.ssh/promo_dev" },
+      "db":  { "host": "ns87-db",  "port": 22, "user": "ubuntu", "path": "/home/ubuntu/db", "service": "", "ssh_key": "~/.ssh/promo_dev" },
+      "mq":  { "host": "ns87-mq",  "port": 22, "user": "ubuntu", "path": "/etc/rabbitmq", "service": "rabbitmq-server", "ssh_key": "~/.ssh/promo_dev" },
+      "api": { "host": "ns87-api", "port": 22, "user": "ubuntu", "path": "/home/ubuntu/api", "service": "", "ssh_key": "~/.ssh/promo_dev" }
+    },
+    "qa": {
+      "app": { "host": "TODO-qa-app",  "port": 22, "user": "ubuntu", "path": "/var/www/html", "service": "apache2", "ssh_key": "~/.ssh/promo_qa" },
+      "db":  { "host": "TODO-qa-db",   "port": 22, "user": "ubuntu", "path": "/home/ubuntu/db", "service": "", "ssh_key": "~/.ssh/promo_qa" },
+      "mq":  { "host": "TODO-qa-mq",   "port": 22, "user": "ubuntu", "path": "/etc/rabbitmq", "service": "rabbitmq-server", "ssh_key": "~/.ssh/promo_qa" },
+      "api": { "host": "TODO-qa-api",  "port": 22, "user": "ubuntu", "path": "/home/ubuntu/api", "service": "", "ssh_key": "~/.ssh/promo_qa" }
+    },
+    "production": {
+      "app": { "host": "TODO-prod-app",  "port": 22, "user": "ubuntu", "path": "/var/www/html", "service": "apache2", "ssh_key": "~/.ssh/promo_prod" },
+      "db":  { "host": "TODO-prod-db",   "port": 22, "user": "ubuntu", "path": "/home/ubuntu/db", "service": "", "ssh_key": "~/.ssh/promo_prod" },
+      "mq":  { "host": "TODO-prod-mq",   "port": 22, "user": "ubuntu", "path": "/etc/rabbitmq", "service": "rabbitmq-server", "ssh_key": "~/.ssh/promo_prod" },
+      "api": { "host": "TODO-prod-api",  "port": 22, "user": "ubuntu", "path": "/home/ubuntu/api", "service": "", "ssh_key": "~/.ssh/promo_prod" }
+    }
+  }
+}
