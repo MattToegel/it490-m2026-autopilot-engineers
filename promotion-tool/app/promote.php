@@ -39,7 +39,7 @@ try {
         );
     }
 
-    // Don't allow both options at the same time
+    // Do not allow both options at the same time
     if ($file && $release) {
         throw new RuntimeException(
             "Use either --file or --release, not both."
@@ -58,10 +58,18 @@ try {
     $sourceBase = rtrim($sourceConfig['source_path'], '/');
     $targetBase = rtrim($targetConfig['destination_path'], '/');
 
+    $sourceHost = $sourceConfig['host'];
+    $sourceUser = $sourceConfig['user'];
+    $sourcePort = $sourceConfig['port'] ?? 22;
+
     $targetHost = $targetConfig['host'];
     $targetUser = $targetConfig['user'];
     $targetPort = $targetConfig['port'] ?? 22;
     $service = $targetConfig['service'] ?? 'apache2';
+
+    // This command is only needed when the source file must be
+    // retrieved from a remote VM, such as QA -> Production
+    $fetchCommand = null;
 
     // rma9
     // Promote a single file
@@ -78,15 +86,37 @@ try {
         // Build the source and destination paths
         $sourceItem = $sourceBase . '/' . $file;
         $targetItem = $targetBase . '/' . $file;
-
-        // Make sure the source file exists
-        if (!file_exists($sourceItem)) {
-            throw new RuntimeException(
-                "Source file does not exist: {$sourceItem}"
-            );
-        }
-
         $targetDirectory = dirname($targetItem);
+
+        // Temporary file on the VM running this promotion tool
+        $stagedFile = '/tmp/promotion-' . basename($file);
+
+        // Development -> QA:
+        // the Development source file is local on appdev
+        if ($from === 'development') {
+
+            if (!file_exists($sourceItem)) {
+                throw new RuntimeException(
+                    "Source file does not exist: {$sourceItem}"
+                );
+            }
+
+            $promotionSource = $sourceItem;
+        } else {
+
+            // QA -> Production:
+            // retrieve the tested file remotely from appqa
+            $fetchCommand = sprintf(
+                'scp -P %d %s@%s:%s %s',
+                $sourcePort,
+                escapeshellarg($sourceUser),
+                escapeshellarg($sourceHost),
+                escapeshellarg($sourceItem),
+                escapeshellarg($stagedFile)
+            );
+
+            $promotionSource = $stagedFile;
+        }
 
         // Create the destination folder if needed
         $mkdirCommand = sprintf(
@@ -97,11 +127,11 @@ try {
             escapeshellarg("sudo mkdir -p {$targetDirectory}")
         );
 
-        // Copy the file to the target VM
+        // Copy the selected file to the target VM
         $copyCommand = sprintf(
             'scp -P %d %s %s@%s:%s',
             $targetPort,
-            escapeshellarg($sourceItem),
+            escapeshellarg($promotionSource),
             escapeshellarg($targetUser),
             escapeshellarg($targetHost),
             escapeshellarg('/tmp/' . basename($file))
@@ -137,7 +167,7 @@ try {
 
         $sourceItem = __DIR__ . '/releases/' . $release;
 
-        // Make sure the release folder exists
+        // Make sure the release folder exists locally
         if (!is_dir($sourceItem)) {
             throw new RuntimeException(
                 "Release folder does not exist: {$sourceItem}"
@@ -188,16 +218,22 @@ try {
     );
 
     // Store all commands in order
-    $commands = [
-        $mkdirCommand,
-        $copyCommand,
-        $installCommand,
-        $restartCommand
-    ];
+    $commands = [];
+
+    // QA -> Production needs to retrieve the file from appqa first
+    if ($fetchCommand !== null) {
+        $commands[] = $fetchCommand;
+    }
+
+    $commands[] = $mkdirCommand;
+    $commands[] = $copyCommand;
+    $commands[] = $installCommand;
+    $commands[] = $restartCommand;
 
     // Show promotion information
     echo "Promotion: {$from} -> {$to}\n";
     echo "Item: {$description}\n";
+    echo "Source: {$sourceUser}@{$sourceHost}:{$sourceBase}\n";
     echo "Target: {$targetUser}@{$targetHost}:{$targetBase}\n";
 
     // rma9
