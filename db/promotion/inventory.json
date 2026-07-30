@@ -1,0 +1,110 @@
+{
+  "_comment": "Shared promotion inventory for the whole team (App, DB, MQ, API). Everyone's scripts read from this same file so hosts/paths are never typed by hand. Secrets (DB passwords, SSH keys) are NOT stored here - see .env.<lane> on each dev VM instead. rma9 completed the app lane configuration. tad46 completed the db lane configuration. mq/api host+user carried over from an earlier draft - source_path/destination_path still need to be filled in by their owners (cao39, xml).",
+  "allowed_promotions": [
+    {
+      "from": "development",
+      "to": "qa"
+    },
+    {
+      "from": "qa",
+      "to": "production"
+    }
+  ],
+  "lanes": {
+    "development": {
+      "app": {
+        "host": "appdev",
+        "port": 22,
+        "user": "rma9",
+        "source_path": "/home/rma9/it490-m2026-autopilot-engineers/app",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      },
+      "db": {
+        "host": "dbdev",
+        "port": 22,
+        "user": "tad46",
+        "source_path": "/home/tad46/it490-m2026-autopilot-engineers/db",
+        "destination_path": "/home/tad46/it490-m2026-autopilot-engineers/db",
+        "db_name": "it490_logs"
+      },
+      "mq": {
+        "host": "mqdev",
+        "port": 22,
+        "user": "cao39",
+        "service": "rabbitmq-server"
+      },
+      "api": {
+        "host": "apidev",
+        "port": 22,
+        "user": "xml",
+        "source_path": "/home/xml/it490-m2026-autopilot-engineers/api",
+        "destination_path": "/home/xml/api",
+        "service": "api"
+      }
+    },
+    "qa": {
+      "app": {
+        "host": "appqa",
+        "port": 22,
+        "user": "rma9",
+        "source_path": "/var/www/app",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      },
+      "db": {
+        "host": "dbqa",
+        "port": 22,
+        "user": "tad46",
+        "source_path": "/home/tad46/it490-m2026-autopilot-engineers/db",
+        "destination_path": "/home/tad46/db",
+        "db_name": "otr_qa"
+      },
+      "mq": {
+        "host": "mqqa",
+        "port": 22,
+        "user": "cao39",
+        "service": "rabbitmq-server"
+      },
+      "api": {
+        "host": "qa-api",
+        "port": 22,
+        "user": "xml",
+        "source_path": "/home/xml/it490-m2026-autopilot-engineers/api",
+        "destination_path": "/home/xml/api",
+        "service": "api"
+      }
+    },
+    "production": {
+      "app": {
+        "host": "appprod",
+        "port": 22,
+        "user": "rma9",
+        "destination_path": "/var/www/app",
+        "service": "apache2"
+      },
+      "db": {
+        "host": "dbproda",
+        "port": 22,
+        "user": "tad46",
+        "source_path": "/home/tad46/it490-m2026-autopilot-engineers/db",
+        "destination_path": "/home/tad46/db",
+        "db_name": "otr_prod"
+      },
+      "mq": {
+        "host": "mqprod",
+        "port": 22,
+        "user": "cao39",
+        "service": "rabbitmq-server"
+      },
+      "api": {
+        "host": "production-api",
+        "port": 22,
+        "user": "xml",
+        "source_path": "/home/xml/it490-m2026-autopilot-engineers/api",
+        "destination_path": "/home/xml/api",
+        "service": "api"
+      }
+    }
+  }
+}
