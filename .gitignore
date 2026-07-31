@@ -3,4 +3,5 @@
 ConsumerManager/
 *vendor/
 *.log
-
+.env.*
+*.swp

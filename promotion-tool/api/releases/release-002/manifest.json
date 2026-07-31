@@ -1,0 +1,9 @@
+{
+
+"_comment": "This is the manifest file for the release-002 which promotes the logging foler",
+  "release_id": "release-002",
+  "role": "api",
+  "targets": [
+    "logging/api_log.php"
+  ]
+}

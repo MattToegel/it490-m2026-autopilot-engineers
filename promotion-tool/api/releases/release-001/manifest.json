@@ -1,0 +1,9 @@
+{
+
+"_comment": "This is th manifest ile for release-001 that promotes the api worker",
+  "release_id": "release-001",
+  "role": "api",
+  "targets": [
+    "api_worker.php"
+  ]
+}
