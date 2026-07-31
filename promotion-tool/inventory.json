@@ -1,5 +1,5 @@
 {
-  "_comment": "promotion inventory. rma9 completed the app lane configuration. tad46 completed the db lane configuration. xml completed lane configurations",
+  "_comment": "promotion inventory. rma9 completed the app lane configuration. tad46 completed the db lane configuration. cao39 completed the mq lane configuration - note mq had nothing to promote but does health checks. xml completed the api lane configuration",
   "allowed_promotions": [
     {
       "from": "development",
@@ -28,6 +28,12 @@
         "destination_path": "/home/tad46/it490-m2026-autopilot-engineers/db",
         "db_name": "it490_logs",
         "service": "mysql"
+      }, 
+      "mq": {
+	"host": "mqdev",
+	"port": 22,
+	"user": "cao39",
+	"service": "rabbitmq-server"
       },
       "api": {
         "host": "apidev",
@@ -55,6 +61,12 @@
         "destination_path": "/home/tad46/db",
         "db_name": "otr_qa",
         "service": "mysql"
+      }, 
+      "mq": {
+	"host": "mqqa",
+	"port": 22,
+	"user": "cao39",
+	"service": "rabbitmq-server"
       },
       "api": {
         "host": "qa-api",
@@ -81,6 +93,12 @@
         "destination_path": "/home/tad46/db",
         "db_name": "otr_prod",
         "service": "mysql"
+      }, 
+      "mq": {
+	"host": "mqprod",
+	"port": 22,
+	"user": "cao39",
+	"service": "rabbitmq-server"
       },
       "api": {
         "host": "production-api",
