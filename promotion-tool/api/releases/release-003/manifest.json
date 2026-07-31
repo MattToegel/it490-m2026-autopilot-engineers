@@ -1,0 +1,11 @@
+{
+
+"_comment": "This is the manifest file for release-003 which promotes the flights folder",
+  "release_id": "release-003",
+  "role": "api",
+  "targets": [
+    "flights/Flightpublisher.php",
+    "flights/Flighttransformer.php",
+    "flights/flight_fetcher.php"
+  ]
+}
