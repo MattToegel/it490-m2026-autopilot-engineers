@@ -1,8 +1,11 @@
 # Meeting 1 Decision Log
 
 **Meeting Date:** June 1, 2026
+
 **Meeting:** Group Meeting 1
+
 **Team:** AutoPilot Engineers
+
 **Related Meeting Notes:** Group Meeting 1 notes
 
 ---
