@@ -216,8 +216,6 @@ textarea {
 /* rma9: layout under the navigation bar */
 .settings-layout {
     width: 100%;
-    flex: 1;
-    display: flex;
     min-height: 0;
     background: #ffffff;
 }
@@ -237,8 +235,7 @@ textarea {
 .sidebar-top {
     padding: 95px 30px 35px;
 }
-
-/* rma9: logged-in user area */
+/* OLD SIDEBAR 
 .sidebar-profile {
     display: flex;
     flex-direction: column;
@@ -247,14 +244,12 @@ textarea {
     margin-bottom: 70px;
 }
 
-/* rma9: user icon shown in the sidebar */
 .sidebar-user-icon {
     width: 150px;
     height: 145px;
     object-fit: contain;
 }
 
-/* rma9: username shown below the user icon */
 .sidebar-username {
     color: #ffffff;
     font-size: 44px;
@@ -264,14 +259,12 @@ textarea {
     overflow-wrap: anywhere;
 }
 
-/* rma9: sidebar navigation list */
 .sidebar-menu {
     display: flex;
     flex-direction: column;
     gap: 24px;
 }
 
-/* rma9: sidebar navigation links */
 .sidebar-menu a {
     display: flex;
     align-items: center;
@@ -284,7 +277,6 @@ textarea {
     border-radius: 10px;
 }
 
-/* rma9: sidebar navigation icons */
 .sidebar-menu img,
 .sidebar-menu svg {
     width: 40px;
@@ -293,18 +285,15 @@ textarea {
     flex-shrink: 0;
 }
 
-/* rma9: sidebar link hover effect */
 .sidebar-menu a:hover {
     background: rgba(255, 255, 255, 0.08);
 }
 
-/* rma9: highlight the current sidebar page */
 .sidebar-menu a.active {
     background: rgba(255, 255, 255, 0.12);
     font-weight: 700;
 }
 
-/* rma9: project name at the bottom of the sidebar */
 .sidebar-footer {
     width: 100%;
     min-height: 80px;
@@ -315,21 +304,22 @@ textarea {
     font-size: 43px;
     font-weight: 700;
 }
+*/
+
 
 /* rma9: main settings content area */
 .settings-main {
-    flex: 1;
     min-width: 0;
-    padding: 24px 26px 26px;
+    padding: 34px 36px 46px;
     background: #f7f7f9;
 }
 
 /* rma9: settings page heading */
 .settings-title {
-    font-size: 58px;
-    font-weight: 700;
-    margin-bottom: 23px;
-    letter-spacing: 1px;
+    margin: 0 0 24px;
+    font-size: 2.6rem;
+    line-height: 1.05;
+    letter-spacing: 0;
 }
 
 /* rma9: success and error message box */
@@ -360,32 +350,32 @@ textarea {
 .settings-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 28px 42px;
+    gap: 24px;
     align-items: start;
 }
 
 /* rma9: shared card styling */
 .settings-card {
     width: 100%;
-    min-height: 248px;
-    padding: 28px 20px;
-    border: 2px solid #ff1f1f;
-    border-radius: 15px;
+    min-height: auto;
+    padding: 22px;
+    border: 1px solid #ff1f1f;
+    border-radius: 14px;
     background: #ffffff;
 }
 
 /* rma9: heading inside each card */
 .settings-card h2 {
     color: #090979;
-    font-size: 34px;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 28px;
-    letter-spacing: 1px;
+    margin-bottom: 20px;
+    letter-spacing: 0;
 }
 
 /* rma9: taller account card for the full form */
 .account-card {
-    min-height: 700px;
+    min-height: auto;
 }
 
 /* rma9: profile update form layout */
@@ -393,7 +383,7 @@ textarea {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 14px;
 }
 
 /* rma9: label and input group */
@@ -401,12 +391,12 @@ textarea {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
 }
 
 /* rma9: form labels */
 .form-group label {
-    font-size: 21px;
+    font-size: 1rem;
     font-weight: 700;
     color: #111111;
 }
@@ -414,13 +404,13 @@ textarea {
 /* rma9: profile form inputs */
 .form-group input {
     width: 100%;
-    height: 46px;
-    padding: 8px 12px;
+    height: 42px;
+    padding: 8px 11px;
     border: 1px solid #8a8a8a;
     border-radius: 6px;
     background: #ffffff;
     color: #111111;
-    font-size: 17px;
+    font-size: 0.95rem;
     outline: none;
 }
 
@@ -448,7 +438,7 @@ textarea {
 /* rma9: change password heading */
 .password-heading {
     color: #111111;
-    font-size: 25px;
+    font-size: 1.2rem;
     font-weight: 700;
     margin-top: 2px;
 }
@@ -456,13 +446,13 @@ textarea {
 /* rma9: profile update button */
 .update-profile-button {
     width: fit-content;
-    min-width: 165px;
-    padding: 12px 22px;
+    min-width: 150px;
+    padding: 10px 18px;
     border: none;
     border-radius: 8px;
     background: #090979;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
 }
@@ -477,21 +467,21 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 18px;
+    padding: 4px 8px;
 }
 
 /* rma9: dark mode label */
 .appearance-row span {
-    font-size: 27px;
+    font-size: 1.1rem;
     font-weight: 700;
 }
 
 /* rma9: shared toggle switch */
 .toggle-switch {
-    width: 98px;
-    height: 49px;
+    width: 64px;
+    height: 34px;
     border: none;
-    border-radius: 28px;
+    border-radius: 999px;
     background: #d3d4d6;
     position: relative;
     cursor: pointer;
@@ -501,17 +491,17 @@ textarea {
 .toggle-switch::after {
     content: "";
     position: absolute;
-    top: 6px;
-    right: 7px;
-    width: 37px;
-    height: 37px;
+    top: 4px;
+    right: 4px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: #ffffff;
 }
 
 /* rma9: notification card size */
 .notification-card {
-    min-height: 248px;
+    min-height: auto;
 }
 
 /* rma9: notification options box */
@@ -526,13 +516,13 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 48px;
+    padding: 7px 12px;
 }
 
 /* rma9: notification labels */
 .notification-row span {
     color: #ff1616;
-    font-size: 23px;
+    font-size: 1rem;
     font-weight: 500;
 }
 
@@ -554,7 +544,7 @@ textarea {
 .accessibility-row {
     display: flex;
     align-items: center;
-    gap: 62px;
+    gap: 28px;
 }
 
 /* rma9: text size label */
@@ -601,9 +591,9 @@ textarea {
 
 /* rma9: privacy card styling */
 .privacy-card {
-    min-height: 115px;
-    max-width: 385px;
-    margin-left: 42px;
+    min-height: auto;
+    max-width: 100%;
+    margin-left: 0;
     padding: 18px;
     border-color: #090979;
 }
@@ -611,8 +601,8 @@ textarea {
 /* rma9: privacy card heading */
 .privacy-card h2 {
     color: #111111;
-    font-size: 30px;
-    margin-bottom: 3px;
+    font-size: 1.35rem;
+    margin-bottom: 8px;
 }
 
 /* rma9: decorative lines in privacy card */
@@ -802,4 +792,9 @@ textarea {
     .text-size-control {
         width: 100%;
     }
+}
+
+.form-group input[readonly] {
+    background: #f2f2f2;
+    cursor: not-allowed;
 }

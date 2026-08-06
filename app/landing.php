@@ -48,11 +48,29 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OnTheRadar</title>
 
+    <!-- rma9: Apply the saved theme before rendering to prevent a light-mode flash. -->
+    <script>
+    (function ()
+    {
+    const savedTheme = localStorage.getItem("otr-theme");
+
+    document.documentElement.setAttribute(
+        "data-theme",
+        savedTheme === "dark" ? "dark" : "light"
+    );
+    })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/public/landing_styles.css">
+    <link rel="stylesheet" href="/public/notif_bell.css">
+    <link rel="stylesheet" href="/public/dashboard_styles.css">
+
+    <!-- rma9: Version number forces the browser to load updated contrast styles. -->
+<link rel="stylesheet" href="/public/theme.css?v=10">
 </head>
 
 <body>
@@ -60,9 +78,27 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
 
         <!-- ==================== TOP HEADER ==================== -->
         <header class="top-header">
-            <a href="/dashboard.php" class="top-header__brand">
-                <img src="/assets/otr-logo.svg" alt="OnTheRadar logo" class="top-header__logo">
-                <span class="top-header__brand-name">OnTheRadar</span>
+            <a href="/landing.php" class="top-header__brand">
+
+                <!-- rma9: Use separate light and dark mode logo assets. -->
+                <span class="top-header__logo-wrap">
+                    <img
+                        src="/assets/otr-logo.svg"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--light"
+                    >
+
+                    <img
+                        src="/assets/otr-logo-dark.png"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--dark"
+                    >
+                </span>
+
+                <span class="top-header__brand-name">
+                    OnTheRadar
+                </span>
+
             </a>
 
             <nav class="top-header__nav" aria-label="Main navigation">
@@ -81,15 +117,46 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
                     <span>Community</span>
                 </a>
 
-                <button type="button" class="theme-toggle" aria-label="Toggle dark mode">
+                <!-- rma9: Shared landing-page toggle matching the Settings page toggle. -->
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    data-theme-toggle
+                    aria-label="Switch to dark mode"
+                    aria-pressed="false"
+                >
+                    <!-- rma9: Shows the sun in light mode and moon in dark mode. -->
+                    <span
+                        class="theme-toggle__symbol"
+                        aria-hidden="true"
+                    >
+                        ☀
+                    </span>
+
+                    <!-- rma9: White circle slides left or right when the theme changes. -->
                     <span class="theme-toggle__circle"></span>
                 </button>
 
                 <?php if ($isLoggedIn): ?>
                     <!-- tad46: notifications + user menu only make sense with a session -->
-                    <a href="/dashboard.php#notifications" class="top-header__icon-button" aria-label="Notifications">
-                        <img src="/assets/notification-icon.svg" alt="">
-                    </a>
+                    <!-- tad46: site-wide bell dropdown - see notif_bell.js / get_alerts.php -->
+                    <div class="notif-menu">
+                        <button type="button" class="top-header__icon-button bell-link" id="notifBellButton" aria-label="Notifications" aria-expanded="false">
+                            <img src="/assets/notification-icon.svg" alt="">
+                            <span class="bell-badge" id="notifBellBadge" style="display:none;"></span>
+                        </button>
+
+                        <div class="notif-dropdown" id="notifDropdown">
+                            <div class="notif-dropdown-header">
+                                <strong>Notifications</strong>
+                                <span class="notifications-count" id="notifDropdownCount" style="display:none;"></span>
+                            </div>
+                            <div class="notif-dropdown-body" id="notifDropdownBody">
+                                <div class="notif-dropdown-empty">Loading...</div>
+                            </div>
+                            <a href="/dashboard.php#notifications" class="notif-dropdown-viewall">View all in dashboard</a>
+                        </div>
+                    </div>
 
                     <div class="user-menu">
                         <button type="button" class="top-header__icon-button" id="userMenuButton" aria-label="User menu" aria-expanded="false">
@@ -251,6 +318,12 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
                 }
             });
         }
+        
     </script>
+
+    <script src="/public/notif_bell.js"></script>
+
+    <!-- rma9: Load shared theme behavior and restore the saved landing-page theme. -->
+    <script src="/public/theme.js?v=5"></script>
 </body>
 </html>
