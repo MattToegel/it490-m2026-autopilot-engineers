@@ -124,19 +124,43 @@ function handleListReports($db, $logger, $data)
     $userId       = $filterByUser ? (int)$data['user_id'] : null;
  
     // tad46: JOIN users to show who submitted each report (username)
-    // tad46: only active reports (not removed/flagged/resolved)
+    // ns87: US-03 AC8 - when an admin flags a report, admin_consumer.php already records
+    // ns87: the reason they typed into admin_activity_logs.notes. These two subqueries
+    // ns87: read the most recent one back, so the report's author can see WHY it was
+    // ns87: flagged. The reason is still stored once, by the admin side - this only reads.
     $sql = "SELECT r.report_id, r.user_id, u.username,
                    r.airport_code, r.terminal, r.category, r.comment_text,
-                   r.report_status, r.created_at, r.updated_at
+                   r.report_status, r.created_at, r.updated_at,
+                   (SELECT a.notes
+                      FROM admin_activity_logs a
+                     WHERE a.affected_report_id = r.report_id
+                       AND a.action_type = 'create_notice'
+                     ORDER BY a.created_at DESC
+                     LIMIT 1) AS flag_reason,
+                   (SELECT a.created_at
+                      FROM admin_activity_logs a
+                     WHERE a.affected_report_id = r.report_id
+                       AND a.action_type = 'create_notice'
+                     ORDER BY a.created_at DESC
+                     LIMIT 1) AS flagged_at
             FROM airport_reports r
-            JOIN users u ON r.user_id = u.user_id
-            WHERE r.report_status = 'active'";
- 
+            JOIN users u ON r.user_id = u.user_id";
+
+    // ns87: US-03 AC5 / AC6 - one query, two audiences, two different rules.
     if ($filterByUser)
     {
-        $sql .= " AND r.user_id = ?";
+        // ns87: AC5 - the author's own history: every report they wrote, in EVERY status.
+        // ns87: The 'active' filter used to apply here too, so a flagged report vanished
+        // ns87: from its own author's history and AC8 had nothing left to show.
+        $sql .= " WHERE r.user_id = ?";
     }
- 
+    else
+    {
+        // ns87: AC6 - the community feed: everyone else only sees reports an admin has
+        // ns87: not flagged, so a flagged report stays hidden until it is reviewed.
+        $sql .= " WHERE r.report_status = 'active'";
+    }
+
     $sql .= " ORDER BY r.created_at DESC LIMIT ?";
  
     $stmt = $db->prepare($sql);
