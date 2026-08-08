@@ -272,7 +272,7 @@ $currentPagePath = '/dashboard.php';
                     <span>Search</span>
                 </a>
 
-                <a href="#airport-conditions" class="top-header__link">
+                <a href="/airport_map.php" class="top-header__link">
                     <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                     <span>Airport Map</span>
                 </a>
@@ -539,11 +539,14 @@ $currentPagePath = '/dashboard.php';
                             <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                         </header>
 
+                        <!-- ns87: this was a placeholder reading "Live airport map integration
+                             ns87: is in progress". The interactive terminal map now exists at
+                             ns87: /airport_map.php, so the panel links to it instead. -->
                         <div class="airport-conditions-panel__map">
-                            <div class="airport-conditions-panel__map-placeholder">
+                            <a href="/airport_map.php" class="airport-conditions-panel__map-placeholder">
                                 <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
-                                <p>Live airport map integration is in progress.</p>
-                            </div>
+                                <p>Open the interactive terminal map</p>
+                            </a>
                         </div>
 
                         <div class="airport-conditions-panel__details">

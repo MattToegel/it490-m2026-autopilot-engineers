@@ -130,7 +130,7 @@ function historyDate(?string $mysqlTimestamp): string
                     <span>Search</span>
                 </a>
 
-                <a href="/dashboard.php#airport-conditions" class="top-header__link">
+                <a href="/airport_map.php" class="top-header__link">
                     <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                     <span>Airport Map</span>
                 </a>

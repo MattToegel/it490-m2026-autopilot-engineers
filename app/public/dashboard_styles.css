@@ -1280,3 +1280,18 @@ a
         margin-left: 0;
     }
 }
+
+/* ns87: the airport-conditions map tile is now a link to /airport_map.php, so give it
+   affordance. The base .airport-conditions-panel__map-placeholder rules still apply. */
+a.airport-conditions-panel__map-placeholder
+{
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+a.airport-conditions-panel__map-placeholder:hover
+{
+    background: #eef1fb;
+    border-color: var(--otr-blue);
+}
