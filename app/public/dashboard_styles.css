@@ -770,6 +770,68 @@ a
     color: #555560;
 }
 
+/* ns87: US-03 AC5 - Posted / Flagged pill. Same shape as the category chips above
+   so it reads as part of the same row. */
+.user-report__status
+{
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.report-status-active
+{
+    background: #e3f7ea;
+    color: #1c6b3a;
+}
+
+.report-status-flagged
+{
+    background: #ffe0e0;
+    color: #a11b1b;
+}
+
+/* ns87: US-03 AC6 / AC8 - the reason block the report's author reads. */
+.user-report--flagged
+{
+    background: #fffafa;
+}
+
+.user-report__flag-notice
+{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    border-left: 4px solid #d64545;
+    border-radius: 6px;
+    background: #fff1f1;
+}
+
+.user-report__flag-title
+{
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #a11b1b;
+}
+
+.user-report__flag-reason
+{
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #5d2222;
+}
+
+.user-report__flag-time
+{
+    font-size: 0.75rem;
+    color: #8a5a5a;
+}
+
 .user-report__time
 {
     margin-left: auto;

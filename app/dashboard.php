@@ -583,7 +583,12 @@ $currentPagePath = '/dashboard.php';
                     <?php else: ?>
                         <ul class="user-reports-list">
                             <?php foreach ($myReports as $report): ?>
-                                <li class="user-report">
+                                <?php
+                                // ns87: US-03 AC5 - this panel is now the author's full history, so a
+                                // ns87: report can arrive here in any status and each one needs a label.
+                                $isFlagged = (($report['report_status'] ?? 'active') === 'flagged');
+                                ?>
+                                <li class="user-report<?php echo $isFlagged ? ' user-report--flagged' : ''; ?>">
                                     <div class="user-report__top">
                                         <span class="user-report__category <?php echo reportCategoryClass($report['category']); ?>">
                                             <?php echo htmlspecialchars($report['category'], ENT_QUOTES, 'UTF-8'); ?>
@@ -591,12 +596,40 @@ $currentPagePath = '/dashboard.php';
                                         <?php if (!empty($report['terminal'])): ?>
                                             <span class="user-report__terminal">Terminal <?php echo htmlspecialchars($report['terminal'], ENT_QUOTES, 'UTF-8'); ?></span>
                                         <?php endif; ?>
+
+                                        <!-- ns87: US-03 AC5 - the "valid to post or flagged" indicator the
+                                             approved final item asks for, shown on every one of my reports -->
+                                        <span class="user-report__status <?php echo $isFlagged ? 'report-status-flagged' : 'report-status-active'; ?>">
+                                            <?php echo $isFlagged ? 'Flagged' : 'Posted'; ?>
+                                        </span>
+
                                         <span class="user-report__time"><?php echo htmlspecialchars(timeAgo($report['created_at']), ENT_QUOTES, 'UTF-8'); ?></span>
                                     </div>
                                     <p class="user-report__text"><?php echo nl2br(htmlspecialchars($report['comment_text'], ENT_QUOTES, 'UTF-8')); ?></p>
+
+                                    <?php if ($isFlagged): ?>
+                                        <!-- ns87: US-03 AC8 - the author reads the exact reason the admin typed,
+                                             read back from admin_activity_logs by reports_consumer.php.
+                                             ns87: US-03 AC6 - and is told the report is hidden until reviewed. -->
+                                        <div class="user-report__flag-notice" role="note">
+                                            <span class="user-report__flag-title">Hidden from the community pending admin review</span>
+                                            <span class="user-report__flag-reason">
+                                                Reason: <?php echo htmlspecialchars($report['flag_reason'] ?? 'No reason recorded.', ENT_QUOTES, 'UTF-8'); ?>
+                                            </span>
+                                            <?php if (!empty($report['flagged_at'])): ?>
+                                                <span class="user-report__flag-time">
+                                                    Flagged <?php echo htmlspecialchars(timeAgo($report['flagged_at']), ENT_QUOTES, 'UTF-8'); ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+
                                     <div class="user-report__actions">
                                         <a href="?report_edit=<?php echo (int)$report['report_id']; ?>" class="user-report__edit">Edit</a>
-                                        <form method="post" action="/reports/delete_report.php" onsubmit="return confirm('Remove this report?');">
+                                        <!-- ns87: this posted to /reports/delete_report.php, which does not exist
+                                             in the repo - the real handler is report_delete.php, so Delete from
+                                             the dashboard was silently 404ing -->
+                                        <form method="post" action="/reports/report_delete.php" onsubmit="return confirm('Remove this report?');">
                                             <input type="hidden" name="return_to" value="<?php echo $currentPagePath; ?>">
                                             <input type="hidden" name="report_id" value="<?php echo (int)$report['report_id']; ?>">
                                             <button type="submit" class="user-report__delete">Delete</button>

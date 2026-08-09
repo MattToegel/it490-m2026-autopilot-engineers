@@ -159,7 +159,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST"
 
             "report_id" => $reportId,
 
-            "reason" => $reason
+            "reason" => $reason,
+
+            // ns87: logAdminActivity() in admin_consumer.php returns early when
+            // ns87: admin_user_id is empty, so without this line the flag reason was
+            // ns87: never written to admin_activity_logs at all. US-03 AC8 reads the
+            // ns87: reason back from that table, and US-04 AC7 needs the audit row.
+            "admin_user_id" => (int)($_SESSION['user_id'] ?? 0)
 
         ]
     );
