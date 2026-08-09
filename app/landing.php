@@ -71,7 +71,7 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
                     <span>Search</span>
                 </a>
 
-                <a href="/airport_map.php" class="top-header__link">
+                <a href="#airport-conditions" class="top-header__link">
                     <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                     <span>Airport Map</span>
                 </a>
@@ -124,12 +124,8 @@ $activeSavedCount = count(array_filter($savedFlights, fn($f) => empty($f['remove
 
                 <aside class="airport-card">
                     <h3>Newark Airport Intl.</h3>
-                    <!-- ns87: this pointed at images/airport-map.png, but app/images/ does not
-                         ns87: exist in the repo, so the card rendered a broken image. Using the
-                         ns87: airport map icon we already ship, and linking "View Map" at the
-                         ns87: real page instead of "#". -->
-                    <img src="/assets/airport-map-icon.svg" alt="Newark Liberty airport map">
-                    <a href="/airport_map.php">View Map ↗</a>
+                    <img src="images/airport-map.png" alt="EWR airport map preview">
+                    <a href="#">View Map ↗</a>
                 </aside>
 
                 <section class="hero">
