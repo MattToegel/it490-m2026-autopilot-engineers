@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../logging/testlogger.php';
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-$env = parse_ini_file(__DIR__ . '/../../../.env');
+$env = parse_ini_file(__DIR__ . '/../../.env');
 
 $db = new mysqli
 (
@@ -138,42 +138,69 @@ function handleAlertList($db, $logger, $data)
     {
         return ['status' => 'error', 'message' => 'missing user_id'];
     }
-
+ 
     $userId     = (int)$data['user_id'];
     $unreadOnly = !empty($data['unread_only']);
     $limit      = (int)($data['limit'] ?? 20);
     if ($limit < 1)   $limit = 1;
     if ($limit > 100) $limit = 100;
-
+ 
+    // tad46: NEW - TTL purge, runs opportunistically on every list call.
+    // tad46: Deletes notifications (read OR unread) older than 3 days so
+    // tad46: dismissed/old alerts don't accumulate forever. No cron needed.
+    try
+    {
+       $purge = $db->prepare
+        (
+            "DELETE FROM flight_alerts
+            WHERE user_id = ?
+            AND (
+                (is_read = 1 AND created_at < (NOW() - INTERVAL 4 HOUR))
+                OR (is_read = 0 AND created_at < (NOW() - INTERVAL 1 DAY))
+            )"
+        );
+        $purge->bind_param('i', $userId);
+        $purge->execute();
+        if ($purge->affected_rows > 0)
+        {
+            $logger->info("Purged {$purge->affected_rows} expired alert(s) for user_id={$userId}");
+        }
+    }
+    catch (mysqli_sql_exception $e)
+    {
+        // tad46: purge failure should never block the list from returning
+        $logger->error("Alert TTL purge failed: " . $e->getMessage());
+    }
+ 
     $sql = "SELECT alert_id, user_id, saved_flight_id, flight_number,
                    alert_type, alert_message, is_read, created_at
             FROM flight_alerts
             WHERE user_id = ?";
-
+ 
     if ($unreadOnly)
     {
         $sql .= " AND is_read = 0";
     }
-
+ 
     $sql .= " ORDER BY created_at DESC LIMIT ?";
-
+ 
     $stmt = $db->prepare($sql);
     $stmt->bind_param('ii', $userId, $limit);
-
+ 
     try
     {
         $stmt->execute();
         $result = $stmt->get_result();
-
+ 
         $alerts = [];
         while ($row = $result->fetch_assoc())
         {
             $alerts[] = $row;
         }
-
+ 
         $logger->info("Listed " . count($alerts) . " alerts for user_id={$userId}"
             . ($unreadOnly ? " (unread only)" : ""));
-
+ 
         return
         [
             'status' => 'success',
@@ -187,6 +214,8 @@ function handleAlertList($db, $logger, $data)
         return ['status' => 'error', 'message' => 'database error'];
     }
 }
+
+
 
 
 // tad46: Mark Alert Read handler
@@ -240,6 +269,194 @@ function handleAlertMarkRead($db, $logger, $data)
     }
 }
 
+// tad46: computes an actual minutes-delayed figure from scheduled vs the
+// NEW estimated time, since $changes only records THAT the estimated time
+// changed, not by how much. $data['flight'] holds the full new-flight
+// snapshot (see FlightPublisher::buildStatusChange), which includes the
+// scheduled time needed to diff against.
+function calculateDelayMinutes(?string $scheduled, ?string $newEstimated): int
+{
+    if (!$scheduled || !$newEstimated)
+    {
+        return 0;
+    }
+
+    $schedTs = strtotime($scheduled);
+    $estTs   = strtotime($newEstimated);
+
+    if ($schedTs === false || $estTs === false || $estTs <= $schedTs)
+    {
+        return 0;
+    }
+
+    return (int)round(($estTs - $schedTs) / 60);
+}
+
+// tad46: Status Change Notify handler
+// tad46: Routing key: flight.status_change (published by the API worker's
+// tad46: cacheAndDiffFlight() when FlightTransformer::hasChanged() is true)
+function handleStatusChangeNotify($db, $logger, $data)
+{
+    if (empty($data['flight_number']))
+    {
+        $logger->warning("Status change notify missing flight_number");
+        return ['status' => 'error', 'message' => 'missing flight_number'];
+    }
+
+    $flightNumber = $data['flight_number'];
+    $changes      = $data['changes'] ?? [];
+    $flightSnap   = $data['flight'] ?? [];
+
+    $alertType = 'status_change';
+    $parts     = [];
+
+    $newStatus   = $changes['status']['new'] ?? null;
+    $isCancelled = $newStatus && stripos($newStatus, 'cancel') !== false;
+
+    if ($isCancelled)
+    {
+        // tad46: cancellation takes over completely - gate/delay/status
+        // details are irrelevant once a flight is cancelled, so nothing
+        // else gets evaluated or appended to the message.
+        $alertType    = 'cancellation';
+        $alertMessage = "{$flightNumber}: Flight has been cancelled.";
+    }
+    else
+    {
+        if (isset($changes['gate']))
+        {
+            $alertType = 'gate_change';
+            $newGate   = $changes['gate']['new'] ?? null;
+            $parts[]   = $newGate ? "Gate changed to {$newGate}." : "Gate information changed.";
+        }
+
+        if (isset($changes['arrival_gate']))
+        {
+            $alertType      = $alertType === 'status_change' ? 'gate_change' : $alertType;
+            $newArrivalGate = $changes['arrival_gate']['new'] ?? null;
+            $parts[]        = $newArrivalGate ? "Arrival gate changed to {$newArrivalGate}." : "Arrival gate changed.";
+        }
+
+        if (isset($changes['estimated_departure']))
+        {
+            $scheduledDeparture = $flightSnap['scheduled_departure'] ?? null;
+            $newEstimated       = $changes['estimated_departure']['new'] ?? null;
+            $delayMinutes       = calculateDelayMinutes($scheduledDeparture, $newEstimated);
+
+            if ($delayMinutes > 0)
+            {
+                $alertType = 'delay';
+                $parts[]   = "Now delayed by {$delayMinutes} minutes.";
+            }
+            else
+            {
+                $alertType = $alertType === 'status_change' ? 'delay' : $alertType;
+                $parts[]   = "Estimated departure updated.";
+            }
+        }
+
+        if (isset($changes['estimated_arrival']))
+        {
+            $scheduledArrival = $flightSnap['scheduled_arrival'] ?? null;
+            $newEstimatedArr  = $changes['estimated_arrival']['new'] ?? null;
+            $arrivalDelay     = calculateDelayMinutes($scheduledArrival, $newEstimatedArr);
+
+            if ($arrivalDelay > 0)
+            {
+                $alertType = 'delay';
+                $parts[]   = "Now arriving {$arrivalDelay} minutes late.";
+            }
+            else
+            {
+                $alertType = $alertType === 'status_change' ? 'delay' : $alertType;
+                $parts[]   = "Estimated arrival updated.";
+            }
+        }
+
+        if (isset($changes['status']) && empty($parts))
+        {
+            $parts[] = "Status updated to {$newStatus}.";
+        }
+
+        $alertMessage = !empty($parts)
+            ? "{$flightNumber}: " . implode(' ', $parts)
+            : "{$flightNumber} has an updated status.";
+    }
+
+    // tad46: OPTIONAL - duplicate/near-duplicate suppression, commented out.
+    // Uncomment to skip firing a new alert if this exact flight+alert_type
+    // already fired within the last N minutes, so a flight with a shifting
+    // estimate doesn't spam three near-identical "delayed" alerts in a row.
+    // Left disabled for now since firing on every real detected change is
+    // more accurate to the underlying data; enable if alert volume becomes a UX concern.
+    /*
+    $cooldownMinutes = 15;
+
+    $recentCheck = $db->prepare
+    (
+        "SELECT alert_id FROM flight_alerts
+         WHERE flight_number = ? AND alert_type = ?
+           AND created_at > (NOW() - INTERVAL ? MINUTE)
+         LIMIT 1"
+    );
+    $recentCheck->bind_param('ssi', $flightNumber, $alertType, $cooldownMinutes);
+    $recentCheck->execute();
+    $recent = $recentCheck->get_result()->fetch_assoc();
+
+    if ($recent)
+    {
+        $logger->info("Suppressed duplicate {$alertType} alert for {$flightNumber} - one already fired within {$cooldownMinutes} min");
+        return ['status' => 'success', 'notified' => 0, 'suppressed' => true];
+    }
+    */
+
+    // tad46: fan-out - find every user currently tracking this flight
+    // tad46: (removed_at IS NULL respects soft-delete / AC4 semantics,
+    // tad46: same rule handleAlertCreate already uses for single-user alerts)
+    $lookup = $db->prepare
+    (
+        "SELECT user_id, saved_flight_id
+        FROM saved_flights
+        WHERE REPLACE(UPPER(flight_number), ' ', '') = REPLACE(UPPER(?), ' ', '')
+        AND removed_at IS NULL"
+    );
+    $lookup->bind_param('s', $flightNumber);
+    $lookup->execute();
+    $trackers = $lookup->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    if (empty($trackers))
+    {
+        $logger->info("Status change for {$flightNumber} - no active trackers, nothing to notify");
+        return ['status' => 'success', 'notified' => 0];
+    }
+
+    $insert = $db->prepare
+    (
+        "INSERT INTO flight_alerts
+         (user_id, saved_flight_id, flight_number, alert_type, alert_message)
+         VALUES (?, ?, ?, ?, ?)"
+    );
+
+    $notifiedCount = 0;
+    foreach ($trackers as $tracker)
+    {
+        try
+        {
+            $userId        = (int)$tracker['user_id'];
+            $savedFlightId = (int)$tracker['saved_flight_id'];
+            $insert->bind_param('iisss', $userId, $savedFlightId, $flightNumber, $alertType, $alertMessage);
+            $insert->execute();
+            $notifiedCount++;
+        }
+        catch (mysqli_sql_exception $e)
+        {
+            $logger->error("Status change notify insert failed for user_id={$tracker['user_id']}: " . $e->getMessage());
+        }
+    }
+
+    $logger->info("Status change for {$flightNumber} - notified {$notifiedCount} tracker(s), type={$alertType}");
+    return ['status' => 'success', 'notified' => $notifiedCount];
+}
 
 
 // ----- Main callback -----
@@ -264,6 +481,10 @@ $callback = function ($msg) use ($db, $channel, $logger)
         {
             $response = handleAlertMarkRead($db, $logger, $data);
         }
+        else if ($routingKey === 'flight.status_change')    
+        {
+            $response = handleStatusChangeNotify($db, $logger, $data);
+        }
         else
         {
             $logger->warning("Unknown alerts routing key received: $routingKey");
@@ -284,8 +505,10 @@ $callback = function ($msg) use ($db, $channel, $logger)
             'correlation_id' => $props['correlation_id'] ?? '',
         ]);
         $channel->basic_publish($replyMsg, '', $props['reply_to']);
-        echo "Replied: " . json_encode($response) . "\n\n";
+        echo "Replied: " . json_encode($response) . "\n";
     }
+
+    echo "\n";
 
     $msg->ack();
 };

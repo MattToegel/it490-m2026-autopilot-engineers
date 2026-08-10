@@ -6,11 +6,6 @@
 // List available backups with:
 //   ls /home/tad46/it490-m2026-autopilot-engineers/db/promotion/backups/
 //
-// Restores a lane's DB from a specific backup produced by migrate.php,
-// then re-checks the migrations table so its state matches what was
-// actually restored.
-//
-// Rewritten to use the shared function-based lib/inventory.php.
 
 require_once __DIR__ . '/lib/inventory.php';
 
@@ -45,12 +40,29 @@ if ($creds === false)
 
 try
 {
+    $dbName = $target['db_name'];
+
+    $dropCreateCmd = sprintf(
+        'mysql -h %s -u %s -p%s -e %s',
+        escapeshellarg($target['host']),
+        escapeshellarg($creds['DB_USER']),
+        escapeshellarg($creds['DB_PASS']),
+        escapeshellarg("DROP DATABASE IF EXISTS `{$dbName}`; CREATE DATABASE `{$dbName}`;")
+    );
+
+    exec($dropCreateCmd, $dropOutput, $dropExitCode);
+
+    if ($dropExitCode !== 0)
+    {
+        throw new RuntimeException("Could not drop/recreate database {$dbName} before restore (exit code {$dropExitCode})");
+    }
+
     $cmd = sprintf(
         'mysql -h %s -u %s -p%s %s < %s',
         escapeshellarg($target['host']),
         escapeshellarg($creds['DB_USER']),
         escapeshellarg($creds['DB_PASS']),
-        escapeshellarg($target['db_name']),
+        escapeshellarg($dbName),
         escapeshellarg($backupFile)
     );
 
@@ -61,10 +73,13 @@ try
         throw new RuntimeException("mysql restore command exited with code {$exitCode}");
     }
 
-    writePromotionLog("SUCCESS: DB rollback on {$lane} from {$backupFile}");
+    writePromotionLog("SUCCESS: DB rollback on {$lane} from {$backupFile} (database dropped and recreated first)");
 
     echo "Restored {$lane} DB from {$backupFile}\n";
+    echo "Database {$dbName} was dropped and recreated before restoring - this now exactly matches the backup.\n";
     echo "Verify manually: check the migrations table and a known row count/value.\n";
+    echo "Note: the migrations table itself was restored to this backup's state too - re-run migrate.php\n";
+    echo "afterward if you need it reconciled with anything applied since this backup.\n";
 }
 catch (Throwable $e)
 {

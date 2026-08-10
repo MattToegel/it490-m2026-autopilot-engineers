@@ -92,8 +92,6 @@ function handleSaveFlight($db, $logger, $data)
         $savedFlightId = $stmt->insert_id;
         $logger->info("Flight saved: user_id={$data['user_id']}, flight={$data['flight_number']}, saved_flight_id=$savedFlightId");
  
-        // tad46: NEW - activity notification; appears in the dashboard Notifications panel
-        // tad46: wrapped in its own try/catch so a notification failure never fails the save
         try
         {
             $notif = $db->prepare
@@ -175,19 +173,20 @@ function handleUnsaveFlight($db, $logger, $data)
  
         // tad46: NEW - activity notification; also confirms alerts stopped (AC4 tie-in)
         // tad46: saved_flight_id intentionally omitted (NULL) since the row is now soft-deleted
-        if ($flightNumber)
+       if ($flightNumber)
         {
             try
             {
                 $notif = $db->prepare
                 (
                     "INSERT INTO flight_alerts
-                     (user_id, flight_number, alert_type, alert_message)
-                     VALUES (?, ?, 'removed', ?)"
+                    (user_id, saved_flight_id, flight_number, alert_type, alert_message)
+                    VALUES (?, ?, ?, 'removed', ?)"
                 );
                 $notifUserId = (int)$data['user_id'];
-                $notifMsg    = "{$flightNumber} removed from your watchlist. Flight alerts for it have stopped.";
-                $notif->bind_param('iss', $notifUserId, $flightNumber, $notifMsg);
+                $notifSavedFlightId = (int)$data['saved_flight_id'];
+                $notifMsg = "{$flightNumber} removed from your watchlist. Flight alerts for it have stopped.";
+                $notif->bind_param('iiss', $notifUserId, $notifSavedFlightId, $flightNumber, $notifMsg);
                 $notif->execute();
             }
             catch (mysqli_sql_exception $e)
@@ -460,8 +459,63 @@ function handleCacheLookup($db, $logger, $data)
     ];
 }
 
+// tad46: US-02 Fix - increments a user's search_count.
+function handleSearchIncrement($db, $logger, $data)
+{
+    if (empty($data['user_id']))
+    {
+        $logger->warning("Search increment missing user_id");
+        return ['status' => 'error', 'message' => 'missing user_id'];
+    }
 
-// ----- Main callback -----
+    $userId = (int)$data['user_id'];
+
+    $stmt = $db->prepare("UPDATE users SET search_count = search_count + 1 WHERE user_id = ?");
+    $stmt->bind_param('i', $userId);
+
+    try
+    {
+        $stmt->execute();
+        $logger->info("Search count incremented for user_id={$userId}");
+        return ['status' => 'success'];
+    }
+    catch (mysqli_sql_exception $e)
+    {
+        $logger->error("Search increment failed: " . $e->getMessage());
+        return ['status' => 'error', 'message' => 'database error'];
+    }
+}
+
+// tad46: US-02 Fix - returns a user's current search_count for the dashboard stat card
+function handleGetSearchCount($db, $logger, $data)
+{
+    if (empty($data['user_id']))
+    {
+        return ['status' => 'error', 'message' => 'missing user_id'];
+    }
+
+    $userId = (int)$data['user_id'];
+
+    $stmt = $db->prepare("SELECT search_count FROM users WHERE user_id = ?");
+    $stmt->bind_param('i', $userId);
+
+    try
+    {
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $count = (int)($row['search_count'] ?? 0);
+
+        $logger->info("Search count fetched for user_id={$userId}: {$count}");
+        return ['status' => 'success', 'search_count' => $count];
+    }
+    catch (mysqli_sql_exception $e)
+    {
+        $logger->error("Get search count failed: " . $e->getMessage());
+        return ['status' => 'error', 'message' => 'database error'];
+    }
+}
+
+// Main callback 
 $callback = function ($msg) use ($db, $channel, $logger)
 {
     $data = json_decode($msg->body, true);
@@ -492,6 +546,14 @@ $callback = function ($msg) use ($db, $channel, $logger)
         {
             $response = handleCacheLookup($db, $logger, $data);
         }
+        else if ($routingKey === 'search.list')
+        {
+            $response = handleSearchIncrement($db, $logger, $data);
+        }
+        else if ($routingKey === 'search.get_count')
+        {
+            $response = handleGetSearchCount($db, $logger, $data);
+        }
         else
         {
             $logger->warning("Unknown flights routing key received: $routingKey");
@@ -505,10 +567,6 @@ $callback = function ($msg) use ($db, $channel, $logger)
         $response = ['status' => 'error', 'message' => 'internal error'];
     }
 
-    // tad46: Only reply when there's a reply_to address.
-    // tad46: flight.cache is fire-and-forget from the API worker and has no
-    // tad46: reply_to - reading $msg->get('reply_to') on that message would
-    // tad46: throw and kill the consumer (fixes the AMQPMessage->get() crash).
     $props = $msg->get_properties();
     if (isset($props['reply_to']))
     {

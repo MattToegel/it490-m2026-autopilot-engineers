@@ -2,16 +2,11 @@
 // tad46 - DB *code* promotion for the MS3 promotion tool.
 // Separate from migrate.php: migrate.php changes the remote SCHEMA by
 // connecting to MySQL directly (no files move). This script moves the
-// actual consumer PHP files onto the target VM using SFTP - never Git.
+// actual consumer PHP files onto the target VM using SFTP, never Git.
 //
 // Usage:
 //   php promote.php qa         --from=development
-//   php promote.php production --from=qa --release=<id>   (reuses the EXACT
-//                                                            snapshot already
-//                                                            tested in qa)
-//
-// Rewritten to use the shared function-based lib/inventory.php, matching
-// the app promotion script's style.
+//   php promote.php production --from=qa --release=<id>   
 
 require_once __DIR__ . '/lib/inventory.php';
 
@@ -22,7 +17,7 @@ function fail(string $message): void
     exit(1);
 }
 
-// ---- 1. Parse arguments ----
+// 1. Parse arguments 
 $targetLane = $argv[1] ?? null;
 $fromLane = null;
 $releaseId = null;
@@ -45,7 +40,7 @@ if ($targetLane === null || $fromLane === null)
     exit(1);
 }
 
-// ---- 2. Load inventory + enforce development->qa / qa->production only ----
+// 2. Load inventory + enforce development->qa / qa->production only 
 try
 {
     $inventory = loadInventory();
@@ -56,15 +51,13 @@ catch (RuntimeException $e)
     fail($e->getMessage());
 }
 
-// tad46 - qa->production MUST reuse an existing release snapshot, never
-// re-copy the live repo. This is what guarantees "the same tested release"
-// moves forward rather than something rebuilt after qa signed off.
+
 if ($fromLane === 'qa' && $releaseId === null)
 {
     fail("Promoting qa->production requires --release=<id> from the release that was already tested in qa.");
 }
 
-// ---- 3. Resolve the release snapshot to send ----
+//  3. Resolve the release snapshot to send 
 $releasesDir = getBackupDirectory() . '/db-releases';
 if (!is_dir($releasesDir))
 {
@@ -89,15 +82,8 @@ if ($fromLane === 'development')
     // tad46 - only these are actually application code that should run on
     // qa/production. Everything else (secrets, the tool itself, the legacy
     // schema file) is deliberately left out.
-    $includeDirs = ['admin', 'auth', 'ConsumerManager', 'flights', 'logging', 'reports'];
+    $includeDirs = ['admin', 'auth', 'ConsumerManager', 'flights', 'logging', 'reports', 'vendor'];
     $includeFiles = ['composer.json', 'composer.lock'];
-
-    // Things that must NEVER be promoted to qa/production this way:
-    //   .env              - dev secrets; qa/production get their own .env.<lane> placed manually
-    //   promotion/         - the promotion tool itself; doesn't belong on qa/production
-    //   db_schema.sql      - legacy/reference only; migrate.php's migrations/ files are the
-    //                        real source of schema truth
-    //   consumer_logs/     - runtime logs, not code
 
     mkdir($releasePath, 0755, true);
 
@@ -147,14 +133,14 @@ else
     }
 }
 
-// ---- 4. Look up the target VM ----
+//  4. Look up the target VM 
 $target = getRoleConfiguration($inventory, $targetLane, 'db');
 $remoteHost = $target['host'];
 $remoteUser = $target['user'];
 $remotePort = $target['port'] ?? 22;
 $remotePath = rtrim($target['destination_path'], '/');
 
-// ---- 5. Backup whatever is currently on the target BEFORE overwriting ----
+//  5. Backup whatever is currently on the target BEFORE overwriting 
 $backupDir = getBackupDirectory();
 $remoteBackupTar = "/tmp/otr-db-backup-{$releaseId}.tgz";
 $localBackupFile = "{$backupDir}/{$targetLane}-code-{$releaseId}.tgz";
@@ -192,10 +178,8 @@ if ($code !== 0 || !file_exists($localBackupFile))
     fail("Backup created on {$targetLane} but could not be retrieved to {$localBackupFile}.");
 }
 
-// ---- 6. Push the release folder to the target via SFTP ----
-// tad46 - create the remote directory via plain ssh first (mkdir -p is
-// idempotent). sftp's own `mkdir` command has no -p equivalent and
-// aborts the whole batch if the directory is already there.
+// 6. Push the release folder to the target with SFTP 
+// tad46 - create the remote directory with plain ssh first 
 $ensureDirCmd = sprintf(
     'ssh -p %d %s@%s "mkdir -p %s"',
     $remotePort,

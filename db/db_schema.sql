@@ -117,3 +117,18 @@ CREATE TABLE IF NOT EXISTS admin_activity_logs
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- ---------- user_warnings (US-04 AC2 final-demo) ----------
+-- cao39: notifies a user when an admin flags one of their reports.
+-- Separate from flight_alerts
+CREATE TABLE IF NOT EXISTS user_warnings
+(
+    warning_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    report_id INT,
+    admin_user_id INT NOT NULL,
+    warning_message TEXT NOT NULL,
+    is_read TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);

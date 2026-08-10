@@ -3,10 +3,6 @@
 // Usage: php migrate.php <lane> --from=<lane> [--release=<id>]
 //   php migrate.php qa         --from=development
 //   php migrate.php production --from=qa --release=<id-from-promote>
-//
-// Rewritten to use the shared function-based lib/inventory.php
-// (loadInventory/validatePromotion/getRoleConfiguration/writePromotionLog)
-// so this matches the same library the app promotion script uses.
 
 require_once __DIR__ . '/lib/inventory.php';
 
