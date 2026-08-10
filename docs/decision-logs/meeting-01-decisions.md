@@ -38,9 +38,7 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Project proposal document
-* Group Meeting 1 notes
-* Related project planning issue, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -72,9 +70,7 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Project proposal document
-* Group Meeting 1 notes
-* Related flight-search issue, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -106,10 +102,7 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Project proposal document
-* App Server setup issue, when available
-* Database Server setup issue, when available
-* Group Meeting 1 notes
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -141,10 +134,7 @@ Accepted by the team based on the professor’s project requirements.
 
 ## Related Issue/PR Links:
 
-* Project proposal document
-* Architecture documentation
-* VM setup issues, when available
-* Group Meeting 1 notes
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -181,9 +171,7 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Team role documentation
-* Component setup issues, when available
-* Group Meeting 1 notes
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -215,9 +203,7 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Team Zoom meeting series
-* Team calendar
-* Group Meeting 1 notes
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
 
 ---
 
@@ -255,5 +241,4 @@ Accepted by all five team members during Group Meeting 1.
 
 ## Related Issue/PR Links:
 
-* Meeting-notes documentation
-* Group Meeting 1 notes
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/2
