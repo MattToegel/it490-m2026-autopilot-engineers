@@ -42,10 +42,7 @@ Accepted by all five team members during Group Meeting 4 after reviewing the tea
 
 ## Related Issue/PR Links:
 
-* Group Meeting 4 notes
-* Shared API research document
-* AeroDataBox integration issue, when available
-* API Worker implementation PR, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/21
 
 ---
 
@@ -77,10 +74,7 @@ Accepted by all five team members during Group Meeting 4 after reviewing the tea
 
 ## Related Issue/PR Links:
 
-* Group Meeting 4 notes
-* Shared API research document
-* Google Places integration issue, when available
-* Related feature PR, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/21
 
 ---
 
@@ -112,10 +106,7 @@ Accepted by all five team members during Group Meeting 4.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 4 notes
-* Project proposal document
-* Proposal review documentation
-* Related proposal issue, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/21
 
 ---
 
@@ -147,10 +138,7 @@ Accepted by all five team members during Group Meeting 4.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 4 notes
-* Project proposal section tracker
-* Project proposal document
-* Team communication evidence
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/21
 
 ---
 
@@ -182,7 +170,4 @@ Accepted by all five team members during Group Meeting 4.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 4 notes
-* Module 2 group assignment documentation
-* Module 3 course materials
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/21
