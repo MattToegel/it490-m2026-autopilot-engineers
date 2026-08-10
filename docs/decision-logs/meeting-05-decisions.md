@@ -42,11 +42,7 @@ Accepted by the team during Group Meeting 5.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 5 notes
-* GitHub workflow demonstration
-* GitHub repository
-* Issue #35
-* Related documentation PR, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/35
 
 ---
 
@@ -78,12 +74,7 @@ Accepted by the team during Group Meeting 5 while reviewing Module 3 and Milesto
 
 ## Related Issue/PR Links:
 
-* Group Meeting 5 notes
-* Milestone 1 issues
-* VM setup-script issues, when created
-* GitHub repository
-* Related documentation PRs
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/35
 ---
 
 ## Decision D-025 - Create GitHub Issues for Setup Script Work
@@ -114,10 +105,7 @@ Accepted by the team during Group Meeting 5.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 5 notes
-* Setup-script issues, when created
-* Milestone 1 GitHub issues
-* Related setup-script pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/35
 
 ---
 
@@ -149,11 +137,7 @@ Accepted by the team during the Milestone 1 planning discussion in Group Meeting
 
 ## Related Issue/PR Links:
 
-* Group Meeting 5 notes
-* DLQ implementation issue, when available
-* Logging implementation issue, when available
-* Related backend/script pull requests
-* Milestone 1 documentation
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/35
 
 ---
 
@@ -185,7 +169,4 @@ Accepted by the team during Group Meeting 5.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 5 notes
-* Milestone 1 GitHub issues
-* Team Discord
-* Related documentation PRs
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/35
