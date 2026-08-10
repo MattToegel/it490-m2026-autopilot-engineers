@@ -52,11 +52,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* Frontend implementation issues, when available
-* Related UI pull requests
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 
 ---
 
@@ -92,11 +88,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* Frontend UI issues
-* Related frontend pull requests
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 
 ---
 
@@ -128,11 +120,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* Airport map feature issue
-* Related frontend pull request
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 
 ---
 
@@ -164,11 +152,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* UI design documentation
-* Related frontend implementation issues
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 
 ---
 
@@ -207,12 +191,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* Flight-search issues
-* AeroDataBox integration work
-* Related frontend/API pull requests
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 
 ---
 
@@ -246,14 +225,7 @@ Accepted by all five team members during Group Meeting 11.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project Board
-* Flight tracking feature issue
-* Authentication issues
-* Saved-flight implementation issue
-* Related pull requests
-* Meeting 11 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
 ---
 
 ## Decision D-060 - Treat an Interactive Airport Map as a Stretch Feature
@@ -284,8 +256,4 @@ Discussed during Group Meeting 11 and assigned for addition to the project propo
 
 ## Related Issue/PR Links:
 
-* Group Meeting 11 notes
-* Project proposal
-* Project Board
-* Stretch-feature issue, when available
-* Meeting 11 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/88
