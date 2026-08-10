@@ -42,11 +42,7 @@ Accepted by all five team members during Group Meeting 2 after Tristan Duncan de
 
 ## Related Issue/PR Links:
 
-* Group Meeting 2 notes
-* Tailscale setup or connectivity documentation
-* Related VM connectivity issue, when available
-* Meeting recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/7
 ---
 
 ## Decision D-009 - Use GitHub Issues and Branches for Project Work
@@ -77,9 +73,7 @@ Accepted by the team during the GitHub workflow review in Group Meeting 2.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 2 notes
-* GitHub workflow documentation
-* Related workflow issue or pull request, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/7
 
 ---
 
@@ -115,10 +109,7 @@ Discussed during Group Meeting 2. The meeting notes describe this as a proposed 
 
 ## Related Issue/PR Links:
 
-* Group Meeting 2 notes
-* Project proposal
-* Team responsibility documentation
-* Related GitHub issues, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/7
 
 ---
 
@@ -154,11 +145,7 @@ Discussed by the team during Group Meeting 2. The features were recorded as poss
 
 ## Related Issue/PR Links:
 
-* Group Meeting 2 notes
-* Project proposal
-* Milestone planning documentation
-* Related feature issues, when available
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/7
 ---
 
 ## Decision D-012 - Defer Final API Selection to the Next Meeting
@@ -189,7 +176,4 @@ Accepted by all five team members during Group Meeting 2.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 2 notes
-* API research documentation
-* Related API-selection issue, when available
-* Team Discord discussion
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/7
