@@ -42,11 +42,7 @@ Accepted by all five team members during Group Meeting 3.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 3 notes
-* Tailscale connectivity documentation
-* Module 2 group assignment
-* Related connectivity issue, when available
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/15
 
 ---
 
@@ -78,10 +74,7 @@ Accepted by all five team members during Group Meeting 3.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 3 notes
-* Module 2 group assignment
-* VM setup evidence
-* Related VM setup issue, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/15
 
 ---
 
@@ -113,11 +106,7 @@ Accepted by the team during Group Meeting 3.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 3 notes
-* GitHub workflow documentation
-* GitHub demonstration video
-* Initial documentation commits
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/15
 
 ---
 
@@ -149,10 +138,7 @@ Accepted by all five team members during Group Meeting 3.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 3 notes
-* Project proposal document
-* Team Discord discussion
-* Related proposal issue, when available
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/15
 
 ---
 
@@ -184,8 +170,4 @@ Accepted by all five team members during Group Meeting 3.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 3 notes
-* Module 2 group assignment
-* VM screenshots and command output
-* Tailscale connectivity evidence
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/15
