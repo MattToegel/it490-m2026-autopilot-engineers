@@ -44,10 +44,7 @@ Accepted by all five team members during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 1 Pull Request #60
-* Milestone 2 GitHub milestone
-* Individual VM evidence issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -79,10 +76,7 @@ Accepted by the team during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 2 tracker document
-* Milestone 2 GitHub milestone
-* Related individual task issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -114,10 +108,7 @@ Accepted by the team during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 2 GitHub milestone
-* Milestone 2 tracker document
-* Individual task issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -149,10 +140,7 @@ Accepted by all five team members during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 2 tracker document
-* Individual Task 3-6 issues
-* Milestone 2 GitHub milestone
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -184,10 +172,7 @@ Accepted by all five team members during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 2 tracker document
-* Milestone 2 GitHub milestone
-* Individual task issues and pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -219,10 +204,7 @@ Accepted by the team during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Milestone 2 tracker document
-* Milestone 2 pull request
-* Individual task issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -254,10 +236,7 @@ Accepted by the team during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Project proposal document
-* Professor feedback
-* Proposal documentation updates
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
 
 ---
 
@@ -289,6 +268,4 @@ Accepted by all five team members during Group Meeting 9.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 9 notes
-* Team calendar
-* Main team planning document
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2
