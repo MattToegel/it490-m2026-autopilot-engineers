@@ -44,11 +44,9 @@ Accepted by all five team members during Group Meeting 10.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 10 notes
-* Milestone 2 Task 6 issue
-* Milestone 2 GitHub milestone
-* Authentication demo evidence
-* Related screenshots and command output
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2?closed=1
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/84
 
 ---
 
@@ -80,11 +78,9 @@ Accepted by the team during Group Meeting 10.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 10 notes
-* Milestone 2 tracker
-* Milestone 2 GitHub milestone
-* Final Milestone 2 pull request
-* Individual task issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2?closed=1
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/84
 
 ---
 
@@ -116,7 +112,6 @@ Accepted by the team during Group Meeting 10.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 10 notes
-* Milestone 2 tracker
-* Milestone 2 GitHub milestone
-* Final Milestone 2 pull request
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/2?closed=1
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/84
