@@ -234,6 +234,10 @@ body{
 
     color:var(--text-dark);
 
+    margin: 0;
+
+    padding: 0;
+
 }
 
 
@@ -242,7 +246,7 @@ It also ensures that the background of the page is white*/
 
 .dashboard-page{
 
-    width:120%;
+    width:100%;
 
     min-height:100vh;
 
@@ -518,22 +522,17 @@ to make it pop*/
 
 /* xml: This code makes the footer of the website */
 
-footer{
 
-    height:68px;
-
-    display:flex;
-
-    align-items:center;
-
-    background:var(--primary-blue);
-
-    color:white;
-
-    font-size:30px;
-
-    font-weight:700;
-
+footer {
+    width: 100%;
+    min-height: 68px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background: var(--primary-blue);
+    color: white;
+    font-size: 30px;
+    font-weight: 700;
     padding: 24px 32px;
 }
 

@@ -10,6 +10,12 @@ require_once __DIR__ . '/auth_client.php';
 
 $error = null;
 
+// rma9: Gets the one-time success message after email verification.
+$loginSuccess = $_SESSION['login_success'] ?? null;
+
+// rma9: Removes the success message so it only appears once.
+unset($_SESSION['login_success']);
+
 // tad46: show a success message when the user arrives after registering
 $registered = isset($_GET['registered']);
 
@@ -42,12 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 'password' => $password,
             ]
         );
-        
+
         if ($response && ($response['status'] ?? '') === 'success')
         {
             // tad46: create the authenticated user session
             $_SESSION['user_id'] = $response['user_id'];
             $_SESSION['username'] = $response['username'];
+            $_SESSION['email'] = $response['email'] ?? '';
             $_SESSION['role'] = $response['role'];
 
             // rma9: redirect to the dashboard located in the main app folder
@@ -123,14 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
                 <button
                     type="button"
-                    class="theme-toggle"
-                    aria-label="Toggle dark mode"
-                >
-                    <span class="theme-toggle-circle"></span>
-                </button>
-
-                <button
-                    type="button"
                     class="icon-button"
                     aria-label="Notifications"
                 >
@@ -170,6 +169,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 <p class="form-tagline">
                     Stay on the radar
                 </p>
+
+                <?php if ($loginSuccess): ?>
+                    <div class="auth-success" role="status">
+                        <?= htmlspecialchars(
+                            $loginSuccess,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ); ?>
+                    </div>
+                <?php endif; ?>
 
                 <?php if ($registered): ?>
                     <div class="auth-success" role="status">
@@ -250,7 +259,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                             </button>
                         </div>
                     </div>
-
 
                     <button
                         type="submit"

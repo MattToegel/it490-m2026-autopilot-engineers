@@ -61,7 +61,7 @@ if (isset($_GET['alert']))
 
 // tad46: --- US-05 saved flights (LIVE from DB VM) ---
 // tad46: flight.list now LEFT JOINs cached_flight_data, so rows carry live
-// tad46: status/terminal/gate/times from the cache when available.
+// tad46: status/terminal/gate/times from the cache when available
 $listResponse = sendFlightRequest('flight.list',
 [
     'user_id' => $currentUserId,
@@ -99,6 +99,7 @@ else
 {
     $savedListError = $listResponse['message'] ?? 'Could not load saved flights.';
 }
+
 
 // tad46: --- unsave outcome banner ---
 $unsaveNotice = null;
@@ -247,6 +248,19 @@ $currentPagePath = '/dashboard.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | OnTheRadar</title>
+    
+    <!-- rma9: Apply the saved theme before rendering to prevent a light-mode flash. -->
+    <script>
+    (function ()
+    {
+    const savedTheme = localStorage.getItem("otr-theme");
+
+    document.documentElement.setAttribute(
+        "data-theme",
+        savedTheme === "dark" ? "dark" : "light"
+    );
+    })();
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -254,20 +268,43 @@ $currentPagePath = '/dashboard.php';
 
     <link rel="stylesheet" href="/public/dashboard_styles.css">
     <link rel="stylesheet" href="/public/reports_styles.css">
+
+    <link rel="stylesheet" href="/public/notif_bell.css">
+
+    <!-- rma9: Load shared light and dark mode styles for the dashboard. -->
+    <link rel="stylesheet" href="/public/theme.css?v=10">
 </head>
 
 <body>
     <div class="dashboard-page">
 
-        <!-- ==================== TOP HEADER ==================== -->
+        <!--  TOP HEADER  -->
         <header class="top-header">
-            <a href="/dashboard.php" class="top-header__brand">
-                <img src="/assets/otr-logo.svg" alt="OnTheRadar logo" class="top-header__logo">
-                <span class="top-header__brand-name">OnTheRadar</span>
+            <a href="/landing.php" class="top-header__brand">
+
+                <!-- rma9: Use separate light and dark mode logo assets. -->
+                <span class="top-header__logo-wrap">
+                    <img
+                        src="/assets/otr-logo.svg"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--light"
+                    >
+
+                    <img
+                        src="/assets/otr-logo-dark.png"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--dark"
+                    >
+                </span>
+
+                <span class="top-header__brand-name">
+                    OnTheRadar
+                </span>
+
             </a>
 
             <nav class="top-header__nav" aria-label="Main navigation">
-                <a href="/landing.php" class="top-header__link">
+                <a href="/search.php" class="top-header__link">
                     <img src="/assets/search-icon.svg" alt="" aria-hidden="true">
                     <span>Search</span>
                 </a>
@@ -282,17 +319,45 @@ $currentPagePath = '/dashboard.php';
                     <span>Community</span>
                 </a>
 
-                <button type="button" class="theme-toggle" aria-label="Toggle dark mode">
+                <!-- rma9: Shared dashboard toggle matching the Settings page toggle. -->
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    data-theme-toggle
+                    aria-label="Switch to dark mode"
+                    aria-pressed="false"
+                >
+                    <!-- rma9: Shows the sun in light mode and moon in dark mode. -->
+                    <span
+                        class="theme-toggle__symbol"
+                        aria-hidden="true"
+                    >
+                        ☀
+                    </span>
+
+                    <!-- rma9: White circle slides left or right when the theme changes. -->
                     <span class="theme-toggle__circle"></span>
                 </button>
 
-                <!-- tad46: bell anchors to the notifications panel; badge shows unread count -->
-                <a href="#notifications" class="top-header__icon-button bell-link" aria-label="Notifications">
-                    <img src="/assets/notification-icon.svg" alt="">
-                    <?php if ($unreadCount > 0): ?>
-                        <span class="bell-badge"><?php echo $unreadCount > 9 ? '9+' : (int)$unreadCount; ?></span>
-                    <?php endif; ?>
-                </a>
+                <?php if ($isLoggedIn ?? true): ?>
+                <div class="notif-menu">
+                    <button type="button" class="top-header__icon-button bell-link" id="notifBellButton" aria-label="Notifications" aria-expanded="false">
+                        <img src="/assets/notification-icon.svg" alt="">
+                        <span class="bell-badge" id="notifBellBadge" style="display:none;"></span>
+                    </button>
+
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <strong>Notifications</strong>
+                            <span class="notifications-count" id="notifDropdownCount" style="display:none;"></span>
+                        </div>
+                        <div class="notif-dropdown-body" id="notifDropdownBody">
+                            <div class="notif-dropdown-empty">Loading...</div>
+                        </div>
+                        <a href="/dashboard.php#notifications" class="notif-dropdown-viewall">View all in dashboard</a>
+                    </div>
+                </div>
+                <?php endif; ?>
 
                 <div class="user-menu">
                     <button type="button" class="top-header__icon-button" id="userMenuButton" aria-label="User menu" aria-expanded="false">
@@ -331,16 +396,16 @@ $currentPagePath = '/dashboard.php';
                         <span>Dashboard</span>
                     </a>
                     <a href="/landing.php" class="sidebar-menu__link">
-                        <img src="/assets/flight_dashboard_icon.svg" alt="" aria-hidden="true">
-                        <span>Flight</span>
+                        <img src="/assets/radar_icon.svg" alt="" aria-hidden="true">
+                        <span>Search Flights</span>
                     </a>
                     <a href="/flight_history.php" class="sidebar-menu__link">
-                        <img src="/assets/tracked_trips.svg" alt="" aria-hidden="true">
-                        <span>Stats</span>
+                        <img src="/assets/flight_dashboard_icon.svg" alt="" aria-hidden="true">
+                        <span>Flight History</span>
                     </a>
                     <a href="/reports/reports.php" class="sidebar-menu__link">
-                        <img src="/assets/reports_dashboard.svg" alt="" aria-hidden="true">
-                        <span>Reports</span>
+                        <img src="/assets/report_dashboard.svg" alt="" aria-hidden="true">
+                        <span>Community Reports</span>
                     </a>
                     <a href="/auth/profile.php" class="sidebar-menu__link">
                         <img src="/assets/gear_dashboard.svg" alt="" aria-hidden="true">
@@ -434,7 +499,7 @@ $currentPagePath = '/dashboard.php';
                                 <div class="tracked-flights-table-wrap">
                                     <table class="tracked-flights-table">
                                         <thead>
-                                            <tr><th>Flight</th><th>From</th><th>To</th><th>Status</th><th>Departure</th><th>Arrival</th><th>Action</th></tr>
+                                            <tr><th>Flight</th><th>From</th><th>To</th><th>Status</th><th>Departure</th><th>Arrival</th><th>Last_Upt</th><th>Action</th><th>Action</th></tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($savedFlights as $flight): ?>
@@ -444,21 +509,63 @@ $currentPagePath = '/dashboard.php';
                                                 $dep = $routeParts[0] ?? '-';
                                                 $arr = $routeParts[1] ?? '-';
                                                 ?>
-                                                <tr>
-                                                    <td class="tracked-flights-table__flight-number"><?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                    <td><?php echo htmlspecialchars($dep, ENT_QUOTES, 'UTF-8'); ?></td>
-                                                    <td><?php echo htmlspecialchars($arr, ENT_QUOTES, 'UTF-8'); ?></td>
-                                                    <td><span class="flight-status <?php echo savedFlightStatusClass($flight['status']); ?>"><?php echo htmlspecialchars($flight['status'], ENT_QUOTES, 'UTF-8'); ?></span></td>
-                                                    <td><?php echo htmlspecialchars($flight['dept'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                    <td><?php echo htmlspecialchars($flight['arriv'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                                    <td>
-                                                        <?php if ($flight['active']): ?>
-                                                            <form method="post" action="/flight/unsave_flight.php" class="tracked-flight-remove-form">
-                                                                <input type="hidden" name="saved_flight_id" value="<?php echo (int)$flight['saved_flight_id']; ?>">
-                                                                <button type="submit" class="tracked-flight-remove">Remove</button>
-                                                            </form>
-                                                        <?php endif; ?>
-                                                    </td>
+						<!--xml: Implmentation-->
+                                                <tr data-flight-number="<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>">
+    							<td class="tracked-flights-table__flight-number">
+        							<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>
+    							</td>
+
+    							<td class="flight-from">
+        							<?php echo htmlspecialchars($dep, ENT_QUOTES, 'UTF-8'); ?>
+    							</td>
+
+    							<td class="flight-to">
+        							<?php echo htmlspecialchars($arr, ENT_QUOTES, 'UTF-8'); ?>
+    							</td>
+
+    							<td class="flight-status-cell">
+        							<span class="flight-status <?php echo savedFlightStatusClass($flight['status']); ?>">
+            							<?php echo htmlspecialchars($flight['status'], ENT_QUOTES, 'UTF-8'); ?>
+        							</span>
+    							</td>
+
+    							<td class="flight-departure">
+        							<?php echo htmlspecialchars($flight['dept'], ENT_QUOTES, 'UTF-8'); ?>
+   							</td>
+
+    							<td class="flight-arrival">
+        							<?php echo htmlspecialchars($flight['arriv'], ENT_QUOTES, 'UTF-8'); ?>
+    							</td>
+							<td class="flight-updated">
+                                                                <?php echo htmlspecialchars($flight['updated'], ENT_QUOTES, 'UTF-8'); ?>
+                                                        </td>
+
+
+
+						<td>
+
+<button
+    class="tracked-flight-refresh"
+    data-flight-number="<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>">
+    Refresh
+</button>
+</td>
+<td>
+<?php if ($flight['active']): ?>
+<form method="post" action="/flight/unsave_flight.php" class="tracked-flight-remove-form">
+    <input
+        type="hidden"
+        name="saved_flight_id"
+        value="<?php echo (int)$flight['saved_flight_id']; ?>">
+
+    <button type="submit" class="tracked-flight-remove">
+        Remove
+    </button>
+</form>
+<?php endif; ?>
+
+</td>
+
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -467,7 +574,7 @@ $currentPagePath = '/dashboard.php';
                             <?php endif; ?>
                         </section>
 
-                        <!-- ==================== NOTIFICATIONS PANEL (formerly Information) ==================== -->
+                        <!--  NOTIFICATIONS PANEL (formerly Information) -->
                         <section class="dashboard-panel notifications-panel" id="notifications" aria-labelledby="notifications-title">
                             <header class="dashboard-panel__header">
                                 <h2 id="notifications-title">Notifications</h2>
@@ -617,30 +724,154 @@ $currentPagePath = '/dashboard.php';
 
     <script src="/public/dashboard_script.js"></script>
 
-    <script>
-        const userButton = document.getElementById("userMenuButton");
-        const userDropdown = document.getElementById("userDropdown");
 
-        if (userButton && userDropdown)
+<script>
+
+//end of it
+const userButton = document.getElementById("userMenuButton");
+const userDropdown = document.getElementById("userDropdown");
+
+if (userButton && userDropdown)
+{
+    userButton.addEventListener("click", function(e)
+    {
+        e.stopPropagation();
+        userDropdown.classList.toggle("show");
+        userButton.setAttribute("aria-expanded", userDropdown.classList.contains("show"));
+    });
+
+    document.addEventListener("click", function(e)
+    {
+        if (!userButton.contains(e.target) && !userDropdown.contains(e.target))
         {
-            userButton.addEventListener("click", function(e)
-            {
-                e.stopPropagation();
-                userDropdown.classList.toggle("show");
-                userButton.setAttribute("aria-expanded", userDropdown.classList.contains("show"));
-            });
-
-            document.addEventListener("click", function(e)
-            {
-                if (!userButton.contains(e.target) && !userDropdown.contains(e.target))
-                {
-                    userDropdown.classList.remove("show");
-                    userButton.setAttribute("aria-expanded", "false");
-                }
-            });
+            userDropdown.classList.remove("show");
+            userButton.setAttribute("aria-expanded", "false");
         }
-    </script>
+    });
+}
 
+// tad46: intercept dismiss forms on the dashboard notifications panel so
+// dismissing doesn't trigger a full page reload
+document.querySelectorAll('.notification-dismiss-form').forEach(function (form)
+{
+    form.addEventListener('submit', async function (e)
+    {
+        e.preventDefault();
+
+        const alertId = form.querySelector('input[name="alert_id"]').value;
+        const listItem = form.closest('.notification-item');
+        const button = form.querySelector('.notification-dismiss');
+
+        button.disabled = true;
+
+        try
+        {
+            const res = await fetch('/flight/mark_alert_read.php',
+            {
+                method: 'POST',
+                headers:
+                {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'include',
+                body: 'alert_id=' + encodeURIComponent(alertId),
+            });
+
+            const data = await res.json();
+
+            if (data.status === 'success' && listItem)
+            {
+                listItem.classList.add('notification-item--read');
+                button.replaceWith(Object.assign(document.createElement('span'),
+                {
+                    className: 'notification-read-tag',
+                    textContent: 'Read',
+                }));
+
+                // tad46: update the unread count in the panel header, if present
+                const countEl = document.querySelector('.notifications-count');
+                if (countEl)
+                {
+                    const current = parseInt(countEl.textContent, 10) || 0;
+                    const next = Math.max(0, current - 1);
+                    if (next === 0) { countEl.remove(); }
+                    else { countEl.textContent = next + ' unread'; }
+                }
+            }
+            else
+            {
+                button.disabled = false;
+            }
+        }
+        catch (err)
+        {
+            console.error('Dismiss failed:', err);
+            button.disabled = false;
+        }
+    });
+});
+
+
+document.querySelectorAll('.tracked-flight-refresh')
+.forEach(button => {
+
+    button.addEventListener('click', async function(){
+
+        const flightNumber = this.dataset.flightNumber;
+
+        this.innerText = "Refreshing...";
+        this.disabled = true;
+
+
+        try {
+
+            const response = await fetch(
+                "/flight/refresh.php?flight_number=" 
+                + encodeURIComponent(flightNumber)
+            );
+
+
+            const data = await response.json();
+
+
+            console.log("Refresh response:", data);
+
+
+            if(data.status === "success")
+            {
+                location.reload();
+            }
+            else
+            {
+                alert(data.message);
+                this.innerText = "Refresh";
+                this.disabled = false;
+            }
+
+
+        }
+        catch(error)
+        {
+            console.error(error);
+
+            alert("Refresh failed");
+
+            this.innerText="Refresh";
+            this.disabled=false;
+        }
+
+
+    });
+
+});
+</script>
+
+
+<script src="/public/notif_bell.js"></script>
 <?php include __DIR__ . '/reports/reports_drawer.php'; ?>
+
+<!-- rma9: Load shared theme behavior and restore the saved dashboard theme. -->
+<script src="/public/theme.js?v=5"></script>
 </body>
 </html>

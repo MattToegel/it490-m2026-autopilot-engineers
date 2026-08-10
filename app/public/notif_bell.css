@@ -1,0 +1,153 @@
+/* notif_bell.css
+   tad46: 
+   Shared styles for the site-wide notification bell dropdown.
+   Pulled out of dashboard.php's inline <style> so any page can just
+   link this file instead of duplicating the CSS block per page.
+   Pairs with notif_bell.js and the bell markup snippet - all three
+   are needed together for the bell to render and function.
+*/
+
+.notif-menu
+{
+    position: relative;
+}
+
+.notif-dropdown
+{
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 340px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #d9d9e4;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(8, 8, 120, 0.16);
+    z-index: 50;
+}
+
+.notif-dropdown.show
+{
+    display: block;
+}
+
+.bell-link
+{
+    cursor: pointer;
+}
+
+.notif-dropdown-header
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    color: #080878;
+}
+
+.notif-dropdown-empty
+{
+    padding: 24px 16px;
+    text-align: center;
+    color: #6b6b78;
+    font-size: 0.9rem;
+}
+
+.notif-dropdown-list
+{
+    list-style: none;
+}
+
+.notif-dropdown-item
+{
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f1f5;
+}
+
+.notif-dropdown-item--read
+{
+    opacity: 0.55;
+}
+
+.notif-dropdown-item__top
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.notif-dropdown-flight
+{
+    font-weight: 700;
+    color: #17171c;
+    font-size: 0.85rem;
+}
+
+.notif-dropdown-message
+{
+    font-size: 0.85rem;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.notif-dropdown-time
+{
+    font-size: 0.75rem;
+    color: #9a9aa8;
+}
+
+.notif-dropdown-viewall
+{
+    display: block;
+    text-align: center;
+    padding: 12px;
+    color: #080878;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border-top: 1px solid #eee;
+}
+
+/* tad46: NEW - dismiss button + read tag inside the bell dropdown */
+.notif-dropdown-dismiss
+{
+    display: inline-block;
+    margin-top: 6px;
+    padding: 5px 12px;
+    border: 1px solid #d9d9e4;
+    border-radius: 7px;
+    background: #f7f7fb;
+    color: #080878;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.notif-dropdown-dismiss:hover
+{
+    background: #ececf5;
+}
+
+.notif-dropdown-dismiss:disabled
+{
+    opacity: 0.5;
+    cursor: default;
+}
+
+.notif-dropdown-read-tag
+{
+    display: inline-block;
+    margin-top: 6px;
+    padding: 5px 12px;
+    border-radius: 7px;
+    background: #eeeeF2;
+    color: #6b6b78;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}

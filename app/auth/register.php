@@ -1,31 +1,39 @@
 <?php
+
+// rma9: Starts the session so the pending verification email can be stored.
+if (session_status() !== PHP_SESSION_ACTIVE)
+{
+    session_start();
+}
+
 // register.php
 // tad46: Registration form and handler for the App VM
 // rma9: Added Task 3 App-side invalid-input handling before MQ publish
 // rma9: Added confirm-password validation for MVP US-01 AC1
+// rma9: Added redirect from registration to the email verification page
 
 require_once __DIR__ . '/auth_client.php'; // tad46: used to send authentication requests through RabbitMQ
 require_once __DIR__ . '/../logging/app_log.php'; // tad46: used to publish App VM logs
 
 $error = null; // tad46: stores validation or backend error messages
 
-// rma9: only process registration logic after the user submits the form
+// rma9: Only process registration logic after the user submits the form.
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
-    // rma9: collect and safely normalize form input
+    // rma9: Collect and safely normalize form input.
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // rma9: collect the confirmation password separately
-    // rma9: do not trim passwords because spaces may intentionally be part of them
+    // rma9: Collect the confirmation password separately.
+    // rma9: Do not trim passwords because spaces may intentionally be part of them.
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
-    // rma9: log the submitted email only
-    // rma9: never log plaintext passwords
+    // rma9: Log the submitted email only.
+    // rma9: Never log plaintext passwords.
     publishAppLog('info', "Registration form submitted for {$email}");
 
-    // rma9: validate all registration input before publishing anything to RabbitMQ
+    // rma9: Validate all registration input before publishing anything to RabbitMQ.
     if ($username === '')
     {
         $error = 'Username is required.';
@@ -52,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
     elseif ($password !== $confirmPassword)
     {
-        // rma9: stop registration before MQ publish when the two passwords differ
+        // rma9: Stop registration before MQ publish when the two passwords differ.
         $error = 'Passwords do not match.';
     }
     else
     {
-        // rma9: only valid registration data reaches RabbitMQ
+        // rma9: Only valid registration data reaches RabbitMQ.
         $response = sendAuthRequest(
             'user.register',
             [
@@ -67,17 +75,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             ]
         );
 
-        // tad46: handle successful registration response
+        // tad46: Handle successful registration response.
         if ($response && ($response['status'] ?? '') === 'success')
         {
             publishAppLog('info', "User registered: {$email}");
 
-            // rma9: redirect the user to login with a registration-success flag
-            header('Location: login.php?registered=1');
+            // rma9: Store the new user's email for the verification page.
+            $_SESSION['pending_verification_email'] = $email;
+
+            // rma9: Redirect the newly registered user to verify.php.
+            header('Location: verify.php');
             exit;
         }
 
-        // tad46: handle failed registration response
+        // tad46: Handle failed registration response.
         $backendMessage = $response['message'] ?? null;
 
         publishAppLog(
@@ -85,8 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             'Registration failed: ' . ($backendMessage ?? 'no response')
         );
 
-        // rma9: show a safe message instead of exposing raw MQ or socket details
-        $error = $backendMessage ?: 'The account service is temporarily unavailable. Please try again later.';
+        // rma9: Show a safe message instead of exposing raw MQ or socket details.
+        $error = $backendMessage
+            ?: 'The account service is temporarily unavailable. Please try again later.';
     }
 }
 ?>
@@ -96,25 +108,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 <head>
     <meta charset="UTF-8">
 
-    <!-- rma9: allows the page to scale properly on mobile devices -->
+    <!-- rma9: Allows the page to scale properly on mobile devices. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Create Account | OnTheRadar</title>
 
-    <!-- rma9: Noto Sans Georgian font used in the Figma design -->
+    <!-- rma9: Noto Sans Georgian font used in the Figma design. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap"
         rel="stylesheet"
     >
 
-<link rel="stylesheet" href="../public/auth_styles.css">
+    <!-- rma9: Loads the shared OTR authentication page styling. -->
+    <link rel="stylesheet" href="../public/auth_styles.css">
+</head>
+
 <body>
-    <!-- rma9: full registration application frame -->
+    <!-- rma9: Full registration application frame. -->
     <div class="app-frame">
 
-        <!-- rma9: shared OnTheRadar navigation header -->
+        <!-- rma9: Shared OnTheRadar navigation header. -->
         <header class="site-header">
             <a href="register.php" class="brand">
                 <img
@@ -144,14 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
                 <button
                     type="button"
-                    class="theme-toggle"
-                    aria-label="Toggle dark mode"
-                >
-                    <span class="theme-toggle-circle"></span>
-                </button>
-
-                <button
-                    type="button"
                     class="icon-button"
                     aria-label="Notifications"
                 >
@@ -168,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             </nav>
         </header>
 
-        <!-- rma9: airport background containing the registration form -->
+        <!-- rma9: Airport background containing the registration form. -->
         <main class="registration-background">
             <section
                 class="registration-card"
@@ -176,8 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             >
                 <img
                     src="../assets/plane_radar_transparent.svg"
-                     alt="OnTheRadar Logo"
-                     class="form-logo"
+                    alt="OnTheRadar Logo"
+                    class="form-logo"
                 >
 
                 <h1 id="register-heading">Create Your Account</h1>
@@ -185,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 <p class="form-tagline">Stay on the radar</p>
 
                 <?php if ($error): ?>
-                    <!-- rma9: securely displays registration errors -->
+                    <!-- rma9: Securely displays registration errors. -->
                     <div class="auth-error" role="alert">
                         <?php
                         echo htmlspecialchars(
@@ -197,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                     </div>
                 <?php endif; ?>
 
-                <!-- rma9: sends registration information back to this page -->
+                <!-- rma9: Sends registration information back to this page. -->
                 <form method="post" id="registration-form">
 
                     <div class="form-group">
@@ -205,10 +213,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
                         <div class="input-shell">
                             <img
-                                 src="../assets/at-symbol.svg"
-                                 alt=""
-                                 class="field-icon"
->
+                                src="../assets/at-symbol.svg"
+                                alt=""
+                                class="field-icon"
+                            >
+
                             <input
                                 id="username"
                                 name="username"
