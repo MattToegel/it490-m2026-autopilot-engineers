@@ -46,6 +46,8 @@ Accepted by all five team members during Group Meeting 15.
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
+
 ---
 
 ## Decision D-078 - Create Backups Before Promoting Changes Between Environments
@@ -77,6 +79,8 @@ Accepted by the team during Group Meeting 15.
 ## Related Issue/PR Links:
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
 
 ---
 
@@ -110,6 +114,8 @@ Accepted by the team during Group Meeting 15 after reviewing the `inventory.json
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
+
 ---
 
 ## Decision D-080 - Use a Shared Tracker to Assign Milestone 3 Responses
@@ -141,6 +147,8 @@ Accepted by the team during Group Meeting 15.
 ## Related Issue/PR Links:
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
 
 ---
 
@@ -174,6 +182,8 @@ Accepted by all five team members during Group Meeting 15.
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
+
 ---
 
 ## Decision D-082 - Begin Maintaining Conversation Logs for Milestone 3 Work
@@ -205,3 +215,5 @@ Accepted by the team during Group Meeting 15.
 ## Related Issue/PR Links:
 
 https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
+
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/127
