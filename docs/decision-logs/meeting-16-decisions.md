@@ -44,12 +44,7 @@ Accepted by all five team members during Group Meeting 16.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 16 notes
-* Milestone 3 GitHub issues
-* Milestone 3 promotion branch
-* Related scripts and pull requests
-* Meeting 16 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 ---
 
 ## Decision D-084 - Start Final Demo Work Before Milestone 3 Is Fully Submitted
@@ -80,12 +75,7 @@ Accepted by all five team members during Group Meeting 16.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 16 notes
-* Final Demo Goals in the project proposal
-* Final project issues, when created
-* Related implementation branches
-* Meeting 16 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 ---
 
 ## Decision D-085 - Continue Existing MVP User-Story Ownership for the Final Demo
@@ -116,12 +106,7 @@ Accepted by all five team members during Group Meeting 16.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 16 notes
-* MVP user-story issues
-* Final Demo issues, when created
-* Related feature branches and pull requests
-* Meeting 16 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 ---
 
 ## Decision D-086 - Pursue Milestone 4 for Extra Credit
@@ -152,10 +137,7 @@ Accepted by all five team members during Group Meeting 16.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 16 notes
-* Milestone 4 worksheet
-* Future Milestone 4 issues
-* Meeting 16 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -187,8 +169,4 @@ Accepted by the team during Group Meeting 16.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 16 notes
-* Milestone 3 issues
-* Issues #130, #131, and #132
-* Milestone 3 promotion branch
-* Final Milestone 3 pull request
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
