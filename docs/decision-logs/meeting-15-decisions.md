@@ -44,11 +44,7 @@ Accepted by all five team members during Group Meeting 15.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* Milestone 3 GitHub issues
-* QA VM setup issues
-* Production VM setup issues
-* Related deployment documentation
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -80,11 +76,7 @@ Accepted by the team during Group Meeting 15.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* Milestone 3 promotion issues
-* Backup and rollback documentation
-* Promotion-tool implementation
-* Related pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -116,11 +108,7 @@ Accepted by the team during Group Meeting 15 after reviewing the `inventory.json
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* `inventory.json`
-* Milestone 3 promotion-tool files
-* Promotion configuration documentation
-* Related GitHub issues and pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -152,10 +140,7 @@ Accepted by the team during Group Meeting 15.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* Milestone 3 response tracker
-* Individual response issues
-* Milestone 3 submission documentation
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -187,10 +172,7 @@ Accepted by all five team members during Group Meeting 15.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* Milestone 3 Section 4 issues
-* Individual Section 4 evidence
-* Milestone 3 submission documentation
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
 
 ---
 
@@ -222,7 +204,4 @@ Accepted by the team during Group Meeting 15.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 15 notes
-* Conversation log documentation
-* Related Milestone 3 issues
-* Milestone 3 submission materials
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/5
