@@ -42,10 +42,7 @@ Accepted by the team during Group Meeting 6.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* Related VM setup issue, when available
-* VM creation evidence
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
 
 ---
 
@@ -77,11 +74,7 @@ Accepted by the team during Group Meeting 6.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* RabbitMQ configuration issues
-* Setup scripts
-* Message queue documentation
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
 
 ---
 
@@ -113,11 +106,7 @@ Accepted by all five team members during Group Meeting 6.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* Centralized logging issue or branch
-* Logging script issues
-* Related pull requests
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
 
 ---
 
@@ -149,10 +138,7 @@ Accepted by the team as part of the preparation for the June 21 logging work ses
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* Centralized logging branch
-* Centralized logging GitHub issue
-* Related pull request, when created
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
 
 ---
 
@@ -184,10 +170,7 @@ Accepted by the team during Group Meeting 6.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* Centralized logging documentation
-* Logging scripts
-* Related GitHub issues and pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
 
 ---
 
@@ -219,6 +202,4 @@ Accepted by the team during Group Meeting 6.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 6 notes
-* Team Zoom meeting
-* Team schedule
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/44
