@@ -44,11 +44,7 @@ Accepted by the team during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* MVP GitHub issues
-* User-story implementation branches
-* Related MVP pull requests
-* Meeting 13 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -80,11 +76,7 @@ Accepted by all five team members during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* MVP feature issues
-* Frontend implementation issues
-* Related application pull requests
-* Meeting 13 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -116,11 +108,7 @@ Accepted by all five team members during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* MVP GitHub issues
-* Individual implementation branches
-* Related pull requests
-* Team task tracker
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -152,11 +140,7 @@ Accepted by all five team members during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* MVP demo documentation
-* MVP submission materials
-* Meeting 13 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 ---
 
 ## Decision D-070 - Keep Project VMs Available During MVP Integration
@@ -187,12 +171,7 @@ Accepted by all five team members during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* MVP integration issues
-* VM connectivity evidence
-* RabbitMQ testing evidence
-* Meeting 13 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 ---
 
 ## Decision D-071 - Centralize MVP Screenshots for Final Submission
@@ -223,7 +202,4 @@ Accepted by all five team members during Group Meeting 13.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 13 notes
-* Shared MVP evidence folder
-* MVP GitHub issues
-* Final MVP submission
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
