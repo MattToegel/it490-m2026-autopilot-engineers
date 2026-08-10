@@ -44,11 +44,7 @@ Accepted by all five team members during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* Final Deliverable worksheet
-* Final Project issues
-* Milestone 4 issues, if resumed
-* Meeting 17 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -80,11 +76,7 @@ Accepted by all five team members during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* Final Deliverable worksheet
-* Final Project issues
-* Related feature branches and pull requests
-* Meeting 17 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -116,11 +108,7 @@ Accepted by the team during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* US-01 email-verification issue
-* Email API integration issue
-* Related implementation branch and pull request
-* Final Deliverable worksheet
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -152,12 +140,7 @@ Accepted by all five team members during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* Change Log documentation
-* `change-log` branch
-* Repository `docs` folder
-* Meeting 17 recording
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 ---
 
 ## Decision D-092 - Use a Dedicated `change-log` Branch for Communication Evidence
@@ -188,12 +171,7 @@ Accepted by the team during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* `change-log` branch
-* Repository `docs` folder
-* Change Log assignment
-* Related pull request
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 ---
 
 ## Decision D-093 - Stop Prioritizing Overdue Historical Work
@@ -224,7 +202,4 @@ Accepted by the team during Group Meeting 17.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 17 notes
-* Final Deliverable worksheet
-* Final Project issues
-* Meeting 17 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
