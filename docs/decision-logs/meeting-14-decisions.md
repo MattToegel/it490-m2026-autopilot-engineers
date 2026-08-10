@@ -44,10 +44,7 @@ Accepted by all five team members during Group Meeting 14.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 14 notes
-* MVP demonstration recording
-* MVP submission materials
-* Related evidence folder
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -79,11 +76,7 @@ Accepted by all five team members during Group Meeting 14.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 14 notes
-* MVP demo recording
-* Authentication issue #113
-* Flight-search issue #114
-* MVP acceptance-criteria evidence
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -115,11 +108,7 @@ Accepted by all five team members during Group Meeting 14.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 14 notes
-* MVP GitHub milestone
-* Individual feature branches
-* Related pull requests
-* Final shared MVP branch
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -151,12 +140,7 @@ Accepted by the team during Group Meeting 14.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 14 notes
-* MVP issues
-* Authentication issue #113
-* Flight-search issue #114
-* MVP demonstration evidence
-* Final MVP pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4
 
 ---
 
@@ -188,8 +172,4 @@ Accepted by all five team members during Group Meeting 14.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 14 notes
-* MVP evidence document
-* MVP GitHub milestone
-* Final demonstration recording
-* Related GitHub issues and pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/4 
