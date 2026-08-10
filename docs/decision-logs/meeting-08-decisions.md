@@ -47,13 +47,7 @@ Accepted by the team during Group Meeting 8.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 8 notes
-* Related repository documentation issues
-* Decision Log branch and pull request
-* Outcomes Log branch and pull request
-* Voting Log branch and pull request
-* Project Change Log branch and pull request
-* Meeting 8 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/49
 
 ---
 
@@ -85,10 +79,7 @@ Accepted by the team during Group Meeting 8.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 8 notes
-* Milestone 2 planning issues, when created
-* Team Discord communication
-* Meeting 8 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/49
 
 ---
 
@@ -120,8 +111,4 @@ Accepted by the team as part of the repository documentation and credit discussi
 
 ## Related Issue/PR Links:
 
-* Group Meeting 8 notes
-* Milestone 1 Pull Request #60
-* Issue #49
-* Individual milestone issues
-* Future documentation pull requests
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/49
