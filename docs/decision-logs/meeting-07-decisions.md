@@ -42,11 +42,7 @@ Accepted by all five team members during Group Meeting 7.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* Milestone 1 logging issues
-* RabbitMQ publisher and consumer scripts
-* Related message-format documentation
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
 
 ---
 
@@ -78,11 +74,7 @@ Accepted by all five team members during Group Meeting 7.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* Milestone 1 repository structure
-* Setup-script issues
-* Related configuration documentation
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
 
 ---
 
@@ -114,12 +106,7 @@ Accepted by all five team members during Group Meeting 7.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* `.gitignore`
-* Environment configuration files
-* Setup scripts
-* Related security/configuration issues
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
 
 ---
 
@@ -151,12 +138,7 @@ Accepted by the team during Group Meeting 7 after reviewing Caitlin Ortiz’s Ra
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* Milestone 1 Task 3 queue setup
-* RabbitMQ queue setup code
-* Queue and routing-key documentation
-* Related GitHub issue or PR
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
 
 ---
 
@@ -188,12 +170,7 @@ Accepted by all five team members during Group Meeting 7.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* Centralized logging branch
-* Milestone 1 Tasks 3-6
-* Logging publisher and consumer scripts
-* Related GitHub issues and pull requests
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
 
 ---
 
@@ -225,8 +202,4 @@ Accepted by all five team members during Group Meeting 7.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 7 notes
-* Milestone 1 GitHub issues
-* Team Responsibilities document
-* Related documentation pull request
-* Meeting 7 recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/45
