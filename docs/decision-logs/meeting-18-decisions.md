@@ -44,11 +44,7 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Final Demo video folder
-* Final Deliverable worksheet
-* Final Project issues
-* Team Google Drive
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -80,11 +76,7 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Milestone 3 Pull Request #153
-* Milestone 3 video folder
-* Individual Milestone 3 issues
-* Team Google Drive
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -116,11 +108,7 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Final Project issues
-* Final feature branches
-* Final pull request
-* Final Deliverable worksheet
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -152,12 +140,7 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Final Deliverable worksheet
-* Conversation Log
-* GitHub documentation
-* Final Demo video
-* Milestone 3 video
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -189,11 +172,7 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Final Project branch
-* Final Project issues
-* Final pull request
-* GitHub repository
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
 
 ---
 
@@ -225,7 +204,4 @@ Accepted by the team during Group Meeting 18.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 18 notes
-* Team Google Drive
-* Final Demo video folder
-* Milestone 3 video folder
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/milestone/6
