@@ -44,12 +44,7 @@ Accepted by all five team members during Group Meeting 12.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 12 notes
-* MVP feature issues, when created
-* Figma design work
-* Project Board
-* Related frontend and feature pull requests
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/97
 ---
 
 ## Decision D-062 - Create a Skeleton UI Before Full Frontend Development
@@ -80,11 +75,7 @@ Accepted by all five team members during Group Meeting 12.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 12 notes
-* Project Board
-* Figma prototype
-* Website design documentation
-* Related frontend issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/97
 
 ---
 
@@ -116,11 +107,7 @@ Accepted by the team during Group Meeting 12.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 12 notes
-* Figma prototype
-* Figma tutorial video
-* Project Board
-* Frontend implementation issues
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/97
 
 ---
 
@@ -160,12 +147,7 @@ Accepted by all five team members during Group Meeting 12.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 12 notes
-* Accepted project proposal
-* PR #96
-* MVP feature issues, when created
-* Project Board
-
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/97
 ---
 
 ## Decision D-065 - Move Recurring Team Check-In Meetings to Tuesdays
@@ -196,7 +178,4 @@ Accepted by all five team members during Group Meeting 12.
 
 ## Related Issue/PR Links:
 
-* Group Meeting 12 notes
-* Team availability calendar
-* Team meeting schedule
-* Meeting recording
+https://github.com/MattToegel/it490-m2026-autopilot-engineers/issues/97
