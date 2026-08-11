@@ -120,7 +120,7 @@ try {
 
         // Create the destination folder if needed
         $mkdirCommand = sprintf(
-            'ssh -p %d %s@%s %s',
+            'ssh -tt -p %d %s@%s %s',
             $targetPort,
             escapeshellarg($targetUser),
             escapeshellarg($targetHost),
@@ -139,7 +139,7 @@ try {
 
         // Move the file into the web directory
         $installCommand = sprintf(
-            'ssh -p %d %s@%s %s',
+            'ssh -tt -p %d %s@%s %s',
             $targetPort,
             escapeshellarg($targetUser),
             escapeshellarg($targetHost),
@@ -176,7 +176,7 @@ try {
 
         // Create the destination folder
         $mkdirCommand = sprintf(
-            'ssh -p %d %s@%s %s',
+            'ssh -tt -p %d %s@%s %s',
             $targetPort,
             escapeshellarg($targetUser),
             escapeshellarg($targetHost),
@@ -195,7 +195,7 @@ try {
 
         // Install the release files
         $installCommand = sprintf(
-            'ssh -p %d %s@%s %s',
+            'ssh -tt -p %d %s@%s %s',
             $targetPort,
             escapeshellarg($targetUser),
             escapeshellarg($targetHost),
@@ -210,7 +210,7 @@ try {
     // rma9
     // Restart Apache after the promotion finishes
     $restartCommand = sprintf(
-        'ssh -p %d %s@%s %s',
+        'ssh -tt -p %d %s@%s %s',
         $targetPort,
         escapeshellarg($targetUser),
         escapeshellarg($targetHost),
@@ -233,7 +233,19 @@ try {
     // Show promotion information
     echo "Promotion: {$from} -> {$to}\n";
     echo "Item: {$description}\n";
-    echo "Source: {$sourceUser}@{$sourceHost}:{$sourceBase}\n";
+
+    if ($release) {
+        if ($from === 'qa') {
+            echo "Validated in QA: {$sourceUser}@{$sourceHost}:{$sourceBase}\n";
+        } else {
+            echo "Source lane: {$sourceUser}@{$sourceHost}:{$sourceBase}\n";
+        }
+
+        echo "Release artifact: {$sourceItem}\n";
+    } else {
+        echo "Source: {$sourceUser}@{$sourceHost}:{$sourceBase}\n";
+    }
+
     echo "Target: {$targetUser}@{$targetHost}:{$targetBase}\n";
 
     // rma9

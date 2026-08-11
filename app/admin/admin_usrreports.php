@@ -1,8 +1,8 @@
 <?php
-//cao39 - US-04 AC5 - Admin User Violations Page
-// admin_user_violations.php
-// Shows one user's full violation/warning history, pulled from
-// admin_activity_logs via the usr.adm.violations routing key.
+//cao39 - US-04 AC4 - Admin User Reports Page
+// admin_user_reports.php
+// Shows one user's full report submission history, pulled via
+// the usr.adm.reports routing key.
 
 session_start();
 
@@ -25,8 +25,7 @@ if ($targetUserId <= 0)
 
 $currentAdminId = (int)($_SESSION['user_id'] ?? 0);
 
-// NEW - cao39 - look up the target user's username for a friendlier
-// page heading than just showing the raw user_id
+//cao39 - Find a username
 $targetUserResponse = sendAdminRequest(
     "usr.adm.search",
     [
@@ -35,10 +34,9 @@ $targetUserResponse = sendAdminRequest(
     ]
 );
 
-// NEW - fallback text in case the lookup fails for any reason
-$targetUsername = "User ID {$targetUserId}";
+//cao39-  fallback just in case the lookup fails
+$targetUsername = "User ID {$targetUserId}"; 
 
-// NEW - scan the search results for the exact user_id match
 if (($targetUserResponse['status'] ?? '') === 'success')
 {
     foreach ($targetUserResponse['users'] ?? [] as $u)
@@ -51,29 +49,29 @@ if (($targetUserResponse['status'] ?? '') === 'success')
     }
 }
 
-// AC5 - fetch this user's violation/warning history
-$violationsResponse = sendAdminRequest(
-    "usr.adm.violations",
+//cao39  -  AC4 - fetch this user's report history
+$reportsResponse = sendAdminRequest(
+    "usr.adm.reports",
     [
         "admin_user_id" => $currentAdminId,
         "user_id"       => $targetUserId,
     ]
 );
 
-$violations      = [];
-$violationsError = null;
+$reports      = [];
+$reportsError = null;
 
-if ($violationsResponse === null)
+if ($reportsResponse === null)
 {
-    $violationsError = "Admin service unavailable.";
+    $reportsError = "Admin service unavailable.";
 }
-elseif (($violationsResponse['status'] ?? '') === 'success')
+elseif (($reportsResponse['status'] ?? '') === 'success')
 {
-    $violations = $violationsResponse['violations'] ?? [];
+    $reports = $reportsResponse['reports'] ?? [];
 }
 else
 {
-    $violationsError = $violationsResponse['message'] ?? 'Could not load violation history.';
+    $reportsError = $reportsResponse['message'] ?? 'Could not load report history.';
 }
 ?>
 
@@ -87,7 +85,7 @@ else
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
-User Violations | OnTheRadar
+User Reports | OnTheRadar
 </title>
 
 <link rel="stylesheet" href="admin.css">
@@ -117,7 +115,7 @@ OnTheRadar Admin Panel
 <main class="admin-content">
 
 <h2>
-Violations &amp; Warnings - <?php echo htmlspecialchars($targetUsername, ENT_QUOTES, 'UTF-8'); ?>
+Report History - <?php echo htmlspecialchars($targetUsername, ENT_QUOTES, 'UTF-8'); ?>
 </h2>
 
 <p>
@@ -126,10 +124,10 @@ Violations &amp; Warnings - <?php echo htmlspecialchars($targetUsername, ENT_QUO
 
 <section class="admin-card">
 
-<?php if ($violationsError): ?>
+<?php if ($reportsError): ?>
 
 <div class="admin-error">
-<?php echo htmlspecialchars($violationsError, ENT_QUOTES, 'UTF-8'); ?>
+<?php echo htmlspecialchars($reportsError, ENT_QUOTES, 'UTF-8'); ?>
 </div>
 
 <?php else: ?>
@@ -138,32 +136,34 @@ Violations &amp; Warnings - <?php echo htmlspecialchars($targetUsername, ENT_QUO
 
 <thead>
 <tr>
-<th>Log ID</th>
-<th>Issued By</th>
-<th>Related Report ID</th>
-<th>Reason</th>
-<th>Date</th>
+<th>Report ID</th>
+<th>Airport</th>
+<th>Category</th>
+<th>Comment</th>
+<th>Status</th>
+<th>Submitted</th>
 </tr>
 </thead>
 
 <tbody>
 
-<?php if (count($violations) === 0): ?>
+<?php if (count($reports) === 0): ?>
 
 <tr>
-<td colspan="5">No violations or warnings found for this user.</td>
+<td colspan="6">No reports found for this user.</td>
 </tr>
 
 <?php else: ?>
 
-<?php foreach ($violations as $violation): ?>
+<?php foreach ($reports as $report): ?>
 
 <tr>
-<td><?php echo htmlspecialchars($violation['log_id'], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars($violation['admin_username'], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars($violation['affected_report_id'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars($violation['notes'], ENT_QUOTES, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars($violation['created_at'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['report_id'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['airport_code'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['category'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['comment_text'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['report_status'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td><?php echo htmlspecialchars($report['created_at'], ENT_QUOTES, 'UTF-8'); ?></td>
 </tr>
 
 <?php endforeach; ?>

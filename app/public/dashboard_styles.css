@@ -1,30 +1,53 @@
 /* dashboard_styles.css */
 /* Matches dashboard_html_portion_assets_fixed.php */
 
+/* rma9: stores the main colors shadows and reusable values used across the dashboard */
 :root
 {
+    /* rma9: main dark blue OnTheRadar color */
     --otr-blue: #080878;
+
+    /* rma9: darker blue used for gradients and darker sections */
     --otr-blue-dark: #05054f;
+
+    /* rma9: red accent color used for important values and alerts */
     --otr-red: #ef2b2d;
+
+    /* rma9: main dark text color */
     --otr-text: #17171c;
+
+    /* rma9: lighter gray color used for less important text */
     --otr-muted: #6f6f7a;
+
+    /* rma9: light border color used around cards and sections */
     --otr-border: #d9d9e4;
+
+    /* rma9: light page background color */
     --otr-page: #f7f7fb;
+
+    /* rma9: reusable white color */
     --otr-white: #ffffff;
+
+    /* rma9: soft gray background used for buttons and small sections */
     --otr-soft: #f1f2f8;
+
+    /* rma9: reusable shadow used around dashboard cards */
     --otr-shadow: 0 10px 30px rgba(8, 8, 120, 0.08);
 }
 
+/* rma9: makes padding and borders stay inside an element's set width and height */
 *
 {
     box-sizing: border-box;
 }
 
+/* rma9: makes scrolling between page sections smoother */
 html
 {
     scroll-behavior: smooth;
 }
 
+/* rma9: sets the main dashboard page colors font and removes the browser's default margin */
 body
 {
     margin: 0;
@@ -33,23 +56,27 @@ body
     font-family: "Noto Sans Georgian", Arial, sans-serif;
 }
 
+/* rma9: keeps images from overflowing outside their containers */
 img
 {
     display: block;
     max-width: 100%;
 }
 
+/* rma9: makes buttons and inputs use the same font as the rest of the page */
 button,
 input
 {
     font: inherit;
 }
 
+/* rma9: makes links use the surrounding text color unless another style changes it */
 a
 {
     color: inherit;
 }
 
+/* rma9: makes sure the dashboard fills at least the full screen height */
 .dashboard-page
 {
     min-height: 100vh;
@@ -57,6 +84,7 @@ a
 
 /* ==================== HEADER ==================== */
 
+/* rma9: styles the main header across the top of the dashboard */
 .top-header
 {
     display: flex;
@@ -70,6 +98,7 @@ a
     background: var(--otr-white);
 }
 
+/* rma9: places the OnTheRadar logo and website name next to each other */
 .top-header__brand
 {
     display: inline-flex;
@@ -80,6 +109,7 @@ a
     text-decoration: none;
 }
 
+/* rma9: controls the size of the logo shown in the header */
 .top-header__logo
 {
     width: 82px;
@@ -87,12 +117,14 @@ a
     object-fit: contain;
 }
 
+/* rma9: styles the OnTheRadar name displayed beside the logo */
 .top-header__brand-name
 {
     font-size: 2rem;
     font-weight: 700;
 }
 
+/* rma9: lines up the header navigation links and buttons */
 .top-header__nav
 {
     display: flex;
@@ -100,6 +132,7 @@ a
     gap: 22px;
 }
 
+/* rma9: styles each normal navigation link in the header */
 .top-header__link
 {
     display: inline-flex;
@@ -111,12 +144,14 @@ a
     text-decoration: none;
 }
 
+/* rma9: controls the size of icons used inside header links */
 .top-header__link img
 {
     width: 26px;
     height: 26px;
 }
 
+/* rma9: styles header buttons that only display an icon */
 .top-header__icon-button
 {
     display: inline-flex;
@@ -131,12 +166,14 @@ a
     cursor: pointer;
 }
 
+/* rma9: controls the image size inside header icon buttons */
 .top-header__icon-button img
 {
     width: 28px;
     height: 28px;
 }
 
+/* rma9: creates the background shape for the light and dark theme toggle */
 .theme-toggle
 {
     position: relative;
@@ -151,6 +188,7 @@ a
     cursor: pointer;
 }
 
+/* rma9: creates the movable white circle inside the theme toggle */
 .theme-toggle__circle
 {
     position: absolute;
@@ -166,6 +204,7 @@ a
 
 /* ==================== MAIN LAYOUT ==================== */
 
+/* rma9: creates the two-column layout containing the sidebar and main dashboard */
 .dashboard-layout
 {
     display: grid;
@@ -175,6 +214,7 @@ a
 
 /* ==================== SIDEBAR ==================== */
 
+/* rma9: styles the blue navigation sidebar shown on the left side */
 .dashboard-sidebar
 {
     display: flex;
@@ -186,6 +226,7 @@ a
     color: var(--otr-white);
 }
 
+/* rma9: centers the user's profile information inside the sidebar */
 .sidebar-profile
 {
     display: flex;
@@ -195,6 +236,7 @@ a
     text-align: center;
 }
 
+/* rma9: creates the white circular background around the user avatar */
 .sidebar-profile__avatar
 {
     display: flex;
@@ -208,12 +250,14 @@ a
     background: #fff;
 }
 
+/* rma9: controls the user icon size inside the profile circle */
 .sidebar-profile__avatar img
 {
     width: 62px;
     height: 62px;
 }
 
+/* rma9: styles the user's name shown underneath the avatar */
 .sidebar-profile__name
 {
     margin: 0;
@@ -222,6 +266,7 @@ a
     word-break: break-word;
 }
 
+/* rma9: stacks all sidebar navigation links vertically */
 .sidebar-menu
 {
     display: flex;
@@ -229,6 +274,7 @@ a
     gap: 10px;
 }
 
+/* rma9: gives sidebar links and logout button matching spacing and shape */
 .sidebar-menu__link,
 .sidebar-logout
 {
@@ -243,12 +289,14 @@ a
     text-decoration: none;
 }
 
+/* rma9: highlights sidebar items when hovered or currently active */
 .sidebar-menu__link:hover,
 .sidebar-menu__link--active
 {
     background: rgba(255, 255, 255, 0.17);
 }
 
+/* rma9: controls the size of icons in sidebar links and logout button */
 .sidebar-menu__link img,
 .sidebar-logout img
 {
@@ -257,6 +305,7 @@ a
     object-fit: contain;
 }
 
+/* rma9: pushes logout to the bottom of the sidebar and gives it a border */
 .sidebar-logout
 {
     margin-top: auto;
@@ -265,12 +314,14 @@ a
 
 /* ==================== MAIN CONTENT ==================== */
 
+/* rma9: adds spacing around the main dashboard content */
 .dashboard-main
 {
     min-width: 0;
     padding: 34px 36px 46px;
 }
 
+/* rma9: styles the main welcome heading at the top of the dashboard */
 .dashboard-welcome h1
 {
     margin: 0 0 28px;
@@ -280,6 +331,7 @@ a
 
 /* ==================== ALERTS ==================== */
 
+/* rma9: gives all dashboard alert messages shared spacing and rounded corners */
 .dashboard-alert
 {
     margin: 0 0 18px;
@@ -290,6 +342,7 @@ a
     font-weight: 500;
 }
 
+/* rma9: gives successful messages a green appearance */
 .dashboard-alert--success
 {
     border: 1px solid #b3ddb3;
@@ -297,6 +350,7 @@ a
     color: #1f6421;
 }
 
+/* rma9: gives error messages a red appearance */
 .dashboard-alert--error
 {
     border: 1px solid #efaaaa;
@@ -304,6 +358,7 @@ a
     color: #a31313;
 }
 
+/* rma9: gives warning messages a yellow appearance */
 .dashboard-alert--warning
 {
     border: 1px solid #e6c767;
@@ -313,6 +368,7 @@ a
 
 /* ==================== STAT CARDS ==================== */
 
+/* rma9: creates the row of four dashboard statistic cards */
 .dashboard-stats
 {
     display: grid;
@@ -321,6 +377,7 @@ a
     margin-bottom: 28px;
 }
 
+/* rma9: styles each individual dashboard statistic card */
 .metric-card
 {
     display: flex;
@@ -333,6 +390,7 @@ a
     background: var(--otr-white);
 }
 
+/* rma9: creates the area that holds the icon inside each metric card */
 .metric-card__icon
 {
     display: flex;
@@ -343,6 +401,7 @@ a
     justify-content: center;
 }
 
+/* rma9: controls the icon size inside each metric card */
 .metric-card__icon img
 {
     width: 46px;
@@ -350,11 +409,13 @@ a
     object-fit: contain;
 }
 
+/* rma9: prevents metric card text from overflowing its available space */
 .metric-card__content
 {
     min-width: 0;
 }
 
+/* rma9: styles the large number shown in each dashboard statistic card */
 .metric-card__value
 {
     margin: 0 0 4px;
@@ -364,6 +425,7 @@ a
     line-height: 1;
 }
 
+/* rma9: styles the description underneath each statistic value */
 .metric-card__label
 {
     margin: 0;
@@ -374,6 +436,7 @@ a
 
 /* ==================== CONTENT GRID ==================== */
 
+/* rma9: creates the main two-column content area underneath the stat cards */
 .dashboard-content-grid
 {
     display: grid;
@@ -382,12 +445,14 @@ a
     align-items: start;
 }
 
+/* rma9: stacks the panels located in the left dashboard column */
 .dashboard-content-grid__left
 {
     display: grid;
     gap: 24px;
 }
 
+/* rma9: gives dashboard panels their white card appearance */
 .dashboard-panel
 {
     overflow: hidden;
@@ -397,6 +462,7 @@ a
     box-shadow: var(--otr-shadow);
 }
 
+/* rma9: styles the top header area inside each dashboard panel */
 .dashboard-panel__header
 {
     display: flex;
@@ -409,6 +475,7 @@ a
     border-bottom: 1px solid var(--otr-border);
 }
 
+/* rma9: styles dashboard panel titles */
 .dashboard-panel__header h2
 {
     margin: 0;
@@ -416,6 +483,7 @@ a
     font-size: 1.3rem;
 }
 
+/* rma9: styles links located inside dashboard panel headers */
 .dashboard-panel__link
 {
     color: var(--otr-blue);
@@ -425,6 +493,7 @@ a
 
 /* ==================== TRACKED FLIGHTS ==================== */
 
+/* rma9: centers the message shown when the user has no tracked flights */
 .tracked-flights-empty
 {
     display: flex;
@@ -436,6 +505,7 @@ a
     text-align: center;
 }
 
+/* rma9: controls the empty tracked-flights icon size */
 .tracked-flights-empty img
 {
     width: 58px;
@@ -443,11 +513,13 @@ a
     margin-bottom: 14px;
 }
 
+/* rma9: removes extra top spacing from the empty-state heading */
 .tracked-flights-empty h3
 {
     margin: 0 0 8px;
 }
 
+/* rma9: styles the description shown in the empty tracked-flights state */
 .tracked-flights-empty p
 {
     max-width: 430px;
@@ -455,6 +527,7 @@ a
     color: var(--otr-muted);
 }
 
+/* rma9: creates the reusable blue dashboard action button */
 .dashboard-button
 {
     display: inline-flex;
@@ -470,17 +543,20 @@ a
     text-decoration: none;
 }
 
+/* rma9: allows the tracked-flights table to scroll sideways on smaller screens */
 .tracked-flights-table-wrap
 {
     overflow-x: auto;
 }
 
+/* rma9: makes the tracked-flights table fill the panel width */
 .tracked-flights-table
 {
     width: 100%;
     border-collapse: collapse;
 }
 
+/* rma9: adds spacing and borders to tracked flight table cells */
 .tracked-flights-table th,
 .tracked-flights-table td
 {
@@ -490,6 +566,7 @@ a
     white-space: nowrap;
 }
 
+/* rma9: gives the table heading row a light background */
 .tracked-flights-table th
 {
     background: #f8f8fc;
@@ -497,38 +574,48 @@ a
     font-size: 0.82rem;
 }
 
+/* rma9: highlights the flight number using the OnTheRadar red color */
 .tracked-flights-table__flight-number
 {
     color: var(--otr-red);
     font-weight: 700;
 }
 
+/* rma9: makes flight status text easier to notice */
 .flight-status
 {
     font-weight: 700;
 }
 
+/* rma9: displays bad flight statuses in red */
 .saved-status-bad
 {
     color: #b52222;
 }
 
+/* rma9: displays warning flight statuses in yellow */
 .saved-status-warn
 {
     color: #8b6800;
 }
 
+/* rma9: displays good flight statuses in green */
 .saved-status-ok
 {
     color: #1c743d;
 }
 
+/* rma9: removes default spacing around the remove-flight form */
 .tracked-flight-remove-form
 {
     margin: 0;
 }
 
-.tracked-flight-remove
+/*xml: Added the refresh button to have the same properties as the remove button*/
+
+/* rma9: gives the remove and refresh flight buttons matching styles */
+.tracked-flight-remove, 
+.tracked-flight-refresh
 {
     padding: 7px 10px;
 
@@ -541,6 +628,7 @@ a
 
 /* ==================== INFORMATION PANEL ==================== */
 
+/* rma9: lines up the information icon and text inside the panel */
 .information-panel__content
 {
     display: flex;
@@ -549,6 +637,7 @@ a
     gap: 18px;
 }
 
+/* rma9: controls the size of the information panel icon */
 .information-panel__icon
 {
     width: 48px;
@@ -556,11 +645,13 @@ a
     flex: 0 0 48px;
 }
 
+/* rma9: controls spacing underneath the information panel title */
 .information-panel__content h3
 {
     margin: 0 0 7px;
 }
 
+/* rma9: styles the information panel description */
 .information-panel__content p
 {
     margin: 0;
@@ -570,6 +661,7 @@ a
 
 /* ==================== AIRPORT CONDITIONS ==================== */
 
+/* rma9: creates the dark blue airport conditions card */
 .airport-conditions-panel
 {
     overflow: hidden;
@@ -580,6 +672,7 @@ a
     box-shadow: var(--otr-shadow);
 }
 
+/* rma9: lines up the airport title and icon inside the conditions panel */
 .airport-conditions-panel__header
 {
     display: flex;
@@ -589,6 +682,7 @@ a
     gap: 14px;
 }
 
+/* rma9: styles the smaller airport label above the airport name */
 .airport-conditions-panel__header p
 {
     margin: 0 0 4px;
@@ -597,23 +691,27 @@ a
     letter-spacing: 0.1em;
 }
 
+/* rma9: styles the airport name heading */
 .airport-conditions-panel__header h2
 {
     margin: 0;
     font-size: 1.45rem;
 }
 
+/* rma9: controls the airport icon size */
 .airport-conditions-panel__header img
 {
     width: 48px;
     height: 48px;
 }
 
+/* rma9: adds space around the airport map area */
 .airport-conditions-panel__map
 {
     padding: 0 18px;
 }
 
+/* rma9: creates the airport map placeholder using the Newark airport background image */
 .airport-conditions-panel__map-placeholder
 {
     display: flex;
@@ -630,6 +728,7 @@ a
     text-align: center;
 }
 
+/* rma9: controls the icon size inside the airport map placeholder */
 .airport-conditions-panel__map-placeholder img
 {
     width: 56px;
@@ -637,6 +736,7 @@ a
     margin-bottom: 12px;
 }
 
+/* rma9: creates a dark readable background behind map placeholder text */
 .airport-conditions-panel__map-placeholder p
 {
     max-width: 260px;
@@ -648,11 +748,13 @@ a
     line-height: 1.45;
 }
 
+/* rma9: adds spacing around the airport condition details */
 .airport-conditions-panel__details
 {
     padding: 20px 22px 8px;
 }
 
+/* rma9: places each airport condition name and value on opposite sides */
 .airport-condition-row
 {
     display: flex;
@@ -664,17 +766,20 @@ a
     border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
+/* rma9: slightly fades the condition labels */
 .airport-condition-row span
 {
     color: rgba(255, 255, 255, 0.75);
 }
 
+/* rma9: keeps airport condition values aligned on the right side */
 .airport-condition-row strong
 {
     max-width: 58%;
     text-align: right;
 }
 
+/* rma9: styles the white action button inside the airport conditions panel */
 .airport-conditions-panel__button
 {
     display: flex;
@@ -693,17 +798,20 @@ a
 
 /* ==================== USER REPORTS ==================== */
 
+/* rma9: adds space above the user reports panel */
 .user-reports-panel
 {
     margin-top: 24px;
 }
 
+/* rma9: styles the message displayed when the user has no reports */
 .user-reports-empty
 {
     padding: 28px 22px;
     color: var(--otr-muted);
 }
 
+/* rma9: removes normal list bullets and adds spacing around the reports list */
 .user-reports-list
 {
     margin: 0;
@@ -711,17 +819,20 @@ a
     list-style: none;
 }
 
+/* rma9: separates each user report with spacing and a bottom border */
 .user-report
 {
     padding: 18px 0;
     border-bottom: 1px solid var(--otr-border);
 }
 
+/* rma9: removes the border from the final report in the list */
 .user-report:last-child
 {
     border-bottom: 0;
 }
 
+/* rma9: lines up report category terminal and time information */
 .user-report__top
 {
     display: flex;
@@ -730,6 +841,7 @@ a
     flex-wrap: wrap;
 }
 
+/* rma9: creates the rounded label styles for report categories and terminals */
 .user-report__category,
 .user-report__terminal
 {
@@ -739,30 +851,35 @@ a
     font-weight: 700;
 }
 
+/* rma9: gives TSA report labels a light blue-purple color */
 .report-chip-tsa
 {
     background: #ececff;
     color: var(--otr-blue);
 }
 
+/* rma9: gives bathroom report labels a light blue color */
 .report-chip-bath
 {
     background: #e7f5ff;
     color: #175b83;
 }
 
+/* rma9: gives accessibility or accident labels a red color */
 .report-chip-acc
 {
     background: #ffe5e5;
     color: #a32020;
 }
 
+/* rma9: gives food report labels a yellow color */
 .report-chip-food
 {
     background: #fff1d8;
     color: #855d11;
 }
 
+/* rma9: gives muted report and terminal labels a neutral gray color */
 .report-chip-muted,
 .user-report__terminal
 {
@@ -770,6 +887,7 @@ a
     color: #555560;
 }
 
+/* rma9: pushes the report timestamp to the right side */
 .user-report__time
 {
     margin-left: auto;
@@ -777,12 +895,14 @@ a
     font-size: 0.8rem;
 }
 
+/* rma9: adds readable spacing around the report message */
 .user-report__text
 {
     margin: 14px 0;
     line-height: 1.6;
 }
 
+/* rma9: lines up the edit and delete controls for each report */
 .user-report__actions
 {
     display: flex;
@@ -790,11 +910,13 @@ a
     gap: 10px;
 }
 
+/* rma9: removes default form margin from report action forms */
 .user-report__actions form
 {
     margin: 0;
 }
 
+/* rma9: styles the report edit link */
 .user-report__edit
 {
     color: var(--otr-blue);
@@ -802,6 +924,7 @@ a
     text-decoration: none;
 }
 
+/* rma9: styles the red delete button used for reports */
 .user-report__delete
 {
     padding: 7px 10px;
@@ -815,6 +938,7 @@ a
 
 /* ==================== FOOTER ==================== */
 
+/* rma9: styles the blue footer displayed at the bottom of the dashboard */
 .dashboard-footer
 {
     padding: 24px 32px;
@@ -826,122 +950,146 @@ a
 
 /* ==================== RESPONSIVE ==================== */
 
+/* rma9: adjusts the dashboard layout when the screen becomes smaller than 1180 pixels */
 @media (max-width: 1180px)
 {
+    /* rma9: changes the four statistic cards into two columns */
     .dashboard-stats
     {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    /* rma9: stacks the dashboard content panels into one column */
     .dashboard-content-grid
     {
         grid-template-columns: 1fr;
     }
 }
 
+/* rma9: adjusts the dashboard for tablet-sized screens */
 @media (max-width: 900px)
 {
+    /* rma9: reduces spacing inside the top header */
     .top-header
     {
         padding: 12px 18px;
     }
 
+    /* rma9: decreases space between header navigation items */
     .top-header__nav
     {
         gap: 12px;
     }
 
+    /* rma9: hides navigation text so only icons remain on smaller screens */
     .top-header__link span
     {
         display: none;
     }
 
+    /* rma9: removes the two-column sidebar layout */
     .dashboard-layout
     {
         grid-template-columns: 1fr;
     }
 
+    /* rma9: makes the sidebar shorter and reduces its padding */
     .dashboard-sidebar
     {
         min-height: auto;
         padding: 18px;
     }
 
+    /* rma9: hides the large sidebar profile section on smaller screens */
     .sidebar-profile
     {
         display: none;
     }
 
+    /* rma9: changes the sidebar links into a three-column grid */
     .sidebar-menu
     {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    /* rma9: centers sidebar links in their grid cells */
     .sidebar-menu__link
     {
         justify-content: center;
     }
 
+    /* rma9: places and centers the logout button underneath the sidebar links */
     .sidebar-logout
     {
         margin-top: 14px;
         justify-content: center;
     }
 
+    /* rma9: reduces padding around the main dashboard content */
     .dashboard-main
     {
         padding: 26px 18px 40px;
     }
 }
 
+/* rma9: adjusts the dashboard layout for phone-sized screens */
 @media (max-width: 650px)
 {
+    /* rma9: makes the website name smaller on mobile */
     .top-header__brand-name
     {
         font-size: 1.35rem;
     }
 
+    /* rma9: reduces the header logo size on mobile */
     .top-header__logo
     {
         width: 58px;
         height: 48px;
     }
 
+    /* rma9: hides theme and header icon buttons when there is not enough space */
     .theme-toggle,
     .top-header__icon-button
     {
         display: none;
     }
 
+    /* rma9: stacks statistic cards into one column */
     .dashboard-stats
     {
         grid-template-columns: 1fr;
     }
 
+    /* rma9: changes sidebar navigation into two columns */
     .sidebar-menu
     {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    /* rma9: stacks dashboard panel heading content vertically */
     .dashboard-panel__header
     {
         align-items: flex-start;
         flex-direction: column;
     }
 
+    /* rma9: stacks each airport condition label and value vertically */
     .airport-condition-row
     {
         flex-direction: column;
         gap: 5px;
     }
 
+    /* rma9: allows airport condition values to use the full width */
     .airport-condition-row strong
     {
         max-width: 100%;
         text-align: left;
     }
 
+    /* rma9: places report timestamps on their own line */
     .user-report__time
     {
         width: 100%;
@@ -949,11 +1097,13 @@ a
     }
 }
 
+/* rma9: gives the user account menu a position reference for its dropdown */
 .user-menu
 {
     position: relative;
 }
 
+/* rma9: creates the hidden account dropdown menu */
 .user-dropdown
 {
     position: absolute;
@@ -971,11 +1121,13 @@ a
     z-index: 1000;
 }
 
+/* rma9: displays the user dropdown when JavaScript adds the show class */
 .user-dropdown.show
 {
     display: block;
 }
 
+/* rma9: styles the top user information area inside the dropdown */
 .user-dropdown-header
 {
     padding: 16px;
@@ -984,6 +1136,7 @@ a
     border-bottom: 1px solid #eee;
 }
 
+/* rma9: styles each clickable link inside the user dropdown */
 .user-dropdown a
 {
     display: block;
@@ -992,54 +1145,59 @@ a
     text-decoration: none;
 }
 
+/* rma9: gives dropdown links a light background when hovered */
 .user-dropdown a:hover
 {
     background: #f5f5f5;
 }
 
+/* rma9: creates a separator line between dropdown sections */
 .user-dropdown-divider
 {
     height: 1px;
     background: #eee;
 }
 
+/* rma9: makes the logout option red so it stands out */
 .logout-link
 {
     color: #d62828 !important;
     font-weight: 600;
 }
 
-
+/* rma9: gives the notification bell a position reference for the number badge */
 .bell-link
 {
     position: relative;
     text-decoration: none;
 }
- 
+
+/* rma9: creates the small red unread-notification number badge */
 .bell-badge
 {
     position: absolute;
     top: -2px;
     right: -4px;
- 
+
     display: inline-flex;
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
     align-items: center;
     justify-content: center;
- 
+
     border-radius: 999px;
     background: var(--otr-red);
     color: #fff;
- 
+
     font-size: 0.66rem;
     font-weight: 700;
     line-height: 1;
 }
- 
+
 /* --- notifications panel --- */
- 
+
+/* rma9: styles the small text showing the current notification count */
 .notifications-count
 {
     color: var(--otr-red);
@@ -1048,7 +1206,8 @@ a
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
- 
+
+/* rma9: centers the message shown when there are no notifications */
 .notifications-empty
 {
     display: flex;
@@ -1059,7 +1218,8 @@ a
     flex-direction: column;
     text-align: center;
 }
- 
+
+/* rma9: controls the icon size shown in the empty notifications state */
 .notifications-empty img
 {
     width: 44px;
@@ -1067,12 +1227,14 @@ a
     margin-bottom: 12px;
     opacity: 0.55;
 }
- 
+
+/* rma9: controls spacing underneath the empty notification heading */
 .notifications-empty h3
 {
     margin: 0 0 6px;
 }
- 
+
+/* rma9: styles the explanation shown when there are no notifications */
 .notifications-empty p
 {
     max-width: 380px;
@@ -1080,32 +1242,36 @@ a
     color: var(--otr-muted);
     line-height: 1.5;
 }
- 
+
+/* rma9: removes bullets and adds spacing around the notification list */
 .notifications-list
 {
     margin: 0;
     padding: 6px 22px 20px;
     list-style: none;
 }
- 
+
+/* rma9: separates each notification with spacing and a border */
 .notification-item
 {
     position: relative;
     padding: 16px 0;
     border-bottom: 1px solid var(--otr-border);
 }
- 
+
+/* rma9: removes the border underneath the final notification */
 .notification-item:last-child
 {
     border-bottom: 0;
 }
- 
+
 /* tad46: read alerts stay visible but visually recede */
 .notification-item--read
 {
     opacity: 0.55;
 }
- 
+
+/* rma9: lines up notification type flight number and time */
 .notification-item__top
 {
     display: flex;
@@ -1113,7 +1279,8 @@ a
     gap: 9px;
     flex-wrap: wrap;
 }
- 
+
+/* rma9: creates the rounded label used to identify notification types */
 .notification-chip
 {
     padding: 5px 9px;
@@ -1123,65 +1290,75 @@ a
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
- 
+
+/* rma9: gives delay notifications a yellow label */
 .alert-chip-delay
 {
     background: #fff1d8;
     color: #855d11;
 }
- 
+
+/* rma9: gives gate-change notifications a blue label */
 .alert-chip-gate
 {
     background: #e7f5ff;
     color: #175b83;
 }
- 
+
+/* rma9: gives cancellation notifications a red label */
 .alert-chip-cancel
 {
     background: #ffe5e5;
     color: #a32020;
 }
- 
+
+/* rma9: gives normal status notifications a purple-blue label */
 .alert-chip-status
 {
     background: #ececff;
     color: var(--otr-blue);
 }
- 
+
+/* rma9: gives unknown or muted notification types a gray label */
 .alert-chip-muted
 {
     background: #eeeeF2;
     color: #555560;
 }
- 
+
+/* rma9: highlights the flight number inside a notification */
 .notification-flight
 {
     color: var(--otr-red);
     font-weight: 700;
 }
- 
+
+/* rma9: pushes the notification timestamp to the right side */
 .notification-time
 {
     margin-left: auto;
     color: var(--otr-muted);
     font-size: 0.8rem;
 }
- 
+
+/* rma9: adds readable spacing around the notification message */
 .notification-message
 {
     margin: 12px 0;
     line-height: 1.55;
 }
- 
+
+/* rma9: removes default spacing around the notification dismiss form */
 .notification-dismiss-form
 {
     margin: 0;
 }
- 
+
+/* rma9: styles the button used to dismiss a notification */
 .notification-dismiss
 {
     padding: 7px 10px;
- 
+
     border: 1px solid var(--otr-border);
     border-radius: 7px;
     background: var(--otr-soft);
@@ -1189,29 +1366,33 @@ a
     font-weight: 600;
     cursor: pointer;
 }
- 
+
+/* rma9: slightly darkens the dismiss button when the mouse is over it */
 .notification-dismiss:hover
 {
     background: #e6e7f2;
 }
- 
+
+/* rma9: creates the small label showing that a notification was already read */
 .notification-read-tag
 {
     display: inline-block;
     padding: 5px 10px;
- 
+
     border-radius: 999px;
     background: #eeeeF2;
     color: #555560;
- 
+
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
- 
+
+/* rma9: adjusts notification timestamps on small phone screens */
 @media (max-width: 650px)
 {
+    /* rma9: puts the notification time on its own line */
     .notification-time
     {
         width: 100%;

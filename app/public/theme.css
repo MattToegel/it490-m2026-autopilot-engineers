@@ -499,3 +499,24 @@ html[data-theme="dark"] .notif-dropdown-read-tag
     background: #343446;
     color: #d5d5df;
 }
+/* cao39: Dark mode admin cards */
+body.dark-mode .admin-card,
+body.dark-mode .card
+{
+    background: #1f1f2b;
+    color: #ffffff;
+}
+
+
+body.dark-mode .admin-card h3,
+body.dark-mode .admin-card p
+{
+    color: #ffffff;
+}
+
+
+body.dark-mode .admin-card a
+{
+    background: #ff2020;
+    color: #ffffff;
+}

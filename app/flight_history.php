@@ -261,8 +261,10 @@ function historyDate(?string $mysqlTimestamp): string
                         </div>
                         <a href="/dashboard.php">Dashboard</a>
                         <a href="/auth/profile.php">Settings</a>
-                        <?php if ($role === 'admin'): ?>
-                            <a href="/admin/admin.php">Admin Panel</a>
+                        <?php 
+                            //cao39 - added the admin_dashboard link
+                            if ($role === 'admin'): ?>
+                            <a href="/admin/admin_dashboard.php">Admin Panel</a>
                         <?php endif; ?>
                         <div class="user-dropdown-divider"></div>
                         <a href="/auth/logout.php" class="logout-link">Log Out</a>
@@ -303,8 +305,10 @@ function historyDate(?string $mysqlTimestamp): string
                         <img src="/assets/gear_dashboard.svg" alt="" aria-hidden="true">
                         <span>Settings</span>
                     </a>
-                    <?php if ($role === 'admin'): ?>
-                        <a href="/admin/admin.php" class="sidebar-menu__link">
+                    <?php 
+                        //cao39 - added the admin_dashboard link
+                        if ($role === 'admin'): ?>
+                        <a href="/admin/admin_dashboard.php" class="sidebar-menu__link">
                             <img src="/assets/user_dashboard.svg" alt="" aria-hidden="true">
                             <span>Admin</span>
                         </a>

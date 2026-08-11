@@ -4,6 +4,7 @@
 // xml: sendFlightRequest calls, response normalization, results table, changeSearch() JS
 // tad46: Added ?q= support from the landing search bar with query type auto-detection
 // tad46: Added Save button on each result row wired to /flight/save_flight.php (US-05 AC1)
+// tad46: US-02 - increments the user's search_count after a successful search (search.list routing key)
 
 session_start();
 
@@ -156,6 +157,14 @@ if ($searchType)
                     }
                 }
             }
+        }
+
+        // tad46: US-02 - increment the user's search_count on a successful,
+        // logged-in search that actually returned results. Fire-and-forget -
+        // a failure here should never break the search results the user sees.
+        if ($isLoggedIn && empty($error) && !empty($flights))
+        {
+            sendFlightRequest('search.list', ['user_id' => $currentUserId]);
         }
     }
     catch (Exception $e)
@@ -549,8 +558,10 @@ if (isset($_GET['save']))
                     </div>
                     <a href="/dashboard.php">Dashboard</a>
                     <a href="/auth/profile.php">Settings</a>
-                    <?php if ($role === 'admin'): ?>
-                        <a href="/admin/admin.php">Admin Panel</a>
+                    <?php 
+                        //cao39 - added the admin_dashboard link
+                        if ($role === 'admin'): ?>
+                        <a href="/admin/admin_dashboard.php">Admin Panel</a>
                     <?php endif; ?>
                     <div class="user-dropdown-divider"></div>
                     <a href="/auth/logout.php" class="logout-link">Log Out</a>

@@ -435,7 +435,7 @@ No users found.
 <td>
 
 
-<a href="admin_user_reports.php?user_id=<?php echo (int)$user['user_id']; ?>">
+<a href="admin_usrreports.php?user_id=<?php echo (int)$user['user_id']; ?>">
 
 
 View Reports
@@ -448,7 +448,7 @@ View Reports
 
 <td>
 
-<a href="admin_user_violations.php?user_id=<?php echo (int)$user['user_id']; ?>">
+<a href="admin_usrviolations.php?user_id=<?php echo (int)$user['user_id']; ?>">
 
 View Violations
 

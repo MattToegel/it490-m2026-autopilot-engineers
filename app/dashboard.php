@@ -7,9 +7,12 @@
 // tad46: US-05 AC4 notifications wired to DB VM through alert_client.php
 // tad46: Drawer partial provides the sitewide "post a report" affordance
 // rma9: Updated dashboard layout and intentional map placeholder while map API work is in progress
-
+// xml: Implemented the function that formats the arrival and departure times for users
+// xml: Implemented the function that formats the cache into EDT and aformats it so that users can read it 
+// xml: Created the banner that would display when users get an error as well as still providing them with cached value
+// xml: Created the function that would would allow  users to actually refresh a flight and its info
+// xml: Created the button that would allow users to refresh their flights
 session_start();
-
 require_once __DIR__ . '/auth/auth_protect.php';
 require_once __DIR__ . '/flight/flight_client.php';
 require_once __DIR__ . '/reports/report_client.php';
@@ -174,16 +177,15 @@ if (!empty($_GET['report_edit']))
     }
 }
 
-// tad46: --- US-02 flight search freshness (placeholder for now) ---
-$apiAvailable = true;
-$lastUpdated  = '2026-07-15 14:32';
-
 // tad46: --- stats ---
 $savedCount  = count(array_filter($savedFlights, fn($f) => $f['active']));
 $reportCount = count($myReports);
 $alertCount  = $unreadCount;
-$searchCount = 4;
 
+$searchCountResp = sendFlightRequest('search.get_count', ['user_id' => $currentUserId]);
+$searchCount = ($searchCountResp['status'] ?? '') === 'success'
+    ? (int)($searchCountResp['search_count'] ?? 0)
+    : 0;
 // helpers
 function savedFlightStatusClass(string $status): string
 {
@@ -240,6 +242,56 @@ function timeAgo(string $mysqlTimestamp): string
     return $d . ' day' . ($d === 1 ? '' : 's') . ' ago';
 }
 
+/*xml: This function was made to the cached "UTC" data and 
+turn it into EDT with a prettier format for users to be able 
+to digest*/
+function formatCache($utcTime)
+{
+//xml: If there is not cached time, and it is empty, N/A will be the placeholder
+    if (empty($utcTime)) {
+        return "N/A";
+    }
+
+    try {
+        $date = new DateTime(
+            $utcTime,
+            new DateTimeZone("UTC")
+        );
+       //xml: This converts the UTC to EDT time to match the rest of our platforms timezone
+        $date->setTimezone(
+            new DateTimeZone("America/New_York")
+        );
+	//xml: This formats the time and date like "Month dat, Year Time:PM EDT"
+        return $date->format("M j, Y g:i A T");
+
+	//xml; This catch is done if the time can't be converted, so N/A is displayed
+    } catch (Exception $e) {
+
+        return "N/A";
+
+    }
+}
+
+//xml: This simply formats the EDT time so that everything is consistent
+function formatEDT($time)
+{
+     //xml: If there is no time aviailable show N/A
+    if (empty($time)) {
+        return "N/A";
+    }
+
+    try {
+
+        $date = new DateTime($time);
+	//xml: This the same format as the previous function
+        return $date->format("M j, Y g:i A") . " EDT";
+	//xml: This catch is done if the time can't be converted, so N/A is displayed
+    } catch (Exception $e) {
+
+        return "N/A";
+
+    }
+}
 $currentPagePath = '/dashboard.php';
 ?>
 <!DOCTYPE html>
@@ -370,8 +422,10 @@ $currentPagePath = '/dashboard.php';
                         </div>
                         <a href="/dashboard.php">Dashboard</a>
                         <a href="/auth/profile.php">Settings</a>
-                        <?php if ($role === 'admin'): ?>
-                            <a href="/admin/admin.php">Admin Panel</a>
+                        <?php 
+                                //cao39 - added the admin_dahrdboard link
+			       if ($role === 'admin'): ?>
+                            <a href="/admin/admin_dashboard.php">Admin Panel</a>
                         <?php endif; ?>
                         <div class="user-dropdown-divider"></div>
                         <a href="/auth/logout.php" class="logout-link">Log Out</a>
@@ -427,11 +481,17 @@ $currentPagePath = '/dashboard.php';
                     <h1>Hello <?php echo $username; ?>!</h1>
                 </header>
 
-                <?php if (!$apiAvailable): ?>
-                    <div class="dashboard-alert dashboard-alert--warning" role="status">
-                        Live flight data is unavailable right now. Showing the latest saved information.
-                    </div>
-                <?php endif; ?>
+
+		<!--xml: This is the banner that displays to user when there is no flight data. Flight cache is displayed-->
+
+		<div
+    		    id="apiUnavailableBanner"
+    		    class="dashboard-alert dashboard-alert--warning"
+    		    role="status"
+    		    style="display: none;"
+		    >
+    		   Live flight data is unavailable right now. Showing the latest saved information.
+		</div>
 
                 <!-- ==================== STAT CARDS ==================== -->
                 <section class="dashboard-stats" id="dashboard-stats" aria-label="Dashboard statistics">
@@ -499,7 +559,7 @@ $currentPagePath = '/dashboard.php';
                                 <div class="tracked-flights-table-wrap">
                                     <table class="tracked-flights-table">
                                         <thead>
-                                            <tr><th>Flight</th><th>From</th><th>To</th><th>Status</th><th>Departure</th><th>Arrival</th><th>Last_Upt</th><th>Action</th><th>Action</th></tr>
+                                            <tr><th>Flight</th><th>From</th><th>To</th><th>Status</th><th>Departure</th><th>Arrival</th><th>Last_Upt</th><th>Refresh</th><th>Action</th></tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($savedFlights as $flight): ?>
@@ -509,63 +569,58 @@ $currentPagePath = '/dashboard.php';
                                                 $dep = $routeParts[0] ?? '-';
                                                 $arr = $routeParts[1] ?? '-';
                                                 ?>
-						<!--xml: Implmentation-->
+						<!--xml: This portion displays the information of the flights that are in the Tracking Flights List-->
                                                 <tr data-flight-number="<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>">
+							<!--xml: This displays the flight num -->
     							<td class="tracked-flights-table__flight-number">
         							<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>
     							</td>
-
+							<!--xml: This displays departure -->
     							<td class="flight-from">
         							<?php echo htmlspecialchars($dep, ENT_QUOTES, 'UTF-8'); ?>
     							</td>
-
+							<!--xml: This displays arrival -->
     							<td class="flight-to">
         							<?php echo htmlspecialchars($arr, ENT_QUOTES, 'UTF-8'); ?>
     							</td>
+							<!--xml: This displays the status of the fligt-->
 
     							<td class="flight-status-cell">
         							<span class="flight-status <?php echo savedFlightStatusClass($flight['status']); ?>">
             							<?php echo htmlspecialchars($flight['status'], ENT_QUOTES, 'UTF-8'); ?>
         							</span>
     							</td>
-
+							<!--xml: Displays depature time -->
     							<td class="flight-departure">
-        							<?php echo htmlspecialchars($flight['dept'], ENT_QUOTES, 'UTF-8'); ?>
+        							<?php echo htmlspecialchars(formatEDT($flight['dept']), ENT_QUOTES, 'UTF-8'); ?>
    							</td>
-
+							<!-- xml: Displays arrival time -->
     							<td class="flight-arrival">
-        							<?php echo htmlspecialchars($flight['arriv'], ENT_QUOTES, 'UTF-8'); ?>
+        							<?php echo htmlspecialchars(formatEDT($flight['arriv']), ENT_QUOTES, 'UTF-8'); ?>
     							</td>
+							<!-- xml: Displays when the flight was last updated-->
 							<td class="flight-updated">
-                                                                <?php echo htmlspecialchars($flight['updated'], ENT_QUOTES, 'UTF-8'); ?>
+                                                                <?php echo htmlspecialchars(formatCache($flight['updated']), ENT_QUOTES, 'UTF-8'); ?>
                                                         </td>
+							<!-- xml: This is the refresh button that is used to update the flight information on our platform-->
+							<td>
+							    <button class="tracked-flight-refresh"
+    							    data-flight-number="<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>"> Refresh</button>
+							</td>
+							<td>
+             						    <?php if ($flight['active']): ?>
+								<form method="post" action="/flight/unsave_flight.php" class="tracked-flight-remove-form">
+    								<input
+        							    type="hidden"
+        							    name="saved_flight_id"
+        							    value="<?php echo (int)$flight['saved_flight_id']; ?>">
 
-
-
-						<td>
-
-<button
-    class="tracked-flight-refresh"
-    data-flight-number="<?php echo htmlspecialchars($flight['flight'], ENT_QUOTES, 'UTF-8'); ?>">
-    Refresh
-</button>
-</td>
-<td>
-<?php if ($flight['active']): ?>
-<form method="post" action="/flight/unsave_flight.php" class="tracked-flight-remove-form">
-    <input
-        type="hidden"
-        name="saved_flight_id"
-        value="<?php echo (int)$flight['saved_flight_id']; ?>">
-
-    <button type="submit" class="tracked-flight-remove">
-        Remove
-    </button>
-</form>
-<?php endif; ?>
-
-</td>
-
+    								    <button type="submit" class="tracked-flight-remove">
+        								Remove
+    								    </button>
+								</form>
+        							<?php endif; ?>
+							</td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -727,7 +782,6 @@ $currentPagePath = '/dashboard.php';
 
 <script>
 
-//end of it
 const userButton = document.getElementById("userMenuButton");
 const userDropdown = document.getElementById("userDropdown");
 
@@ -813,58 +867,85 @@ document.querySelectorAll('.notification-dismiss-form').forEach(function (form)
 });
 
 
+
 document.querySelectorAll('.tracked-flight-refresh')
-.forEach(button => {
-
-    button.addEventListener('click', async function(){
-
+.forEach(button =>
+{
+    //xml: This function gets executed whenever we click on the refresh button
+    button.addEventListener('click', async function()
+    {
+	//xml: The flight number is retrieved from the button
         const flightNumber = this.dataset.flightNumber;
 
+	//xml: this displays when the user clicks on the button and the process is going through
         this.innerText = "Refreshing...";
         this.disabled = true;
 
-
-        try {
-
+        try
+        {
+	    //xml: This is what sends a request for the flight info
             const response = await fetch(
-                "/flight/refresh.php?flight_number=" 
-                + encodeURIComponent(flightNumber)
+                "/flight/refresh.php?flight_number=" +
+                encodeURIComponent(flightNumber),
+                {
+                    credentials: "include"
+                }
             );
-
 
             const data = await response.json();
 
-
             console.log("Refresh response:", data);
 
-
-            if(data.status === "success")
+            if (data.status === "success")
             {
+                /* xml: This executes when the worker returns live flight info
+	 	. The dashboard is then reloaded and then the updated info
+		(aso stored in the cache) is displayd. */
                 location.reload();
             }
             else
             {
-                alert(data.message);
+               /*xml: This is displayed when there is no flight infor avilable*/
+
+                const banner =
+                    document.getElementById("apiUnavailableBanner");
+
+		//xml: This unhides the banner for the error
+                if (banner)
+                {
+                    banner.style.display = "block";
+                }
+		//xml: This resets te refresh button
                 this.innerText = "Refresh";
                 this.disabled = false;
             }
-
-
         }
-        catch(error)
+        catch (error)
         {
-            console.error(error);
+	    /*xml: This catch is made to catch errors like timeouts, the worker not being on, 
+	    or the refresh button request not working*/
 
-            alert("Refresh failed");
 
-            this.innerText="Refresh";
-            this.disabled=false;
+            console.error("Refresh failed:", error);
+
+	    //xml: This is displayed when the catch is triggered
+            const banner =
+                document.getElementById("apiUnavailableBanner");
+
+	    //xml: This unhides the banner for the error 
+            if (banner)
+            {
+                banner.style.display = "block";
+            }
+
+            /*xml: This resest the refresh button*/
+            this.innerText = "Refresh";
+            this.disabled = false;
         }
-
-
     });
-
 });
+
+
 </script>
 
 

@@ -212,8 +212,10 @@ $role = $_SESSION['role'] ?? '';
                     <a href="/dashboard.php">Dashboard</a>
                     <a href="/auth/profile.php">Settings</a>
 
-                    <?php if ($role === 'admin'): ?>
-                        <a href="/admin/admin.php">Admin Panel</a>
+                    <?php 
+                        //cao39 - added the admin_dashboard link
+                        if ($role === 'admin'): ?>
+                        <a href="/admin/admin_dashboard.php">Admin Panel</a>
                     <?php endif; ?>
 
                     <div class="user-dropdown-divider"></div>
@@ -527,97 +529,6 @@ $role = $_SESSION['role'] ?? '';
 
                 </section>
 
-                <!-- rma9: Notification settings -->
-                <section class="settings-card notification-card">
-
-                    <h2>Notification Preference</h2>
-
-                    <div class="notification-box">
-
-                        <div class="notification-row">
-
-                            <span>Flight</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle flight notifications"
-                            ></button>
-
-                        </div>
-
-                        <div class="notification-row">
-
-                            <span>Airport</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle airport notifications"
-                            ></button>
-
-                        </div>
-
-                        <div class="notification-row">
-
-                            <span>Reports</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle report notifications"
-                            ></button>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <!-- rma9: Accessibility settings -->
-                <section class="settings-card accessibility-card">
-
-                    <h2>Accessibility</h2>
-
-                    <div class="accessibility-row">
-
-                        <span class="accessibility-label">
-                            Text Size
-                        </span>
-
-                        <div
-                            class="text-size-control"
-                            aria-label="Text size control"
-                        >
-
-                            <span class="text-size-small">
-                                A
-                            </span>
-
-                            <span class="text-size-middle"></span>
-
-                            <span class="text-size-large">
-                                A
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <!-- rma9: Privacy section -->
-                <section class="settings-card privacy-card">
-
-                    <h2>Privacy</h2>
-
-                    <div class="privacy-lines">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                </section>
 
             </div>
 

@@ -2,7 +2,6 @@
 // flight_client.php
 // tad46: Sends flight requests to the DB VM through RabbitMQ and waits for a response
 // tad46: Same reply_to + correlation_id pattern as auth_client.php, just scoped to flights
-// tad46: (kept as a separate file so auth flows stay untouched)
 require_once __DIR__ . '/../vendor/autoload.php';
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -66,8 +65,6 @@ function sendFlightRequest($routingKey, $data)
     $channel->close();
     $connection->close();
 
-    // tad46: Distinguish "worker never replied" from "worker replied with garbage"
-    // tad46: so search.php never mistakes a dead worker for a clean zero-result search.
     if ($rawBody === null)
     {
         throw new Exception('The flight service did not respond in time. Please try again.');
