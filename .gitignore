@@ -5,3 +5,6 @@ ConsumerManager/
 *.log
 .env.*
 *.swp
+api/testRabbit.ini
+api/.env
+api/vendor/
