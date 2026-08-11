@@ -28,6 +28,19 @@ $role = $_SESSION['role'] ?? '';
 
     <title>Settings | OnTheRadar</title>
 
+    <!-- rma9: Apply the saved theme before rendering to prevent a light-mode flash. -->
+    <script>
+    (function ()
+    {
+        const savedTheme = localStorage.getItem("otr-theme");
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            savedTheme === "dark" ? "dark" : "light"
+        );
+    })();
+    </script>
+
     <!-- rma9: Load the project font -->
     <link
         rel="preconnect"
@@ -45,218 +58,285 @@ $role = $_SESSION['role'] ?? '';
         rel="stylesheet"
     >
 
+        <!-- rma9: dashboard header same here -->
+    <link rel="stylesheet" href="/public/dashboard_styles.css">
+    <link rel="stylesheet" href="/public/notif_bell.css">
     <!-- rma9: Load the profile page styles -->
     <link
         rel="stylesheet"
         href="../public/profile_styles.css"
     >
+
+    <!-- rma9: Load shared light and dark mode styles. -->
+    <link rel="stylesheet" href="/public/theme.css?v=10">
 </head>
 
 <body>
 
 <div class="settings-page">
 
-    <!-- rma9: Top navigation bar -->
-    <header class="top-navbar">
+    <!-- rma9: Uses the same top navigation bar as the dashboard. -->
+    <header class="top-header">
 
-        <a
-            class="nav-logo"
-            href="../dashboard.php"
-            aria-label="Go to dashboard"
-        >
-            <img
-                src="../assets/otr-logo.svg"
-                alt="OnTheRadar logo"
-            >
+        <a href="/landing.php" class="top-header__brand">
+
+            <!-- rma9: Use separate light and dark mode logo assets. -->
+            <span class="top-header__logo-wrap">
+                <img
+                    src="/assets/otr-logo.svg"
+                    alt="OnTheRadar logo"
+                    class="top-header__logo top-header__logo--light"
+                >
+
+                <img
+                    src="/assets/otr-logo-dark.png"
+                    alt="OnTheRadar logo"
+                    class="top-header__logo top-header__logo--dark"
+                >
+            </span>
+
+            <span class="top-header__brand-name">
+                OnTheRadar
+            </span>
+
         </a>
 
-        <!-- rma9: Main navigation links -->
-        <nav
-            class="nav-links"
-            aria-label="Main navigation"
-        >
+        <nav class="top-header__nav" aria-label="Main navigation">
 
-            <a href="../search.php">
-                <img
-                    src="../assets/search-icon.svg"
-                    alt=""
-                >
+            <a href="/search.php" class="top-header__link">
+                <img src="/assets/search-icon.svg" alt="" aria-hidden="true">
                 <span>Search</span>
             </a>
 
-            <a href="../airport_map.php">
-                <img
-                    src="../assets/airport-map-icon.svg"
-                    alt=""
-                >
+            <a
+                href="/dashboard.php#airport-conditions"
+                class="top-header__link"
+            >
+                <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                 <span>Airport Map</span>
             </a>
 
-            <a href="../community.php">
-                <img
-                    src="../assets/community-icon.svg"
-                    alt=""
-                >
+            <a href="/reports/reports.php" class="top-header__link">
+                <img src="/assets/community-icon.svg" alt="" aria-hidden="true">
                 <span>Community</span>
             </a>
 
-        </nav>
-
-        <!-- rma9: Navigation actions -->
-        <div class="nav-actions">
-
+            <!-- rma9: Header toggle for switching between light and dark mode. -->
             <button
                 type="button"
-                class="nav-theme-toggle"
-                aria-label="Toggle dark mode"
-            ></button>
-
-            <a
-                class="nav-icon-button"
-                href="../notifications.php"
-                aria-label="View notifications"
+                class="theme-toggle"
+                data-theme-toggle
+                aria-label="Switch to dark mode"
+                aria-pressed="false"
             >
-                <img
-                    src="../assets/notification-icon.svg"
-                    alt=""
+                <span
+                    class="theme-toggle__symbol"
+                    aria-hidden="true"
                 >
-            </a>
+                    ☀
+                </span>
 
-            <!-- rma9: Account dropdown lets the user return to the dashboard,
-                 open settings, access admin tools when allowed, or log out. -->
+                <span class="theme-toggle__circle"></span>
+            </button>
+
+            <div class="notif-menu">
+
+                <button
+                    type="button"
+                    class="top-header__icon-button bell-link"
+                    id="notifBellButton"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                >
+                    <img src="/assets/notification-icon.svg" alt="">
+
+                    <span
+                        class="bell-badge"
+                        id="notifBellBadge"
+                        style="display:none;"
+                    ></span>
+                </button>
+
+                <div class="notif-dropdown" id="notifDropdown">
+
+                    <div class="notif-dropdown-header">
+                        <strong>Notifications</strong>
+
+                        <span
+                            class="notifications-count"
+                            id="notifDropdownCount"
+                            style="display:none;"
+                        ></span>
+                    </div>
+
+                    <div
+                        class="notif-dropdown-body"
+                        id="notifDropdownBody"
+                    >
+                        <div class="notif-dropdown-empty">Loading...</div>
+                    </div>
+
+                    <a
+                        href="/dashboard.php#notifications"
+                        class="notif-dropdown-viewall"
+                    >
+                        View all in dashboard
+                    </a>
+
+                </div>
+
+            </div>
+
             <div class="user-menu">
 
                 <button
                     type="button"
-                    class="nav-icon-button"
+                    class="top-header__icon-button"
                     id="userMenuButton"
                     aria-label="User menu"
                     aria-expanded="false"
                 >
-                    <img
-                        src="../assets/user-icon.svg"
-                        alt=""
-                    >
+                    <img src="/assets/user-icon.svg" alt="">
                 </button>
 
-                <div
-                    class="user-dropdown"
-                    id="userDropdown"
-                >
+                <div class="user-dropdown" id="userDropdown">
+
                     <div class="user-dropdown-header">
-                        <?= htmlspecialchars($username) ?>
+                        <?= htmlspecialchars(
+                            $username,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ); ?>
                     </div>
 
-                    <a href="../dashboard.php">
-                        Dashboard
-                    </a>
+                    <a href="/dashboard.php">Dashboard</a>
+                    <a href="/auth/profile.php">Settings</a>
 
-                    <a href="profile.php">
-                        Settings
-                    </a>
-
-                    <?php if ($role === 'admin'): ?>
-                        <a href="../admin/admin.php">
-                            Admin Panel
-                        </a>
+                    <?php 
+                        //cao39 - added the admin_dashboard link
+                        if ($role === 'admin'): ?>
+                        <a href="/admin/admin_dashboard.php">Admin Panel</a>
                     <?php endif; ?>
 
                     <div class="user-dropdown-divider"></div>
 
                     <a
-                        href="logout.php"
+                        href="/auth/logout.php"
                         class="logout-link"
                     >
                         Log Out
                     </a>
+
                 </div>
 
             </div>
 
-        </div>
+        </nav>
 
     </header>
 
     <!-- rma9: Sidebar and main page content -->
-    <div class="settings-layout">
+    <main class="dashboard-layout">
 
-        <!-- rma9: Left dashboard sidebar -->
-        <aside class="sidebar">
+        <!-- rma9: Exact dashboard.php sidebar, with Settings active. -->
+        <aside class="dashboard-sidebar" aria-label="Dashboard navigation">
 
-            <div class="sidebar-top">
+            <div class="sidebar-profile">
 
-                <!-- rma9: Logged-in user information -->
-                <div class="sidebar-profile">
-
-                    <img
-                        class="sidebar-user-icon"
-                        src="../assets/user_dashboard.svg"
-                        alt="User profile"
-                    >
-
-                    <p class="sidebar-username">
-                        <?= htmlspecialchars($username) ?>
-                    </p>
-
+                <div class="sidebar-profile__avatar">
+                    <img src="/assets/user-icon.svg" alt="">
                 </div>
 
-                <!-- rma9: Sidebar navigation -->
-                <nav
-                    class="sidebar-menu"
-                    aria-label="Dashboard navigation"
+                <p class="sidebar-profile__name">
+                    <?= htmlspecialchars(
+                        $username,
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ); ?>
+                </p>
+
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a
+                    href="/dashboard.php"
+                    class="sidebar-menu__link"
                 >
+                    <img
+                        src="/assets/home_icon_dashboard.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                    <span>Dashboard</span>
+                </a>
 
-                    <a href="../dashboard.php">
-                        <img
-                            src="../assets/home_icon_dashboard.svg"
-                            alt=""
-                        >
-                        <span>Dashboard</span>
-                    </a>
+                <a
+                    href="/landing.php"
+                    class="sidebar-menu__link"
+                >
+                    <img
+                        src="/assets/radar_icon.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                    <span>Search Flights</span>
+                </a>
 
-                    <a href="../search.php">
-                        <img
-                            src="../assets/flight_dashboard_icon.svg"
-                            alt=""
-                        >
-                        <span>Flight</span>
-                    </a>
+                <a
+                    href="/flight_history.php"
+                    class="sidebar-menu__link"
+                >
+                    <img
+                        src="/assets/flight_dashboard_icon.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                    <span>Flight History</span>
+                </a>
 
-                    <a href="../stats.php">
-                        <img
-                            src="../assets/stats_dashboard.svg"
-                            alt=""
-                        >
-                        <span>Stats</span>
-                    </a>
+                <a
+                    href="/reports/reports.php"
+                    class="sidebar-menu__link"
+                >
+                    <img
+                        src="/assets/report_dashboard.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                    <span>Community Reports</span>
+                </a>
 
-                    <a href="../reports.php">
-                        <img
-                            src="../assets/report_dashboard.svg"
-                            alt=""
-                        >
-                        <span>Reports</span>
-                    </a>
+                <a
+                    href="/auth/profile.php"
+                    class="sidebar-menu__link sidebar-menu__link--active"
+                    aria-current="page"
+                >
+                    <img
+                        src="/assets/gear_dashboard.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                    <span>Settings</span>
+                </a>
+
+                <?php if ($role === 'admin'): ?>
 
                     <a
-                        href="profile.php"
-                        class="active"
+                        href="/admin/admin_dashboard.php"
+                        class="sidebar-menu__link"
                     >
                         <img
-                            src="../assets/gear_dashboard.svg"
+                            src="/assets/user_dashboard.svg"
                             alt=""
+                            aria-hidden="true"
                         >
-                        <span>Settings</span>
+                        <span>Admin</span>
                     </a>
 
-                </nav>
+                <?php endif; ?>
 
-            </div>
-
-            <!-- rma9: Sidebar footer text -->
-            <div class="sidebar-footer">
-                OnTheRadar
-            </div>
+            </nav>
 
         </aside>
 
@@ -326,12 +406,17 @@ $role = $_SESSION['role'] ?? '';
                                 Email Address
                             </label>
 
+                            <!-- rma9: Displays the registered email as read-only
+                                 account information for security. -->
                             <input
                                 id="email"
                                 type="email"
-                                name="email"
-                                value="<?= htmlspecialchars($email) ?>"
-                                autocomplete="email"
+                                value="<?= htmlspecialchars(
+                                    $email,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ); ?>"
+                                readonly
                             >
 
                         </div>
@@ -422,113 +507,34 @@ $role = $_SESSION['role'] ?? '';
 
                         <span>Dark Mode</span>
 
+                        <!-- rma9: Settings toggle synchronized with the header toggle. -->
                         <button
                             type="button"
-                            class="toggle-switch"
-                            aria-label="Toggle dark mode"
-                        ></button>
-
-                    </div>
-
-                </section>
-
-                <!-- rma9: Notification settings -->
-                <section class="settings-card notification-card">
-
-                    <h2>Notification Preference</h2>
-
-                    <div class="notification-box">
-
-                        <div class="notification-row">
-
-                            <span>Flight</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle flight notifications"
-                            ></button>
-
-                        </div>
-
-                        <div class="notification-row">
-
-                            <span>Airport</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle airport notifications"
-                            ></button>
-
-                        </div>
-
-                        <div class="notification-row">
-
-                            <span>Reports</span>
-
-                            <button
-                                type="button"
-                                class="toggle-switch"
-                                aria-label="Toggle report notifications"
-                            ></button>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-                <!-- rma9: Accessibility settings -->
-                <section class="settings-card accessibility-card">
-
-                    <h2>Accessibility</h2>
-
-                    <div class="accessibility-row">
-
-                        <span class="accessibility-label">
-                            Text Size
-                        </span>
-
-                        <div
-                            class="text-size-control"
-                            aria-label="Text size control"
+                            class="theme-toggle"
+                            data-theme-toggle
+                            aria-label="Switch to dark mode"
+                            aria-pressed="false"
                         >
-
-                            <span class="text-size-small">
-                                A
+                            <span
+                                class="theme-toggle__symbol"
+                                aria-hidden="true"
+                            >
+                                ☀
                             </span>
 
-                            <span class="text-size-middle"></span>
-
-                            <span class="text-size-large">
-                                A
-                            </span>
-
-                        </div>
+                            <span class="theme-toggle__circle"></span>
+                        </button>
 
                     </div>
 
                 </section>
 
-                <!-- rma9: Privacy section -->
-                <section class="settings-card privacy-card">
-
-                    <h2>Privacy</h2>
-
-                    <div class="privacy-lines">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                </section>
 
             </div>
 
         </main>
 
-    </div>
+    </main>
 
 </div>
 
@@ -575,6 +581,11 @@ if (userButton && userDropdown)
     });
 }
 </script>
+
+<script src="/public/notif_bell.js"></script>
+
+<!-- rma9: Load shared light and dark mode behavior. -->
+<script src="/public/theme.js?v=5"></script>
 
 </body>
 

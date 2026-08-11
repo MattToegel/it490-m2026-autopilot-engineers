@@ -66,38 +66,373 @@ echo "DB VM auth consumer listening on '$queue'...\n";
 // tad46: Registration handler
 function handleRegister($db, $logger, $data) 
 {
-    if (empty($data['username']) || empty($data['email']) || empty($data['password'])) 
+    if (
+        empty($data['username']) ||
+        empty($data['email']) ||
+        empty($data['password'])
+    ) 
     {
         $logger->warning("Registration attempt missing fields");
-        return ['status' => 'error', 'message' => 'missing fields'];
+
+        return [
+            'status' => 'error',
+            'message' => 'missing fields'
+        ];
     }
 
-    $hash = password_hash($data['password'], PASSWORD_BCRYPT);
+    // rma9: Hash the user's password before storing it.
+    $hash = password_hash(
+        $data['password'],
+        PASSWORD_BCRYPT
+    );
+
     $role = 'user';
+
+    // rma9: Generate a random six-digit email verification code.
+    $verificationCode = (string) random_int(
+        100000,
+        999999
+    );
+
+    // rma9: Store only a secure hash of the code in the database.
+    $verificationCodeHash = password_hash(
+        $verificationCode,
+        PASSWORD_DEFAULT
+    );
+
+    // rma9: The verification code expires after ten minutes.
+    $verificationExpiresAt = date(
+        'Y-m-d H:i:s',
+        time() + 600
+    );
 
     $stmt = $db->prepare
     (
-        "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)"
+        "INSERT INTO users
+        (
+            username,
+            email,
+            password_hash,
+            role,
+            email_verified,
+            verification_code_hash,
+            verification_expires_at
+        )
+        VALUES (?, ?, ?, ?, 0, ?, ?)"
     );
-    $stmt->bind_param('ssss', $data['username'], $data['email'], $hash, $role);
+
+    $stmt->bind_param(
+        'ssssss',
+        $data['username'],
+        $data['email'],
+        $hash,
+        $role,
+        $verificationCodeHash,
+        $verificationExpiresAt
+    );
 
     try 
     {
         $stmt->execute();
+
         $userId = $stmt->insert_id;
-        $logger->info("New user registered: {$data['email']} (user_id=$userId)");
+
+        // rma9: Access the RabbitMQ channel already created by this consumer.
+        global $channel;
+
+        // rma9: Build the message for the email worker.
+        $emailPayload = [
+            'email' => $data['email'],
+            'verification_code' => $verificationCode
+        ];
+
+        $emailMessage = new AMQPMessage(
+            json_encode($emailPayload),
+            [
+                'content_type' => 'application/json',
+                'delivery_mode' =>
+                    AMQPMessage::DELIVERY_MODE_PERSISTENT
+            ]
+        );
+
+        // rma9: Publish the verification email job to RabbitMQ.
+        $channel->basic_publish(
+            $emailMessage,
+            '',
+            'email.verification'
+        );
+
+        $logger->info(
+            "New user registered: {$data['email']} " .
+            "(user_id=$userId)"
+        );
+
+        $logger->info(
+            "Verification email queued for {$data['email']} " .
+            "(user_id=$userId)"
+        );
+
         return [
-            'status'   => 'success',
-            'user_id'  => $userId,
+            'status' => 'success',
+            'user_id' => $userId,
             'username' => $data['username'],
-            'role'     => $role,
+            'email' => $data['email'],
+            'role' => $role,
+            'verification_required' => true
         ];
     } 
     catch (mysqli_sql_exception $e) 
     {
-        $logger->warning("Registration failed (duplicate email or username): {$data['email']}");
-        return ['status' => 'error', 'message' => 'email or username already taken'];
+        $logger->warning(
+            "Registration failed " .
+            "(duplicate email or username): {$data['email']}"
+        );
+
+        return [
+            'status' => 'error',
+            'message' => 'email or username already taken'
+        ];
     }
+}
+
+
+// rma9: Checks the verification code entered by the user.
+function handleVerifyEmail($db, $logger, $data)
+{
+    if (empty($data['email']) || empty($data['verification_code']))
+    {
+        $logger->warning("Email verification attempt missing fields");
+
+        return [
+            'status' => 'error',
+            'message' => 'email and verification code are required'
+        ];
+    }
+
+    $email = trim($data['email']);
+    $verificationCode = trim($data['verification_code']);
+
+    // rma9: Verification codes must contain exactly six numbers.
+    if (!preg_match('/^\d{6}$/', $verificationCode))
+    {
+        return [
+            'status' => 'error',
+            'message' => 'verification code must be six digits'
+        ];
+    }
+
+    // rma9: Find the user and their stored verification information.
+    $stmt = $db->prepare(
+        "SELECT
+            user_id,
+            email_verified,
+            verification_code_hash,
+            verification_expires_at
+        FROM users
+        WHERE email = ?"
+    );
+
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+
+    $user = $stmt->get_result()->fetch_assoc();
+
+    if (!$user)
+    {
+        $logger->warning(
+            "Verification attempted for unknown email: {$email}"
+        );
+
+        return [
+            'status' => 'error',
+            'message' => 'account not found'
+        ];
+    }
+
+    if ((int)$user['email_verified'] === 1)
+    {
+        return [
+            'status' => 'success',
+            'message' => 'email is already verified'
+        ];
+    }
+
+    if (empty($user['verification_code_hash']))
+    {
+        return [
+            'status' => 'error',
+            'message' => 'no verification code is available'
+        ];
+    }
+
+    // rma9: Reject the code when its expiration time has passed.
+    if (
+        empty($user['verification_expires_at']) ||
+        strtotime($user['verification_expires_at']) < time()
+    )
+    {
+        $logger->warning(
+            "Expired verification code used for: {$email}"
+        );
+
+        return [
+            'status' => 'error',
+            'message' => 'verification code has expired'
+        ];
+    }
+
+    // rma9: Compare the submitted code with the stored secure hash.
+    if (
+        !password_verify(
+            $verificationCode,
+            $user['verification_code_hash']
+        )
+    )
+    {
+        $logger->warning(
+            "Incorrect verification code used for: {$email}"
+        );
+
+        return [
+            'status' => 'error',
+            'message' => 'incorrect verification code'
+        ];
+    }
+
+    // rma9: Mark the account verified and remove the used code.
+    $updateStmt = $db->prepare(
+        "UPDATE users
+        SET
+            email_verified = 1,
+            verified_at = NOW(),
+            verification_code_hash = NULL,
+            verification_expires_at = NULL
+        WHERE user_id = ?"
+    );
+
+    $updateStmt->bind_param('i', $user['user_id']);
+    $updateStmt->execute();
+
+    $logger->info(
+        "Email verified: {$email} (user_id={$user['user_id']})"
+    );
+
+    return [
+        'status' => 'success',
+        'message' => 'email verified successfully',
+        'user_id' => $user['user_id']
+    ];
+}
+
+
+// rma9: Generates and sends a new email verification code.
+function handleResendVerification($db, $logger, $data)
+{
+    if (empty($data['email']))
+    {
+        return [
+            'status' => 'error',
+            'message' => 'email is required'
+        ];
+    }
+
+    $email = trim($data['email']);
+
+    // rma9: Looks up the pending account.
+    $stmt = $db->prepare(
+        "SELECT user_id, email_verified
+         FROM users
+         WHERE email = ?"
+    );
+
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+
+    $user = $stmt->get_result()->fetch_assoc();
+
+    if (!$user)
+    {
+        return [
+            'status' => 'error',
+            'message' => 'account not found'
+        ];
+    }
+
+    if ((int)$user['email_verified'] === 1)
+    {
+        return [
+            'status' => 'success',
+            'message' => 'email is already verified'
+        ];
+    }
+
+    // rma9: Generates a fresh six-digit code.
+    $verificationCode = (string) random_int(
+        100000,
+        999999
+    );
+
+    // rma9: Stores only the code hash.
+    $verificationCodeHash = password_hash(
+        $verificationCode,
+        PASSWORD_DEFAULT
+    );
+
+    // rma9: Gives the new code a fresh ten-minute expiration.
+    $verificationExpiresAt = date(
+        'Y-m-d H:i:s',
+        time() + 600
+    );
+
+    $updateStmt = $db->prepare(
+        "UPDATE users
+         SET
+            verification_code_hash = ?,
+            verification_expires_at = ?
+         WHERE user_id = ?"
+    );
+
+    $updateStmt->bind_param(
+        'ssi',
+        $verificationCodeHash,
+        $verificationExpiresAt,
+        $user['user_id']
+    );
+
+    $updateStmt->execute();
+
+    // rma9: Publishes the new code to the API email worker.
+    global $channel;
+
+    $emailPayload = [
+        'email' => $email,
+        'verification_code' => $verificationCode
+    ];
+
+    $emailMessage = new AMQPMessage(
+        json_encode($emailPayload),
+        [
+            'content_type' => 'application/json',
+            'delivery_mode' =>
+                AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]
+    );
+
+    $channel->basic_publish(
+        $emailMessage,
+        '',
+        'email.verification'
+    );
+
+    $logger->info(
+        "New verification code queued for {$email} " .
+        "(user_id={$user['user_id']})"
+    );
+
+    return [
+        'status' => 'success',
+        'message' => 'new verification code sent'
+    ];
 }
 
 
@@ -110,9 +445,13 @@ function handleLogin($db, $logger, $data)
         return ['status' => 'error', 'message' => 'missing fields'];
     }
 
+  // rma9: Selects the user's email with the login account data
+// so it can be returned to the App VM and stored in the session.
     $stmt = $db->prepare
     (
-        "SELECT user_id, username, password_hash, role FROM users WHERE email = ?"
+	"SELECT user_id, username, email, password_hash, role, email_verified
+ 	FROM users
+ 	WHERE email = ?" 
     );
     $stmt->bind_param('s', $data['email']);
     $stmt->execute();
@@ -128,18 +467,36 @@ function handleLogin($db, $logger, $data)
     {
         $logger->warning("Failed login (bad password) for: {$data['email']}");
         return ['status' => 'error', 'message' => 'invalid credentials'];
+
     }
 
-    $logger->info("Successful login: {$data['email']} (user_id={$result['user_id']})");
-    return 
-    [
-        'status'   => 'success',
-        'user_id'  => $result['user_id'],
-        'username' => $result['username'],
-        'role'     => $result['role'],
+   // rma9: Blocks login until the user's email has been verified.
+if ((int)$result['email_verified'] !== 1)
+{
+    $logger->warning(
+        "Login blocked for unverified email: {$data['email']}"
+    );
+
+    return [
+        'status' => 'error',
+        'message' => 'please verify your email before logging in'
     ];
 }
 
+
+// rma9: Returns the verified user's account information,
+// including the email needed for the profile settings page.
+    $logger->info("Successful login: {$data['email']} (user_id={$result['user_id']})");
+
+return 
+[
+    'status'   => 'success',
+    'user_id'  => $result['user_id'],
+    'username' => $result['username'],
+    'email'    => $result['email'],
+    'role'     => $result['role'],
+];
+}
 
 // tad46: Update Profile handler 
 function handleUpdateProfile($db, $logger, $data)
@@ -265,7 +622,22 @@ $callback = function ($msg) use ($db, $channel, $logger)
         {
             $response = handleRegister($db, $logger, $data);
         } 
-        else if ($routingKey === 'user.login') 
+       
+	else if ($routingKey === 'user.verify')
+	{
+   	 $response = handleVerifyEmail($db, $logger, $data);
+	}
+	
+	else if ($routingKey === 'user.resend_verification')
+	{
+    	$response = handleResendVerification(
+        $db,
+        $logger,
+        $data
+	    );
+	}
+
+	 else if ($routingKey === 'user.login') 
         {
             $response = handleLogin($db, $logger, $data);
         } 

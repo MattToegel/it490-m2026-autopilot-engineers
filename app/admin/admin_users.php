@@ -2,7 +2,7 @@
 //cao39 - admin users
 // admin_users.php
 // US-04 AC1 - View Users
-// cao39 - Adminis can also search for users via:
+// cao39 - Admins can also search for users via:
 // - username
 // - email
 // - user ID
@@ -65,7 +65,6 @@ else
 
 /*
 ==========================================================
-NEW
 
 US-04 User Search
 
@@ -227,7 +226,6 @@ User Management
 
 <!--
 ==========================================================
-NEW
 
 Admin search form
 
@@ -343,6 +341,13 @@ Email
 Role
 </th>
 
+<th>
+Reports
+</th>
+
+<th>
+Violations
+</th>
 
 </tr>
 
@@ -427,6 +432,29 @@ No users found.
 </td>
 
 
+<td>
+
+
+<a href="admin_usrreports.php?user_id=<?php echo (int)$user['user_id']; ?>">
+
+
+View Reports
+
+
+</a>
+
+
+</td>
+
+<td>
+
+<a href="admin_usrviolations.php?user_id=<?php echo (int)$user['user_id']; ?>">
+
+View Violations
+
+</a>
+
+</td>
 
 </tr>
 

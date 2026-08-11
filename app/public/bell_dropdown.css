@@ -7,14 +7,6 @@
     display: inline-block;
 }
 
-/* tad46: hidden checkbox toggles the dropdown open/closed */
-.bell-toggle-input
-{
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
 .bell-icon
 {
     position: relative;
@@ -67,7 +59,9 @@
     transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-.bell-toggle-input:checked ~ .bell-dropdown
+/* tad46: dropdown now toggled via JS adding/removing .show,
+   replacing the old checkbox-sibling trick */
+.bell-dropdown.show
 {
     opacity: 1;
     pointer-events: auto;

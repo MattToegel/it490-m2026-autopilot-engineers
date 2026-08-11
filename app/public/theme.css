@@ -1,0 +1,522 @@
+/* rma9: Shared light and dark mode styles for user-facing pages. */
+
+/* rma9: Smoothly changes common page colors when themes switch. */
+body,
+.top-header,
+.settings-main,
+.settings-card,
+.user-dropdown,
+.form-group input {
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* ==================== SHARED TOGGLE DESIGN ==================== */
+
+/* rma9: Shared light and dark mode toggle design. */
+.theme-toggle {
+    position: relative;
+    display: inline-flex;
+    width: 68px;
+    height: 36px;
+    padding: 0;
+    align-items: center;
+
+    border: 2px solid #6fa8dc;
+    border-radius: 999px;
+    background: #87b6df;
+    cursor: pointer;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* rma9: Displays the sun or moon on the open side of the toggle. */
+.theme-toggle__symbol {
+    position: absolute;
+    left: 10px;
+
+    color: #ffd15c;
+    font-size: 18px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* rma9: White circle that slides between light and dark mode positions. */
+.theme-toggle__circle {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+
+    width: 26px;
+    height: 26px;
+
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+    transition: transform 0.25s ease;
+}
+
+/* rma9: Show the dark toggle immediately from the saved page theme. */
+.theme-toggle.is-dark,
+html[data-theme="dark"] .theme-toggle {
+    background: #4d4d58;
+    border-color: #666674;
+}
+
+/* rma9: Move the white circle left immediately in dark mode. */
+.theme-toggle.is-dark .theme-toggle__circle,
+html[data-theme="dark"] .theme-toggle__circle {
+    transform: translateX(-32px);
+}
+
+/* rma9: Place the moon on the right immediately in dark mode. */
+.theme-toggle.is-dark .theme-toggle__symbol,
+html[data-theme="dark"] .theme-toggle__symbol {
+    right: 9px;
+    left: auto;
+
+    color: #f3f3f7;
+}
+
+/* rma9: Show the moon immediately before theme.js finishes loading. */
+html[data-theme="dark"] .theme-toggle__symbol {
+    font-size: 0;
+}
+
+html[data-theme="dark"] .theme-toggle__symbol::after {
+    content: "☾";
+    font-size: 18px;
+}
+
+/* rma9: Restore the normal symbol after theme.js updates the button. */
+html[data-theme="dark"] .theme-toggle.is-dark .theme-toggle__symbol {
+    font-size: 18px;
+}
+
+html[data-theme="dark"] .theme-toggle.is-dark .theme-toggle__symbol::after {
+    content: none;
+}
+
+/* ==================== DARK MODE COLORS ==================== */
+
+/* rma9: Shared dark color variables. */
+html[data-theme="dark"] {
+    --otr-page: #11111f;
+    --otr-text: #f5f5f7;
+    --otr-muted: #b7b7c4;
+    --otr-border: #3a3a50;
+    --otr-white: #1c1c2d;
+    --otr-soft: #29293d;
+}
+
+/* rma9: Changes the main page background and text. */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .settings-page {
+    background: #11111f;
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode header styling. */
+html[data-theme="dark"] .top-header {
+    background: #181829;
+    border-bottom-color: #333348;
+}
+
+/* rma9: Keeps header links readable in dark mode. */
+html[data-theme="dark"] .top-header__link {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode settings content background. */
+html[data-theme="dark"] .settings-main {
+    background: #11111f;
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode settings cards. */
+html[data-theme="dark"] .settings-card {
+    background: #1c1c2d;
+    color: #f5f5f7;
+}
+
+/* rma9: Makes settings headings and labels visible in dark mode. */
+html[data-theme="dark"] .settings-title,
+html[data-theme="dark"] .settings-card h2,
+html[data-theme="dark"] .password-heading,
+html[data-theme="dark"] .form-group label,
+html[data-theme="dark"] .appearance-row span,
+html[data-theme="dark"] .accessibility-label {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode form input styling. */
+html[data-theme="dark"] .form-group input {
+    background: #29293d;
+    color: #ffffff;
+    border-color: #55556d;
+}
+
+/* rma9: Dark mode read-only account fields. */
+html[data-theme="dark"] .form-group input[readonly] {
+    background: #232336;
+    color: #c9c9d4;
+}
+
+/* rma9: Dark mode notification preference box. */
+html[data-theme="dark"] .notification-box {
+    background: #242438;
+    border-color: #8f8fff;
+}
+
+/* rma9: Dark mode account dropdown. */
+html[data-theme="dark"] .user-dropdown {
+    background: #1c1c2d;
+}
+
+/* rma9: Dark mode dropdown text. */
+html[data-theme="dark"] .user-dropdown-header,
+html[data-theme="dark"] .user-dropdown a {
+    color: #ffffff;
+}
+
+/* rma9: Dark mode dropdown hover. */
+html[data-theme="dark"] .user-dropdown a:hover {
+    background: #292940;
+}
+
+/* rma9: Dark mode dropdown dividers. */
+html[data-theme="dark"] .user-dropdown-header,
+html[data-theme="dark"] .user-dropdown-divider {
+    border-color: #39394d;
+}
+
+/* rma9: Dark mode dashboard and shared content backgrounds. */
+html[data-theme="dark"] .dashboard-main,
+html[data-theme="dark"] .dashboard-panel,
+html[data-theme="dark"] .metric-card {
+    background: #1c1c2d;
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode dashboard panel headings and text. */
+html[data-theme="dark"] .dashboard-panel__header h2,
+html[data-theme="dark"] .dashboard-welcome h1 {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode dashboard tables. */
+html[data-theme="dark"] .tracked-flights-table th {
+    background: #242438;
+    color: #f5f5f7;
+}
+
+html[data-theme="dark"] .tracked-flights-table td {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode notification and report text. */
+html[data-theme="dark"] .notification-message,
+html[data-theme="dark"] .user-report__text,
+html[data-theme="dark"] .tracked-flights-empty h3 {
+    color: #f5f5f7;
+}
+
+/* rma9: Keeps muted text readable in dark mode. */
+html[data-theme="dark"] .tracked-flights-empty p,
+html[data-theme="dark"] .notifications-empty p,
+html[data-theme="dark"] .user-reports-empty,
+html[data-theme="dark"] .notification-time {
+    color: #b7b7c4;
+}
+
+/* ==================== LANDING PAGE DARK MODE ==================== */
+
+/* rma9: Dark background for the main landing-page content. */
+html[data-theme="dark"] .radar {
+    background: #11111f;
+    color: #f5f5f7;
+}
+
+/* rma9: Keep the main landing-page heading readable in dark mode. */
+html[data-theme="dark"] .hero h1 {
+    color: #f5f5f7;
+}
+
+/* rma9: Keep the OnTheRadar accent in the landing heading visible. */
+html[data-theme="dark"] .hero h1 span {
+    color: #8f8fff;
+}
+
+/* rma9: Dark mode airport information card. */
+html[data-theme="dark"] .airport-card {
+    background: #1c1c2d;
+    color: #f5f5f7;
+    border-color: #3a3a50;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* rma9: Keep airport card text and link readable. */
+html[data-theme="dark"] .airport-card h3,
+html[data-theme="dark"] .airport-card a {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode landing-page flight search box. */
+html[data-theme="dark"] .search-box {
+    background: #1c1c2d;
+    border-color: #3a3a50;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+/* rma9: Dark mode search field text. */
+html[data-theme="dark"] .search-box input {
+    background: transparent;
+    color: #ffffff;
+}
+
+/* rma9: Keep search placeholder readable in dark mode. */
+html[data-theme="dark"] .search-box input::placeholder {
+    color: #9f9fac;
+}
+
+/* rma9: Dark mode live-flight map panel. */
+html[data-theme="dark"] .map-panel {
+    background: #1c1c2d;
+    border-color: #3a3a50;
+}
+
+/* rma9: Darken the empty map area until the live map is connected. */
+html[data-theme="dark"] .map-panel #map {
+    background: #29293d;
+}
+
+/* rma9: Dark mode saved flights panel. */
+html[data-theme="dark"] .saved-panel {
+    background: #1c1c2d;
+    color: #f5f5f7;
+    border-color: #3a3a50;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* rma9: Keep the saved flights heading readable. */
+html[data-theme="dark"] .saved-panel h2 {
+    color: #f5f5f7;
+}
+
+/* rma9: Dark mode saved-flight row. */
+html[data-theme="dark"] .saved-flight {
+    background: #29293d;
+    color: #f5f5f7;
+    border-color: #3a3a50;
+}
+
+/* rma9: Keep saved flight information readable. */
+html[data-theme="dark"] .saved-flight strong {
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .saved-flight small,
+html[data-theme="dark"] .saved-flight__hint {
+    color: #b7b7c4;
+}
+
+/* rma9: Keep the dashboard-management link visible. */
+html[data-theme="dark"] .saved-panel__link {
+    color: #a9a9ff;
+}
+
+/* rma9: Dark mode landing-page footer. */
+html[data-theme="dark"] footer {
+    background: #181829;
+    color: #f5f5f7;
+}
+
+/* ==================== DARK MODE TEXT CONTRAST FIXES ==================== */
+
+/* rma9: Make the sidebar username readable against the dark blue sidebar. */
+html[data-theme="dark"] .sidebar-profile__name {
+    color: #ffffff;
+}
+
+/* rma9: Make dashboard statistic labels readable in dark mode. */
+html[data-theme="dark"] .metric-card__label {
+    color: #f5f5f7;
+}
+
+/* rma9: Keep dashboard statistic numbers bright and visible. */
+html[data-theme="dark"] .metric-card__value {
+    color: #ff4d52;
+}
+
+/* rma9: Make dashboard links easier to see on dark cards. */
+html[data-theme="dark"] .dashboard-panel__link,
+html[data-theme="dark"] .saved-panel__link,
+html[data-theme="dark"] .search-page__back {
+    color: #b9b9ff;
+}
+
+/* rma9: Improve notification text contrast. */
+html[data-theme="dark"] .notification-flight,
+html[data-theme="dark"] .notification-message,
+html[data-theme="dark"] .notification-read-tag {
+    color: #f5f5f7;
+}
+
+/* rma9: Keep secondary notification information visible. */
+html[data-theme="dark"] .notification-time {
+    color: #b7b7c4;
+}
+
+/* rma9: Make the notification dismiss button readable. */
+html[data-theme="dark"] .notification-dismiss {
+    color: #ffffff;
+    background: #35355f;
+    border-color: #55558a;
+}
+
+/* rma9: Make reports page text readable over the airport image. */
+html[data-theme="dark"] .reports-panel,
+html[data-theme="dark"] .reports-panel h1,
+html[data-theme="dark"] .report-item__text,
+html[data-theme="dark"] .report-item__meta,
+html[data-theme="dark"] .report-item__terminal {
+    color: #ffffff;
+}
+
+/* rma9: Improve the Post a Report button contrast. */
+html[data-theme="dark"] .reports-new-btn {
+    background: #ffffff;
+    color: #080878;
+    border: 2px solid #ffffff;
+}
+
+/* rma9: Make flight history links visible. */
+html[data-theme="dark"] .history-summary strong,
+html[data-theme="dark"] #flight-history .dashboard-panel__link {
+    color: #b9b9ff;
+}
+
+/* rma9: Keep active flight-history rows bright. */
+html[data-theme="dark"] .tracked-flights-table td {
+    color: #f5f5f7;
+}
+
+/* rma9: Removed history rows remain muted but readable. */
+html[data-theme="dark"] .history-row--removed td {
+    color: #b7b7c4;
+    opacity: 0.8;
+}
+
+/* rma9: Make notification preference labels readable. */
+html[data-theme="dark"] .notification-row span {
+    color: #f5f5f7;
+}
+
+/* rma9: Make accessibility text-size controls readable. */
+html[data-theme="dark"] .text-size-small,
+html[data-theme="dark"] .text-size-large {
+    color: #ffffff;
+}
+
+/* rma9: Improve the text-size control outline in dark mode. */
+html[data-theme="dark"] .text-size-control {
+    border-color: #8f8fff;
+}
+
+/* rma9: Keep privacy placeholder lines visible. */
+html[data-theme="dark"] .privacy-lines span {
+    background: #73738a;
+}
+
+/* rma9: Keep the settings update button readable. */
+html[data-theme="dark"] .update-profile-button {
+    color: #ffffff;
+    background: #2525a8;
+}
+
+/* rma9: Make general dark-mode links brighter. */
+html[data-theme="dark"] a {
+    text-decoration-color: currentColor;
+}
+
+/* rma9: Make the OnTheRadar brand name white in dark mode. */
+html[data-theme="dark"] .top-header__brand-name,
+html[data-theme="dark"] .brand span {
+    color: #ffffff !important;
+}
+
+/* rma9: Force transparent header icons to bright white in dark mode. */
+html[data-theme="dark"] .top-header__link img,
+html[data-theme="dark"] .top-header__icon-button img {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(100%);
+    opacity: 1;
+}
+
+/* rma9: Keep both logo versions aligned in the header. */
+.top-header__logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* rma9: Hide the dark logo in light mode. */
+.top-header__logo--dark {
+    display: none;
+}
+
+/* rma9: Hide the light logo in dark mode. */
+html[data-theme="dark"] .top-header__logo--light {
+    display: none;
+}
+
+/* rma9: Show the transparent white/red logo in dark mode. */
+html[data-theme="dark"] .top-header__logo--dark {
+    display: block;
+}
+
+html[data-theme="dark"] .notif-dropdown-dismiss
+{
+    background: #29293d;
+    color: #a9a9ff;
+    border-color: #55556d;
+}
+
+html[data-theme="dark"] .notif-dropdown-dismiss:hover
+{
+    background: #34344a;
+}
+
+html[data-theme="dark"] .notif-dropdown-read-tag
+{
+    background: #343446;
+    color: #d5d5df;
+}
+/* cao39: Dark mode admin cards */
+body.dark-mode .admin-card,
+body.dark-mode .card
+{
+    background: #1f1f2b;
+    color: #ffffff;
+}
+
+
+body.dark-mode .admin-card h3,
+body.dark-mode .admin-card p
+{
+    color: #ffffff;
+}
+
+
+body.dark-mode .admin-card a
+{
+    background: #ff2020;
+    color: #ffffff;
+}

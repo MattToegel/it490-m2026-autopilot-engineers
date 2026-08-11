@@ -424,7 +424,7 @@ $report['report_id']
 <td>
 
 <?php echo htmlspecialchars(
-$report['user_id']
+$report['username']
 ); ?>
 
 </td>

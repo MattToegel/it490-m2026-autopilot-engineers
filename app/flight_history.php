@@ -49,8 +49,17 @@ function historyDate(?string $mysqlTimestamp): string
     {
         return '-';
     }
-    $ts = strtotime($mysqlTimestamp);
-    return $ts === false ? '-' : date('M j, Y g:i A', $ts);
+
+    try
+    {
+        $utc = new DateTimeImmutable($mysqlTimestamp, new DateTimeZone('UTC'));
+        $local = $utc->setTimezone(new DateTimeZone('America/New_York'));
+        return $local->format('M j, Y g:i A');
+    }
+    catch (Exception $e)
+    {
+        return '-';
+    }
 }
 ?>
 
@@ -61,12 +70,28 @@ function historyDate(?string $mysqlTimestamp): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight History | OnTheRadar</title>
 
+    <!-- rma9: Apply the saved theme before rendering to prevent a light-mode flash. -->
+    <script>
+    (function ()
+    {   
+    const savedTheme = localStorage.getItem("otr-theme");
+
+    document.documentElement.setAttribute(
+        "data-theme",
+        savedTheme === "dark" ? "dark" : "light"
+    );
+    })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/public/dashboard_styles.css">
+    <link rel="stylesheet" href="/public/notif_bell.css">
 
+    <!-- rma9: Load shared light and dark mode styles for flight history. -->
+    <link rel="stylesheet" href="/public/theme.css?v=10">
     <style>
         /* tad46: page-scoped additions for the history table */
         .history-chip
@@ -111,17 +136,62 @@ function historyDate(?string $mysqlTimestamp): string
         {
             color: var(--otr-blue);
         }
+
+        /* rma9: Keep the flight history summary readable in dark mode. */
+        html[data-theme="dark"] .history-summary
+        {
+            border-bottom-color: #3a3a50;
+            color: #b7b7c4;
+        }
+
+        /* rma9: Keep flight history summary counts visible in dark mode. */
+        html[data-theme="dark"] .history-summary strong
+        {
+            color: #a9a9ff;
+        }
+
+        /* rma9: Dark mode styling for active flight history chips. */
+        html[data-theme="dark"] .history-chip--active
+        {
+            background: #1d3b2a;
+            color: #c9f5d5;
+        }
+
+        /* rma9: Dark mode styling for removed flight history chips. */
+        html[data-theme="dark"] .history-chip--removed
+        {
+            background: #343446;
+            color: #d5d5df;
+        }
     </style>
 </head>
 
 <body>
     <div class="dashboard-page">
 
-        <!-- ==================== TOP HEADER ==================== -->
+        <!--  TOP HEADER  -->
         <header class="top-header">
-            <a href="/dashboard.php" class="top-header__brand">
-                <img src="/assets/otr-logo.svg" alt="OnTheRadar logo" class="top-header__logo">
-                <span class="top-header__brand-name">OnTheRadar</span>
+            <a href="/landing.php" class="top-header__brand">
+
+                <!-- rma9: Use separate light and dark mode logo assets. -->
+                <span class="top-header__logo-wrap">
+                    <img
+                        src="/assets/otr-logo.svg"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--light"
+                    >
+
+                    <img
+                        src="/assets/otr-logo-dark.png"
+                        alt="OnTheRadar logo"
+                        class="top-header__logo top-header__logo--dark"
+                    >
+                </span>
+
+                <span class="top-header__brand-name">
+                    OnTheRadar
+                </span>
+
             </a>
 
             <nav class="top-header__nav" aria-label="Main navigation">
@@ -130,7 +200,7 @@ function historyDate(?string $mysqlTimestamp): string
                     <span>Search</span>
                 </a>
 
-                <a href="/dashboard.php#airport-conditions" class="top-header__link">
+                <a href="#airport-conditions" class="top-header__link">
                     <img src="/assets/airport-map-icon.svg" alt="" aria-hidden="true">
                     <span>Airport Map</span>
                 </a>
@@ -140,13 +210,45 @@ function historyDate(?string $mysqlTimestamp): string
                     <span>Community</span>
                 </a>
 
-                <button type="button" class="theme-toggle" aria-label="Toggle dark mode">
+                <!-- rma9: Shared flight-history toggle matching the Settings page toggle. -->
+                <button
+                    type="button"
+                    class="theme-toggle"
+                    data-theme-toggle
+                    aria-label="Switch to dark mode"
+                    aria-pressed="false"
+                >
+                    <!-- rma9: Shows the sun in light mode and moon in dark mode. -->
+                    <span
+                        class="theme-toggle__symbol"
+                        aria-hidden="true"
+                    >
+                        ☀
+                    </span>
+
+                    <!-- rma9: White circle slides left or right when the theme changes. -->
                     <span class="theme-toggle__circle"></span>
                 </button>
 
-                <a href="/dashboard.php#notifications" class="top-header__icon-button" aria-label="Notifications">
-                    <img src="/assets/notification-icon.svg" alt="">
-                </a>
+                <?php if ($isLoggedIn ?? true): ?>
+                <div class="notif-menu">
+                    <button type="button" class="top-header__icon-button bell-link" id="notifBellButton" aria-label="Notifications" aria-expanded="false">
+                        <img src="/assets/notification-icon.svg" alt="">
+                        <span class="bell-badge" id="notifBellBadge" style="display:none;"></span>
+                    </button>
+
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <strong>Notifications</strong>
+                            <span class="notifications-count" id="notifDropdownCount" style="display:none;"></span>
+                        </div>
+                        <div class="notif-dropdown-body" id="notifDropdownBody">
+                            <div class="notif-dropdown-empty">Loading...</div>
+                        </div>
+                        <a href="/dashboard.php#notifications" class="notif-dropdown-viewall">View all in dashboard</a>
+                    </div>
+                </div>
+                <?php endif; ?>
 
                 <div class="user-menu">
                     <button type="button" class="top-header__icon-button" id="userMenuButton" aria-label="User menu" aria-expanded="false">
@@ -159,8 +261,10 @@ function historyDate(?string $mysqlTimestamp): string
                         </div>
                         <a href="/dashboard.php">Dashboard</a>
                         <a href="/auth/profile.php">Settings</a>
-                        <?php if ($role === 'admin'): ?>
-                            <a href="/admin/admin.php">Admin Panel</a>
+                        <?php 
+                            //cao39 - added the admin_dashboard link
+                            if ($role === 'admin'): ?>
+                            <a href="/admin/admin_dashboard.php">Admin Panel</a>
                         <?php endif; ?>
                         <div class="user-dropdown-divider"></div>
                         <a href="/auth/logout.php" class="logout-link">Log Out</a>
@@ -187,22 +291,24 @@ function historyDate(?string $mysqlTimestamp): string
                     </a>
                     <a href="/landing.php" class="sidebar-menu__link">
                         <img src="/assets/flight_dashboard_icon.svg" alt="" aria-hidden="true">
-                        <span>Flight</span>
+                        <span>Main Page</span>
                     </a>
                     <a href="/flight_history.php" class="sidebar-menu__link sidebar-menu__link--active" aria-current="page">
                         <img src="/assets/tracked_trips.svg" alt="" aria-hidden="true">
-                        <span>Stats</span>
+                        <span>Flight History</span>
                     </a>
                     <a href="/reports/reports.php" class="sidebar-menu__link">
                         <img src="/assets/reports_dashboard.svg" alt="" aria-hidden="true">
-                        <span>Reports</span>
+                        <span>Community Reports</span>
                     </a>
                     <a href="/auth/profile.php" class="sidebar-menu__link">
                         <img src="/assets/gear_dashboard.svg" alt="" aria-hidden="true">
                         <span>Settings</span>
                     </a>
-                    <?php if ($role === 'admin'): ?>
-                        <a href="/admin/admin.php" class="sidebar-menu__link">
+                    <?php 
+                        //cao39 - added the admin_dashboard link
+                        if ($role === 'admin'): ?>
+                        <a href="/admin/admin_dashboard.php" class="sidebar-menu__link">
                             <img src="/assets/user_dashboard.svg" alt="" aria-hidden="true">
                             <span>Admin</span>
                         </a>
@@ -314,5 +420,10 @@ function historyDate(?string $mysqlTimestamp): string
             });
         }
     </script>
+
+    <script src="/public/notif_bell.js"></script>
+
+    <!-- rma9: Load shared theme behavior and restore the saved flight-history theme. -->
+    <script src="/public/theme.js?v=5"></script>
 </body>
 </html>

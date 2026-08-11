@@ -1,1 +1,9 @@
 put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/api_worker.php /home/xml/api/api_worker.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/README.md /home/xml/api/README.md
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/config/config.php /home/xml/api/config/config.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/flights/Flightpublisher.php /home/xml/api/flights/Flightpublisher.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/flights/Flighttransformer.php /home/xml/api/flights/Flighttransformer.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/flights/flight_fetcher.php /home/xml/api/flights/flight_fetcher.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/logging/api_log.php /home/xml/api/logging/api_log.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/email_worker.php /home/xml/api/email_worker.php
+put /home/xml/it490-m2026-autopilot-engineers/promotion-tool/api/releases/release-001/setup.sh /home/xml/api/setup.sh

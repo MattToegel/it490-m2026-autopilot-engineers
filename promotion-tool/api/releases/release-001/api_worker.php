@@ -18,6 +18,7 @@ require_once __DIR__ . "/flights/Flighttransformer.php";
 require_once __DIR__ . "/flights/Flightpublisher.php";
 
 
+
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -101,7 +102,6 @@ function publishRabbitMessage(
 has the flight within the table. It will send the flight back if it
 is fresh enough, the result will be null if it is no. It will then notify
 saying it will resort to calling our API  */
-
 function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?array
 {
     global $channel;
@@ -113,19 +113,13 @@ function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?a
 
     try
     {
-        //xml:Temp exclusive reply queue
+        //xml: Temp exclusive reply queue
         $result = $channel->queue_declare(
-
             "",
-
             false,
-
             false,
-
             true,
-
             true
-
         );
 
         $replyQueue = $result[0];
@@ -142,19 +136,12 @@ function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?a
         $reply = null;
 
         $consumerTag = $channel->basic_consume(
-
             $replyQueue,
-
             "",
-
             false,
-
             true,
-
             false,
-
             false,
-
             function (AMQPMessage $message) use (&$reply, $correlationId)
             {
                 if (
@@ -165,30 +152,22 @@ function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?a
                     $reply = json_decode($message->body, true);
                 }
             }
-
         );
 
         $lookup = FlightPublisher::buildLookup($criteria);
 
         publishRabbitMessage(
-
             $lookup["exchange"],
-
             $lookup["routing_key"],
-
             $lookup["payload"],
-
             [
-
                 "reply_to" => $replyQueue,
-
                 "correlation_id" => $correlationId
-
             ]
-
         );
-//xml: This is basically waiting for a response from te DB; however, if the seconds exceeds
-//DB_LOOKUP... then we just give up in order to avoid long waiting times for users.
+
+        //xml: This waits for a response from the DB.
+        // If the timeout is reached, the API falls back to AeroDataBox.
         $deadline = microtime(true) + DB_LOOKUP_TIMEOUT_SECONDS;
 
         while ($reply === null && microtime(true) < $deadline)
@@ -202,45 +181,105 @@ function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?a
 
             $channel->wait(null, false, $remaining);
         }
-//xml: This will print if the database took to long, so our API will be sending over the information
+
+        //xml: Occurs when the db lookup took too long.
         if ($reply === null)
         {
             echo "DB VM did not reply in time - falling back to AeroDataBox.\n";
             return null;
         }
-//xml: This will print if there is no cached flight that matches the users request
+
+        //xml: Occurs whena cached field for a flight is not found on our database.
         if (!($reply["found"] ?? false) || empty($reply["flight"]))
         {
             echo "Cache miss.\n";
             return null;
         }
 
+        //xml: Save the previous cached flight so it can be
+        // compared with the newest AeroDataBox information.
         $previousFlight = $reply["flight"];
 
-        //xml: This will print if there is cached flight, but it is too old to use
-        $cachedAt = strtotime($reply["flight"]["cached_at"] ?? "");
+        /*xml Displays this information to users for clear visualiaation*/
 
-        if (
-            $cachedAt === false ||
-            (time() - $cachedAt) > CACHE_TTL_SECONDS
-        )
+        $cachedAtString = $reply["flight"]["cached_at"] ?? "";
+
+        echo "cached_at from DB: "
+            . ($cachedAtString !== "" ? $cachedAtString : "NULL")
+            . PHP_EOL;
+
+        echo "Current UTC time: "
+            . gmdate("Y-m-d H:i:s")
+            . PHP_EOL;
+
+        echo "TTL: "
+            . CACHE_TTL_SECONDS
+            . PHP_EOL;
+
+        if (empty($cachedAtString))
+        {
+            echo "cached_at is missing - treating cache as stale.\n";
+            return null;
+        }
+
+        try
+        {
+            $cachedAt = new DateTime(
+                $cachedAtString,
+                new DateTimeZone("UTC")
+            );
+
+            /* xml: This gets the current tim
+             */
+            $currentTime = new DateTime(
+                "now",
+                new DateTimeZone("UTC")
+            );
+
+            /* xml: This calculates the age of the cache and displays it to the terminal
+             */
+            $age = $currentTime->getTimestamp()
+                - $cachedAt->getTimestamp();
+
+            echo "Age: {$age} seconds" . PHP_EOL;
+        }
+        catch (Exception $timeException)
+        {
+            echo "Invalid cached_at timestamp: "
+                . $cachedAtString
+                . PHP_EOL;
+
+            return null;
+        }
+
+        /*
+         * xml: This says that if the age of the cached flight is over 120, state you found the flight, but
+         return ut null so it can go through the Aerodata API lookup*/
+        if ($age > CACHE_TTL_SECONDS)
         {
             echo "Cache hit, but stale - refreshing from AeroDataBox.\n";
             return null;
         }
 
-        //xml: This will print if the cached flight is suffient and fresh enough to use
+        /*
+         xml: The cached flight can still be used for the lookup (under 120 seconds)
+         */
         echo "Cache hit - using DB-cached flight.\n";
 
         return $reply["flight"];
     }
-/*xml: In case of an event where there is an error in the lookup on the table
-. Then we resort to our API  */
+
+    /* xml; If there is an issue looking for the cache durning the database lookup, go to AeroDataBox.
+     */
     catch (Exception $e)
     {
-        echo "DB lookup failed (" . $e->getMessage() . ") - falling back to AeroDataBox.\n";
+        echo "DB lookup failed ("
+            . $e->getMessage()
+            . ") - falling back to AeroDataBox.\n";
+
         return null;
     }
+
     finally
     {
         try
@@ -257,10 +296,11 @@ function lookupCachedFlight(array $criteria, ?array &$previousFlight = null): ?a
         }
         catch (Exception $cleanupException)
         {
-
+            //xml: Ignore cleanup errors.
         }
     }
 }
+
 
 /*xml: This function is in charge of comparing flight calls. What this does is it saves and updates
 the flight data that is with in the database cache table. This function checks the flight data called
@@ -461,25 +501,28 @@ function handleFlightNumberSearch(array $payload, ?string $originReplyTo, ?strin
     $cached = lookupCachedFlight($criteria, $previouslyCached);
 
     if ($cached !== null)
-    {
-        $reply = FlightPublisher::buildReply($cached);
+{
+    $reply = FlightPublisher::buildReply($cached);
+    //xml: This sends over the cahed information to the APP server
+    publishRabbitMessage(
+        "",
+        $originReplyTo,
+        $reply["payload"],
+        [
+            "correlation_id" => $originCorrId
+        ]
+    );
 
-        publishRabbitMessage(
+    echo "Response sent to App Server (cache)." . PHP_EOL;
 
-            $reply["exchange"],
+    //xml: This log documents that the flight information was found on the in data base and was given to users from there
+    logConvo("INFO", "Served from cache: " . $flightNumber);
 
-            $reply["routing_key"],
-
-            $reply["payload"]
-
-        );
-
-        logConvo("INFO", "Served from cache: " . $flightNumber);
-
-        return;
-    }
+    return;
+ }
 
     echo "Searching AeroDataBox...\n";
+
 
     $result = fetchFlight([
 
@@ -489,13 +532,25 @@ function handleFlightNumberSearch(array $payload, ?string $originReplyTo, ?strin
 
     ]);
 
+
     if ($result["status"] !== "success")
     {
         throw new Exception($result["message"]);
     }
 
-
     echo "Flight found.\n";
+
+
+    //This portion was simply inputted for debuging issues, after learning the API is delayed, this will be used to cross
+    //reference if data is truly changing from the API or not 
+    echo "\n---------------------------\n";
+    echo "Raw Data: \n";
+    echo json_encode(
+        $result["raw_data"],
+        JSON_PRETTY_PRINT
+    );
+    echo "\n----------------------------\n";
+
 
     $flight = FlightTransformer::transform($result["raw_data"]);
 
@@ -503,28 +558,32 @@ function handleFlightNumberSearch(array $payload, ?string $originReplyTo, ?strin
 
     /*xml (AC2): This function cheks changes between the flight and the previously 
     cached flight*/
+
     cacheAndDiffFlight($flight, $previouslyCached, $originReplyTo, $originCorrId);
 
     $reply = FlightPublisher::buildReply($flight);
 
-publishRabbitMessage(
+    //xml: This pubishes the procssed flight information to RabbitMQ
+    publishRabbitMessage(
 
-    "",
+        "",
 
-    $originReplyTo,
+        $originReplyTo,
 
-    $reply["payload"],
+        $reply["payload"],
 
-    [
+        [
 
-        "correlation_id" => $originCorrId
+            "correlation_id" => $originCorrId
 
-    ]
+        ]
 
-);
+    );
 
 
     echo "Response sent to App Server.\n";
+
+    //xml: This logs the action of a sucessful flight being processed by the worker
 
     logConvo("INFO", "Processed flight: " . $flight["flight_number"]);
 
@@ -543,94 +602,176 @@ function handleAirportSearch(array $payload, ?string $originReplyTo, ?string $or
 
     echo "\nSearching AeroDataBox for airport {$airport}...\n";
 
-
     $result = fetchAirport($payload);
-
 
     if ($result["status"] !== "success")
     {
         throw new Exception($result["message"]);
     }
 
+    //xml: This is the array that will hold the normalized flight info
 
-    /*xml:
-     * Normalize AeroDataBox airport-board response
-     * before sending it through the common transformer.
-     */
     $normalizedFlights = [];
 
     //xml: This traverses through the response sent from our API,
-    //then structres the data to match and resemeble the rest of
+    //then structures the data to match and resemble the rest of
     //our data outputs. Any information that is not given by the API is
-    //null
+    //null.
     foreach ($result["raw_data"] as $flight)
     {
+        $movement = $flight["movement"] ?? [];
 
+        $movementAirport = $movement["airport"] ?? [];
+
+        /*xml: This portion  of code determines if a flight is departing of arriving
+         */
+        $movementType = strtolower(
+            $movement["type"] ?? ""
+        );
+
+        /*xml: This sets the default departure information for the flights
+         */
+        $departureAirportName = "N/A";
+        $departureAirportCode = "N/A";
+
+        /*xml: This does the same thing but for the arrival inforamtion*/
+        $arrivalAirportName = "N/A";
+        $arrivalAirportCode = "N/A";
+
+        /*xml: Basically if flight is leaving then the airport that was searched will 
+        become the departure and the movement apirport will become the arrival*/
+        if (
+            $movementType === "departure" ||
+            $movementType === "departures"
+        )
+        {
+            $departureAirportName = $airport;
+            $departureAirportCode = $airport;
+
+            $arrivalAirportName =
+                $movementAirport["name"]
+                ?? "N/A";
+
+            $arrivalAirportCode =
+                $movementAirport["iata"]
+                ?? "N/A";
+        }
+
+        /* xml: If the flight is incoming then the airport that was seached will become 
+	the arrival and the movement airport will become the depature
+         */
+        else if (
+            $movementType === "arrival" ||
+            $movementType === "arrivals"
+        )
+        {
+            $arrivalAirportName = $airport;
+            $arrivalAirportCode = $airport;
+
+            $departureAirportName =
+                $movementAirport["name"]
+                ?? "N/A";
+
+            $departureAirportCode =
+                $movementAirport["iata"]
+                ?? "N/A";
+        }
+
+        /* xml: This would be considered a fall back. So, if we don't know the airport 
+         information, we would get that information from the flight
+         */
+        else
+        {
+	    //xml: Gets the depart airport information
+            $departureAirportName =
+                $flight["departure"]["airport"]["name"]
+                ?? $flight["departure"]["airport"]["iata"]
+                ?? $flight["departure"]["airport"]
+                ?? $airport;
+
+            $departureAirportCode =
+                $flight["departure"]["airport"]["iata"]
+                ?? $airport;
+	    //xml: Gets the arrival airport information
+            $arrivalAirportName =
+                $flight["arrival"]["airport"]["name"]
+                ?? $flight["arrival"]["airport"]["iata"]
+                ?? $flight["arrival"]["airport"]
+                ?? $airport;
+
+            $arrivalAirportCode =
+                $flight["arrival"]["airport"]["iata"]
+                ?? $airport;
+        }
+
+        //xml:This will normalize the flight info into the consistent structure to send off to the flight transformer file.
         $normalizedFlights[] = [
 
             "number" =>
                 $flight["number"] ?? "",
-
 
             "airline" => [
                 "name" =>
                     $flight["airline"]["name"] ?? "N/A"
             ],
 
-
             "status" =>
                 $flight["status"] ?? "unknown",
 
-
             "departure" => [
-
                 "airport" => [
                     "name" =>
-                        $flight["departure"]["airport"]["name"]
-                        ?? $flight["departure"]["airport"]
-                        ?? "N/A"
+                        $departureAirportName,
+
+                    "iata" =>
+                        $departureAirportCode
                 ],
 
                 "terminal" =>
-                    $flight["departure"]["terminal"]
+                    $movement["terminal"]
+                    ?? $flight["departure"]["terminal"]
                     ?? "N/A",
 
                 "gate" =>
-                    $flight["departure"]["gate"]
+                    $movement["gate"]
+                    ?? $flight["departure"]["gate"]
                     ?? "N/A",
 
                 "scheduledTime" => [
                     "utc" =>
-                        $flight["departure"]["scheduledTime"]["utc"]
+                        $movement["scheduledTime"]["utc"]
+                        ?? $flight["departure"]["scheduledTime"]["utc"]
                         ?? $flight["departureTimeUtc"]
                         ?? null
                 ],
 
                 "actualTime" => [
                     "utc" =>
-                        $flight["departure"]["actualTime"]["utc"]
+                        $movement["actualTime"]["utc"]
+                        ?? $flight["departure"]["actualTime"]["utc"]
                         ?? $flight["actualDepartureTimeUtc"]
                         ?? null
                 ]
 
             ],
 
-
             "arrival" => [
-
                 "airport" => [
                     "name" =>
-                        $flight["arrival"]["airport"]["name"]
-                        ?? $flight["arrival"]["airport"]
-                        ?? "N/A"
+                        $arrivalAirportName,
+
+                    "iata" =>
+                        $arrivalAirportCode
                 ],
 
                 "terminal" =>
-                    $flight["arrival"]["terminal"]
+                    $movement["terminal"]
+                    ?? $flight["arrival"]["terminal"]
                     ?? "N/A",
 
                 "gate" =>
-                    $flight["arrival"]["gate"]
+                    $movement["gate"]
+                    ?? $flight["arrival"]["gate"]
                     ?? "N/A",
 
                 "scheduledTime" => [
@@ -643,15 +784,14 @@ function handleAirportSearch(array $payload, ?string $originReplyTo, ?string $or
                 "actualTime" => [
                     "utc" =>
                         $flight["arrival"]["actualTime"]["utc"]
+                        ?? $flight["arrival"]["actualTime"]["utc"]
                         ?? $flight["actualArrivalTimeUtc"]
                         ?? null
                 ]
 
             ],
 
-
             "aircraft" => [
-
                 "model" =>
                     $flight["aircraft"]["model"]
                     ?? "N/A",
@@ -659,22 +799,17 @@ function handleAirportSearch(array $payload, ?string $originReplyTo, ?string $or
                 "reg" =>
                     $flight["aircraft"]["reg"]
                     ?? null
-
             ]
-
         ];
     }
 
-
-    
+    //xml: Sends the normalized airport results to the flight transformer file.
     $flights = FlightTransformer::transformList($normalizedFlights);
 
-
-
+    //xml:This portion of code basically the RabbitMQ response that has the lidt of flighs for the selected airport.
     $reply = FlightPublisher::buildList($flights);
 
-
-
+    //xml: This portion of code publishes the list to RabbitMQ for the App server to recieve
     publishRabbitMessage(
         "",
         $originReplyTo,
@@ -684,7 +819,7 @@ function handleAirportSearch(array $payload, ?string $originReplyTo, ?string $or
         ]
     );
 
-
+    //xml: sends log confirming that airport search was sucessful
     logConvo(
         "INFO",
         "Processed airport board: " . $airport
@@ -718,7 +853,7 @@ function handleRouteSearch(array $payload, ?string $originReplyTo, ?string $orig
         throw new Exception($result["message"]);
     }
 
-
+    //xml: Declaring array that will hold matching flights (fights that have the origin and destination of users desire
     $matchingFlights = [];
 
 
@@ -774,10 +909,10 @@ function handleRouteSearch(array $payload, ?string $originReplyTo, ?string $orig
         }
     }
 
-
+    //xml: Displays the number of flights that are routed
     echo "\nMatching flights found: " . count($matchingFlights) . "\n";
 
-
+     //xml: If there are no flights then the exception message is thrown
     if (empty($matchingFlights))
     {
         throw new Exception(
@@ -790,7 +925,7 @@ function handleRouteSearch(array $payload, ?string $originReplyTo, ?string $orig
         $matchingFlights
     );
 
-
+    //xml: This publishes the result back to RabbitMQ so that the App server can display the information
     publishRabbitMessage(
         "",
         $originReplyTo,
@@ -800,7 +935,7 @@ function handleRouteSearch(array $payload, ?string $originReplyTo, ?string $orig
         ]
     );
 
-
+    //xml: creates log message with the requested route search
     logConvo(
         "INFO",
         "Processed route: {$origin} -> {$destination}"
@@ -817,9 +952,9 @@ messgae to the user */
 function handleWorkerError(Exception $e, ?string $originReplyTo = null, ?string $originCorrId = null)
 {
     echo "\n";
-    echo "=====================================\n";
+    echo "-------------------------------------\n";
     echo "ERROR\n";
-    echo "=====================================\n";
+    echo "-------------------------------------\n";
 
     echo $e->getMessage();
 
@@ -831,21 +966,21 @@ function handleWorkerError(Exception $e, ?string $originReplyTo = null, ?string 
     // xml: error prompted to the user in case of this emergency
     $error = FlightPublisher::UnavailableError();
 
-publishRabbitMessage(
+    publishRabbitMessage(
 
-    "",
+        "",
 
-    $originReplyTo,
+        $originReplyTo,
 
-    $error["payload"],
+        $error["payload"],
 
-    [
+        [
 
-        "correlation_id" => $originCorrId
+             "correlation_id" => $originCorrId
 
-    ]
+        ]
 
-);
+    );
 }
 /*xml: This was built just to make things easier for myself. When first creating the worker
 I wanted an actual of the visual of the transformed data that would be sent to the
@@ -909,6 +1044,7 @@ while ($channel->is_consuming())
         echo $e->getMessage();
         echo "\n";
 
+//xml: This creates a log error message 
         logConvo(
 
             "ERROR",

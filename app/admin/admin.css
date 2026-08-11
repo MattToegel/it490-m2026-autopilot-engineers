@@ -1,27 +1,16 @@
-/*cao39    OnTheRadar Admin Panel Styles
-/*    OnTheRadar Admin Panel Styles
-   US-04 - used for the following files
+/*
+==========================================================
+cao39 - OnTheRadar Admin Panel Styles
+
+US-04 - Admin Community Management
+
+Used for:
 - admin_dashboard.php
 - admin_users.php
 - admin_reports.php
 - admin_roles.php
- 
- */
-/*    OnTheRadar Admin Panel Styles
-   US-04 - used for the following files
-- admin_dashboard.php
-- admin_users.php
-- admin_reports.php
-- admin_roles.php
- 
-   : restyled to match the site's visual language in
-   auth_styles.css / dashboard_styles.css - same font,
-   same color variables, same shadow/hover polish.
-========================================================== */
- 
-/* : shared color tokens - same values as auth_styles.css
-   so admin.css draws from the same palette instead of
-   repeating raw hex everywhere */
+==========================================================
+*/
 :root
 {
     --primary-blue: #070777;
@@ -75,10 +64,6 @@ ADMIN PAGE WRAPPER
 .admin-page
 {
     min-height: 100vh;
- 
-    display: flex;
- 
-    flex-direction: column;
 }
  
  
@@ -98,6 +83,7 @@ top-header__brand markup/pattern
  
 .admin-header,
 .header
+
 {
     background:
         var(--white);
@@ -482,18 +468,11 @@ CONTENT
  
 .admin-content
 {
-    width:
-        90%;
- 
-    max-width:
-        1200px;
- 
-    margin:
-        30px auto;
- 
+    width: 90%;
+    max-width: 1200px;
+    margin: 10px auto;
+    padding-bottom: 100px;
 }
- 
- 
  
 .admin-content h2
 {
@@ -541,7 +520,7 @@ create-account-button treatment
  
     gap:
         25px;
- 
+    margin-top: 10px;
 }
  
  
@@ -1201,22 +1180,35 @@ FOOTER
 ==========================================================
 */
  
- 
-.dashboard-footer,
-.admin-footer
+.dashboard-footer
 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
     padding: 24px 32px;
     background: var(--primary-blue);
     color: #fff;
     font-size: 1.1rem;
     font-weight: 700;
-    text-align: center;
- 
-    margin-top: auto;
-}
- 
- 
- 
+    text-align: left;
+} 
+
+.admin-footer
+{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    padding: 24px 32px;
+    background: var(--primary-blue);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: left;
+} 
  
 /*
 ==========================================================
@@ -1275,4 +1267,22 @@ CHANGED
  
  
  
+}
+
+/* tad46: NEW - dismissed state for the admin bell dropdown */
+.bell-alert-item--read
+{
+    opacity: 0.55;
+}
+
+.bell-alert-read-tag
+{
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 7px;
+    background: #eeeeF2;
+    color: #6b6b78;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
 }

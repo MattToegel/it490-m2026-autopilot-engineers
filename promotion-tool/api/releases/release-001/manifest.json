@@ -4,6 +4,14 @@
   "release_id": "release-001",
   "role": "api",
   "targets": [
-    "api_worker.php"
+    "api_worker.php",
+    "README.md",
+    "config/config.php",
+    "flights/Flightpublisher.php",
+    "flights/Flighttransformer.php",
+    "flights/flight_fetcher.php",
+    "logging/api_log.php",
+    "email_worker.php",
+    "setup.sh"
   ]
 }
